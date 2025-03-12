@@ -1,0 +1,615 @@
+@extends('layouts.app')
+
+
+
+@section('title', 'Account-Ledger')
+
+@section('content_header')
+
+@stop
+
+@section('content')
+    </div>
+
+
+    <div class="container-fluid">
+        <div class="col-lg-12 py-3">
+            <div class="card">
+                <div class="card-header">
+
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                    </div>
+
+
+                    <h3 class="text-center text-bold">Multi Account Ledger</h3>
+
+
+
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-7">
+
+                            <div class="row">
+                                <div class="inputbox col-sm-4 py-2 ">
+                                    <input class="" type="date" name="TxtDateFrom" id="TxtDateFrom">
+                                    <span class="" id="">From</span>
+                                </div>
+
+                                <div class="inputbox col-sm-4 py-2 ">
+                                    <input class="" type="date" name="TxtDateTo" id="TxtDateTo">
+                                    <span class="" id="">To</span>
+                                </div>
+
+                                <div class="inputbox col-sm-2 py-2 ">
+                                    <input class="" type="text" name="TxtActCode1" id="TxtActCode1">
+                                    <span class="" id="">ActCode</span>
+                                </div>
+                            </div>
+
+                            <div class="row">
+
+                                <div class="inputbox col-sm-1 py-2">
+                                    <input class="" type="text" name="TxtActCode" id="TxtActCode">
+                                    {{-- value="{{ $ACTcode ? $ACTcode : '' }}"> --}}
+                                    <span class="" id="">Code</span>
+
+                                </div>
+
+                                <div class="inputbox col-sm-8 py-2">
+                                    <input class="" readonly type="text" name="TxtActName" id="TxtActName">
+                                    <span class="" id="">A/c Code</span>
+                                </div>
+
+                                <a name="" id="CmdActCode" class="btn btn-info mt-2 mb-2" data-target="#chart"
+                                    data-toggle="modal" role="button"><i class="fa fa-search" aria-hidden="true"></i></a>
+
+                                <div class="CheckBox1">
+
+                                    <label class="input-group text-info mt-2 ml-2 py-2">
+                                        <input class=" " type="checkbox" name="ChkActCode" id="ChkActCode" checked
+                                            value=""> ALL
+                                    </label>
+                                </div>
+
+                                <a name="" id="Button1" class="btn btn-info col-sm-1 mx-2 mt-2 mb-2"
+                                    data-target="#chart" data-toggle="modal" role="button">Fill</a>
+
+                            </div>
+
+                            <div class="row">
+                                <div class="inputbox col-sm-9 py-2">
+                                    <input type="text" name="TxtSearchAc" id="TxtSearchAc">
+                                    <span class="" id="">Search A/c</span>
+                                </div>
+                                <div class="CheckBox1">
+
+                                    <label class="input-group text-info mt-2 ml-2 py-2">
+                                        <input class=" " type="checkbox" name="ChkCompanyHeading"
+                                            id="ChkCompanyHeading" checked value=""> Company Heading
+                                    </label>
+                                </div>
+
+                                <div class="CheckBox1">
+
+                                    <label class="input-group text-info mt-2 ml-2 py-2">
+                                        <input class=" " type="checkbox" name="ChkOnlyChartOfAccount"
+                                            id="ChkOnlyChartOfAccount" checked value=""> Show Chart of Account
+                                    </label>
+                                </div>
+
+                                <a name="" id="CmdGenerate" class="btn btn-info mx-2 mt-2 mb-2" data-target="#chart"
+                                    data-toggle="modal" role="button">Generate</a>
+
+
+                            </div>
+
+                            <div class="row py-2">
+                                <a name="Button4" id="Button4" class="btn btn-dark mx-1" role="button"><i
+                                        class="fas fa-solid fa-save"></i> Generate</a>
+
+                                <a name="Button4" id="CmdPrint" class="btn btn-primary mx-1" role="button"><i
+                                        class="fas fa-solid fa-save"></i> Print</a>
+
+                                <a name="CmdExit" id="CmdExit" class="btn btn-danger mx-1" href="/"
+                                    role="button"><i class="fas fa-door-open mr-1"></i> Exit</a>
+
+                                <a name="Button1" id="CmdPrintChartOfAccount" class="btn btn-primary mx-1"
+                                    role="button"><i class="fas fa-print mr-1 "></i>Print Chart Of Account</a>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-5">
+                            <table class="table" id="DG2">
+                                <thead class="bg-info">
+                                    <tr>
+                                        <th>Select</th>
+                                        <th>Act&nbsp;Code</th>
+                                        <th>Act&nbsp;Name</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody id="Receiptvocvertablebody">
+                                    <tr data-row-id="">
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <table class="table" id="PO-recivedtable">
+                <thead class="">
+                    <tr>
+                        <th>Act Name</th>
+                        <th>Date</th>
+                        <th>VNon</th>
+                        <th>Vnoc</th>
+                        <th>Description</th>
+                        <th>Pay Type</th>
+                        <th>Chk/Tr #</th>
+                        <th>Debit</th>
+                        <th>Credit</th>
+                        <th>Balance</th>
+                        <th>Mark</th>
+
+                    </tr>
+                </thead>
+                <tbody id="Receiptvocvertablebody">
+                    <tr data-row-id="">
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+
+                    </tr>
+                </tbody>
+            </table>
+            <div class="col-lg-12">
+                <div class="col-lg-6">
+                </div>
+                <div class="col-lg-6">
+
+                    <div class="row">
+                        <div class="inputbox col-sm-2 py-2">
+                            <input class="" readonly type="text" name="TxtDebitAmt" id="TxtActName">
+                            <span class="" id="">Debit Amt.</span>
+                        </div>
+
+                        <div class="inputbox col-sm-2 py-2">
+                            <input class="" readonly type="text" name="TxtCreditAmt" id="TxtActName">
+                            <span class="" id="">Credit Amt.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+
+
+
+
+
+@stop
+
+@section('css')
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.0.1/css/buttons.dataTables.min.css">
+    <style>
+        .form-group {
+            position: relative;
+        }
+
+        .title {
+            position: absolute;
+            top: -1.5em;
+            left: 0.25em;
+            background-color: #fff;
+            padding: 0 0.5em;
+        }
+
+        .custom-col-2 {
+            flex: 0 0 12.6%;
+            max-width: 12.6%;
+        }
+
+        .span2 {
+            width: 110px;
+            font-size: 11px;
+
+        }
+
+        .card-body span {}
+
+        .form-control {
+            font-size: 11px;
+
+        }
+
+        .containers ul {
+            padding: 0em;
+        }
+
+        .containers ul li,
+        .containers ul li ul li {
+            position: relative;
+            top: 0;
+            bottom: 0;
+            padding-bottom: 7px;
+
+        }
+
+        .containers ul li ul {
+            margin-left: 4em;
+        }
+
+        .containers li {
+            list-style-type: none;
+        }
+
+        .containers li a {
+            padding: 0 0 0 10px;
+            position: relative;
+            top: 1em;
+        }
+
+        .containers li a:hover {
+            text-decoration: none;
+        }
+
+        .containers a.addBorderBefore:before {
+            content: "";
+            display: inline-block;
+            width: 2px;
+            height: 28px;
+            position: absolute;
+            left: -47px;
+            top: -16px;
+            border-left: 1px solid gray;
+        }
+
+        .containers li:before {
+            content: "";
+            display: inline-block;
+            width: 25px;
+            height: 0;
+            position: relative;
+            left: 0em;
+            top: 1em;
+            border-top: 1px solid gray;
+        }
+
+        .containers ul li ul li:last-child:after,
+        .containers ul li:last-child:after {
+            content: '';
+            display: block;
+            width: 1em;
+            height: 1em;
+            position: relative;
+            background: #fff;
+            top: 9px;
+            left: -1px;
+        }
+    </style>
+@stop
+
+@section('js')
+    <script type="text/javascript" language="javascript"
+        src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" language="javascript"
+        src="https://cdn.datatables.net/buttons/2.0.1/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" language="javascript"
+        src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.html5.min.js"></script>
+    <script type="text/javascript" language="javascript"
+        src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.print.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            var today = new Date().toISOString().split('T')[0];
+            $('#TxtDateFrom').val(today);
+            $('#TxtDateTo').val(today);
+
+            var Getact = $('#TxtActCode').val();
+            if (Getact !== 0 || Getact !== '') {
+                handleTxtActCodeBlur();
+            }
+
+            function handleTxtActCodeBlur() {
+                var txtActCode = document.getElementById('TxtActCode');
+                var txtActName = document.getElementById('TxtActName');
+
+                // Retrieve the matching element using data attribute
+                var matchingElement = document.querySelector(`[data-accode="${txtActCode.value}"]`);
+
+                if (matchingElement) {
+                    // Retrieve the values from the matching element's data attributes
+                    var acName = matchingElement.getAttribute('data-acname');
+                    var acCode = matchingElement.getAttribute('data-accode');
+
+                    // Set the values to the TxtActName textbox
+                    txtActName.value = acName;
+
+                    // Additional logic if needed
+                    // ...
+                    dataget();
+                }
+            }
+
+            // Attach the function to the blur event of TxtActCode textbox
+            var txtActCode = document.getElementById('TxtActCode');
+            txtActCode.addEventListener('blur', handleTxtActCodeBlur);
+
+            // Attach the function to the keydown event of TxtActCode textbox to handle Enter key press
+            txtActCode.addEventListener('keydown', function(event) {
+                if (event.keyCode === 13) {
+                    handleTxtActCodeBlur();
+                }
+            });
+        });
+
+        $(document).ready(function() {
+
+            $('.parrent').dblclick(function(e) {
+                let AcCode = $(this).data('accode');
+                $('#TxtActCode').val(AcCode);
+                let AcName = $(this).data('acname');
+                $('#TxtActName').val(AcName);
+                $('#chart').modal('hide');
+
+            })
+
+
+        });
+
+
+
+        function dataget() {
+            //  var acCode = $('#TxtActCode').val();
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+            $.ajax({
+                url: '/ACFillType',
+                type: 'POST',
+                data: {
+                    ActCode: $('#TxtActCode').val(),
+                },
+                success: function(response) {
+                    console.log(response);
+                    let data = response.Trans;
+                    let select = document.getElementById('CmbType');
+                    select.innerHTML = ""; // Clear the select element
+                    data.forEach(function(item) {
+                        select.innerHTML += "<option value=" + item.Vnoc + ">" + item.Vnoc +
+                            "</option>";
+                    });
+
+                },
+                error: function(xhr, status, error) {
+                    console.log(error);
+
+                }
+            });
+
+
+        }
+        $(document).ready(function() {
+
+            $('#CmdGenerate').click(function(e) {
+                e.preventDefault();
+                var ACTcode = $('#TxtActCode').val().trim();
+                if (ACTcode.length === 0) {
+                    $('#TxtActCode').focus();
+                    return;
+                }
+
+                var MDateTo = new Date($('#TxtDateTo').val());
+                var Myear = MDateTo.getFullYear();
+                var Mmonth = ("0" + (MDateTo.getMonth() + 1)).slice(-2);
+                var Mday = ("0" + MDateTo.getDate()).slice(-2);
+                MDateTo = year + "-" + month + "-" + day;
+
+                var MDateFrom = new Date($('#TxtDateFrom').val());
+                var year = MDateFrom.getFullYear();
+                var month = ("0" + (MDateFrom.getMonth() + 1)).slice(-2);
+                var day = ("0" + MDateFrom.getDate()).slice(-2);
+                MDateFrom = year + "-" + month + "-" + day;
+                var Qry = '';
+
+                var ChkDesALL = document.getElementById('ChkDesALL');
+                var ChkGodownAll = document.getElementById('ChkGodownAll');
+                var ChkTermsAll = document.getElementById('ChkTermsAll');
+                var ChkTypeAll = document.getElementById('ChkTypeAll');
+                var ChkVnonALL = document.getElementById('ChkVnonALL');
+
+                // console.log(Qry);
+
+                if (!$("#ChkDesALL").is(":checked")) {
+                    if (Qry !== "") Qry += " and ";
+                    Qry += "Des like '%" + $('#TxtDes').val() + "%'";
+                }
+                // console.log(Qry);
+
+                if (!$("#ChkTermsAll").is(":checked")) {
+                    if (Qry !== "") Qry += " and ";
+                    Qry += "TransType='" + $('#CmbTerms :selected').text() + "'";
+                }
+                // console.log(Qry);
+
+                if (!$("#ChkTypeAll").is(":checked")) {
+                    if (Qry !== "") Qry += " and ";
+                    Qry += "Vnoc='" + $('#CmbType').val() + "'";
+                }
+
+                // console.log(Qry);
+                if (!$("#ChkVnonALL").is(":checked")) {
+                    if (Qry !== "") Qry += " and ";
+                    Qry += "Vnon=" + parseFloat($('#TxtVnon').val()) + "";
+                }
+                // console.log(Qry);
+
+                if (!$("#ChkGodownAll").is(":checked")) {
+                    if (Qry !== "") Qry += " and ";
+                    Qry += "GodownCode='" + $('#Location').val() + "'";
+                }
+
+                // console.log(Qry);
+
+                ChkGodownAll = $("#ChkGodownAll").is(":checked");
+                var ChkCompanyHeading = $("#ChkCompanyHeading").is(":checked");
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+
+                $.ajax({
+                    url: '/AClGenrate',
+                    type: 'POST',
+                    data: {
+                        ActCode: $('#TxtActCode').val(),
+                        ActName: $('#TxtActName').val(),
+                        TxtDateTo: $('#TxtDateTo').val(),
+                        TxtDateFrom: $('#TxtDateFrom').val(),
+                        Qry,
+                        ChkGodownAll,
+                        ChkCompanyHeading,
+                    },
+                    success: function(response) {
+                        console.log(response);
+                        $('#gTxtDateFrom').val(response.DateFrom);
+                        $('#gTxtActCode').val(response.TxtActCode);
+                        $('#gTxtActName').val(response.TxtActName);
+                        $('#gTxtDateTo').val(response.DateTo);
+                        $('#gCHeading').val(response.CHeading);
+                        setTimeout(function() {
+                            $('#gsubmit').click();
+                        }, 1000);
+                    },
+                    error: function(xhr, status, error) {
+                        console.log(error);
+
+                    }
+                });
+
+
+
+
+            });
+
+
+
+
+            $('#Newinv').click(function(e) {
+                let table = document.getElementById('Receiptvocvertablebody');
+                table.innerHTML = "";
+                $('#TxtVoucherDate').val('');
+                $('#TxtActCashName').val('');
+                $('#TxtActCashCode').val('');
+                $('#TxtVesselName').val('');
+                $('#TxtRefNo').val('');
+                $('#TxtClientOrder').val('');
+                $('#TxtActCode').val('');
+                $('#TxtActName').val('');
+                $('#TxtInvoiceAmt').val('');
+                $('#TxtCrNote').val('');
+                $('#TxtBank').val('');
+                $('#TxtInvAmount').val('');
+                $('#TxtAmount').val('');
+                $('#TxtDesc').val('');
+                $('#TxtCurrency').val('');
+                $('#TxtRefno').val('');
+                $('#TxtChqNo').val('');
+                $('#TxtBankDescription').val('');
+                $('#TxtChqDate').val('');
+                $('#TxtTotAmount').val('');
+                $('#TxtStatus').val('');
+                $('#TxtInvoiceAmount').text('');
+                $('#TxtCreditNoteAmt').text('');
+                $('#MRecAmount').text('');
+            });
+
+
+            $('.containers ul').each(function() {
+                $this = $(this);
+                $this.find("li").has("ul").addClass("hasSubmenu");
+            });
+            // Find the last li in each level
+            $('.containers li:last-child').each(function() {
+                $this = $(this);
+                // Check if LI has children
+                if ($this.children('ul').length === 0) {
+                    // Add border-left in every UL where the last LI has not children
+                    $this.closest('ul').css("border-left", "1px solid gray");
+                } else {
+                    // Add border in child LI, except in the last one
+                    $this.closest('ul').children("li").not(":last").css("border-left", "1px solid gray");
+                    // Add the class "addBorderBefore" to create the pseudo-element :defore in the last li
+                    $this.closest('ul').children("li").last().children("a").addClass("addBorderBefore");
+                    // Add margin in the first level of the list
+                    $this.closest('ul').css("margin-top", "1px");
+                    // Add margin in other levels of the list
+                    $this.closest('ul').find("li").children("ul").css("margin-top", "20px");
+                };
+                if ($this.parents('ul').length > 1) {
+                    $this.closest('ul').hide();
+                    $this.prev('li').children('a').children('.fa-minus-circle').hide();
+                    $this.prev('li').children('a').children('.fa-plus-circle').show();
+                }
+            });
+            // Add bold in li and levels above
+            $('.containers ul li').each(function() {
+                $this = $(this);
+                $this.mouseenter(function() {
+                    $(this).children("a").css({
+                        "font-weight": "bold",
+                        "color": "#336b9b"
+                    });
+                });
+                $this.mouseleave(function() {
+                    $(this).children("a").css({
+                        "font-weight": "normal",
+                        "color": "#428bca"
+                    });
+                });
+            });
+            // Add button to expand and condense - Using FontAwesome
+            $('.containers ul li.hasSubmenu').each(function() {
+                $this = $(this);
+                $this.prepend(
+                    "<a href='#'><i class='fa fa-plus-circle'></i><i style='display:none;' class='fa fa-minus-circle'></i></a>"
+                );
+                $this.children("a").not(":last").removeClass().addClass("toogle");
+            });
+            // Actions to expand and consense
+            $('.containers ul li.hasSubmenu a.toogle').click(function() {
+                $this = $(this);
+                $this.closest("li").children("ul").toggle("slow");
+                $this.children("i").toggle();
+                return false;
+            });
+        });
+    </script>
+@stop
+
+
+@section('content')
