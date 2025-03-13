@@ -11,9 +11,8 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        // $middleware->append(\App\Http\Middleware\Authenticate::class);
-        // $middleware->append(\App\Http\Middleware\GlobalVariablesMiddleware::class);
-        // \App\Http\Middleware\GlobalVariablesMiddleware::class,
+        // $middleware->append(\Illuminate\Auth\Middleware\Authenticate::class);
+        // $middleware->append(\App\Http\Middleware\SetBranchConfig::class);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

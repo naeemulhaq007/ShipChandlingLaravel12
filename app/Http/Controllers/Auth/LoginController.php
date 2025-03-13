@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Http\Controllers\ConfigController;
 use App\Providers\RouteServiceProvider;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
@@ -58,6 +59,9 @@ class LoginController extends Controller
         if($is_login_valid) {
             $request->session()->regenerate();
             Auth::loginUsingId($is_login_valid->UserID);
+            if(!ConfigController::setConfig()){
+                ConfigController::setConfig();
+            }
             // dd(Auth::check(), Auth::user());
             return redirect()->intended('/');
         }

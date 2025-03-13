@@ -17,7 +17,7 @@
 
         <div class="col-sm-1 mx-auto">
 
-            <img class="img-fluid "  src="<?php echo url('images/Branches/'.config('app.BranchPicture')); ?>" style="height: 40px;">
+            <img class="img-fluid "  src="<?php echo url('images/Branches/'.session('BranchPicture')); ?>" style="height: 40px;">
         </div>
     </div>
 

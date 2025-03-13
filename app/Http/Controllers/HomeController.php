@@ -38,7 +38,7 @@ class HomeController extends Controller
      *
      * @return void
      */
-   
+
 
     /**
      * Show the application dashboard.
@@ -104,7 +104,8 @@ class HomeController extends Controller
         $STOCK = VenderProductList::where('type', 'STOCK')->count();
 
         $UserRights = UserRights::where('UserName',$MUserName)->where('BranchCode',$BranchCode)->first();
-
+        $branchName = config('custom.BranchName');
+        info($branchName);
         return response()->json([
             'Allorder' => $Allorder,
             'OrderCount' => $OrderCount,
@@ -767,7 +768,7 @@ class HomeController extends Controller
 
 
 
-  
+
 
     /**
      * Grocery CRUD Output

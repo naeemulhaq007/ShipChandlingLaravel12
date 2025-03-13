@@ -40,6 +40,7 @@ use App\Http\Controllers\AdditionalLoginController;
 use App\Http\Controllers\CountryStateCityController;
 
 use App\Http\Controllers\ShipServController;
+use App\Http\Controllers\ConfigController;
 use Illuminate\Support\Facades\Auth;
 
 // use App\Http\Livewire\Select2AutoSearch;
@@ -77,6 +78,7 @@ Auth::routes();
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/', [HomeController::class, 'index']);
+    Route::get('/set-branch-config', [ConfigController::class, 'setConfig']);
     Route::match(['get', 'post'], '/Dashboard', [HomeController::class, 'index'])->name('home');
     Route::match(['get', 'post'], '/ChartOfAccount', [ChartOfAccount::class, 'index']);
     Route::match(['get', 'post'], '/cmdchartedadd', [ChartOfAccount::class, 'cmdchartedadd']);
@@ -87,36 +89,36 @@ Route::middleware(['auth'])->group(function () {
     Route::match(['get', 'post'], '/EmployeeRegistration', [ChartOfAccount::class, 'EmployeeRegistration']);
     Route::match(['get', 'post'], '/Employeesave', [ChartOfAccount::class, 'Employeesave'])->name('Employeesave');
     Route::match(['get', 'post'], '/Employeedelete', [ChartOfAccount::class, 'Employeedelete'])->name('Employeedelete');
-    
+
     //Pay Roll
     Route::match(['get', 'post'], '/Pay-Roll', [ChartOfAccount::class, 'PayRoll'])->name('PayRoll');
     Route::match(['get', 'post'], '/searchPayRoll', [ChartOfAccount::class, 'searchPayRoll'])->name('searchPayRoll');
-    
+
     //Bill-Invoice
     Route::match(['get', 'post'], '/BillInvoice', [ChartOfAccount::class, 'BillInvoice'])->name('BillInvoice');
     Route::match(['get', 'post'], '/searchBill', [ChartOfAccount::class, 'searchBill'])->name('searchBill');
     Route::match(['get', 'post'], '/BillMastersave', [ChartOfAccount::class, 'BillMastersave'])->name('BillMastersave');
-    
+
     //IncomeBill-Invoice
     Route::match(['get', 'post'], '/IncomeBillInvoice', [ChartOfAccount::class, 'IncomeBillInvoice'])->name('IncomeBillInvoice');
     Route::match(['get', 'post'], '/IncomesearchBill', [ChartOfAccount::class, 'IncomesearchBill'])->name('IncomesearchBill');
     Route::match(['get', 'post'], '/IncomeBillMastersave', [ChartOfAccount::class, 'IncomeBillMastersave'])->name('IncomeBillMastersave');
-    
+
     //Openingbalance
     Route::match(['get', 'post'], '/Openingbalance', [ChartOfAccount::class, 'Openingbalance'])->name('Openingbalance');
     Route::match(['get', 'post'], '/Openingbalancesearch', [ChartOfAccount::class, 'Openingbalancesearch'])->name('Openingbalancesearch');
     Route::match(['get', 'post'], '/Openingbalancesave', [ChartOfAccount::class, 'Openingbalancesave'])->name('Openingbalancesave');
     Route::match(['get', 'post'], '/OpeningbalancesaveChekc', [ChartOfAccount::class, 'OpeningbalancesaveChekc'])->name('OpeningbalancesaveChekc');
-    
+
     //Account Ledger
     Route::match(['get', 'post'], '/Account-Ledger', [ChartOfAccount::class, 'AccountLedger'])->name('AccountLedger');
     Route::match(['get', 'post'], '/ACFillType', [ChartOfAccount::class, 'ACFillType'])->name('ACFillType');
     Route::match(['get', 'post'], '/AClGenrate', [ChartOfAccount::class, 'AClGenrate'])->name('AClGenrate');
     Route::match(['get', 'post'], '/LedgerGrid', [ChartOfAccount::class, 'LedgerGrid'])->name('LedgerGrid');
-    
-    
-    
-    
+
+
+
+
     //journal voucher
     Route::match(['get', 'post'], '/journal-voucher', [ChartOfAccount::class, 'journalvoucher'])->name('journalvoucher');
     Route::match(['get', 'post'], '/jvsearch', [ChartOfAccount::class, 'jvsearch'])->name('jvsearch');
@@ -124,19 +126,19 @@ Route::middleware(['auth'])->group(function () {
     Route::match(['get', 'post'], '/jvdes', [ChartOfAccount::class, 'jvdes'])->name('jvdes');
     Route::match(['get', 'post'], '/jvact', [ChartOfAccount::class, 'jvact'])->name('jvact');
     Route::match(['get', 'post'], '/CheckRecon', [ChartOfAccount::class, 'CheckRecon'])->name('CheckRecon');
-    
+
     //Reports   //    ///  //
     //TrialBalance
     Route::match(['get', 'post'], '/TrialBalance', [Reports::class, 'TrialBalance'])->name('TrialBalance');
     Route::match(['get', 'post'], '/TrialBalancesearch', [Reports::class, 'TrialBalancesearch'])->name('TrialBalancesearch');
     Route::match(['get', 'post'], '/TrialBalanceprint', [Printer::class, 'TrialBalanceprint'])->name('TrialBalanceprint');
-    
+
     //OrderReport
     Route::match(['get', 'post'], '/Order-Report', [Reports::class, 'OrderReport'])->name('OrderReport');
     Route::match(['get', 'post'], '/Orderreportsearch', [Reports::class, 'OrderReportsearch'])->name('OrderReportsearch');
     Route::match(['get', 'post'], '/orderreportprint', [Reports::class, 'orderreportprint'])->name('orderreportprint');
     Route::match(['get', 'post'], '/orderrptcuscode', [Reports::class, 'OrderReportCuscode'])->name('OrderReportCuscode');
-    
+
     //Po-Received-Report
     Route::match(['get', 'post'], '/Po-Received-Report', [Reports::class, 'PoReceivedReport'])->name('PoReceivedReport');
     // Route::match(['get','post'],'/orderrptcuscode',[Reports::class,'OrderReportCuscode'])->name('OrderReportCuscode');

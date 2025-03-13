@@ -16,7 +16,7 @@
     @endif>
 
     {{-- Small brand logo --}}
-    <img src="{{ url("images/Branches/" . config('app.BranchPicture')) }}"
+    <img src="{{ url("images/Branches/" . session('BranchPicture')) }}"
      alt="{{ config('adminlte.logo_img_alt', 'ZOFATECH') }}"
      class="{{ config('adminlte.logo_img_class', 'brand-image-xs') }} "
      width="200px" height="80px"
