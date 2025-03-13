@@ -17,7 +17,7 @@ class ConfigController extends Controller
             info('Authenticated user:', ['user' => $user]);
 
             $branchCode = $user->BranchCode;
-            $branch = DB::table('BranchSetup')->where('BranchCode', $branchCode)->first();
+            $branch = DB::table('branchsetup')->where('BranchCode', $branchCode)->first();
 
             session([
                 'BranchPicture' => $branch->pic ?? null,

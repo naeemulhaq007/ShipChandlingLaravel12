@@ -7,7 +7,7 @@ use App\Models\Quote;
 class Ship
 {
     static function categorydrop(){
-        $categories = DB::connection('secsqlsrv')->table("CategorySetup")->get();
+        $categories = DB::connection('secsqlsrv')->table("categorysetup")->get();
 
         $html = '<div class="dropdown-menu" aria-labelledby="categoryDropdownButton">';
         foreach($categories as $key => $cat){
@@ -19,7 +19,7 @@ class Ship
 
     }
     static function Branches(){
-        $branches = DB::table('BranchSetup')->get();
+        $branches = DB::table('branchsetup')->get();
         info($branches);
          $html = '<select class="form-control" name="BranchCode"  style="border-right:1px solid #ced4da">';
         // $html .= '<option value="'.$branches->BranchCode.'">'.$branches->BranchName.'</option>';
