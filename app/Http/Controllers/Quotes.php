@@ -23,10 +23,11 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Intervention\Image\ImageManagerStatic as Image;
+use PDO;
 
 class Quotes extends Controller
 {
-   
+
     public function biddate(Request $request)
     {
 
@@ -200,139 +201,7 @@ class Quotes extends Controller
     }
 
 
-    public function Quote()
-    {
-        $crud = $this->_getGroceryCrudEnterprise();
-        $crud->setTable('QuoteMaster');
-        $crud->where(["BranchCode" => config('app.MBranchCode')]);
-        $crud->setSubject('Quote', 'Quote');
-        $crud->setPrimaryKey('ID', 'QuoteMaster');
-        // $crud->unsetJquery();
-        $crud->unsetAdd();
-        $crud->unsetEdit();
-        $crud->setSkin("bootstrap-v4");
-        $crud->unsetBootstrap();
-        // $crud->fieldType('Inactive', 'checkbox_boolean');
-        $crud->columns(['EventNo', 'DepartmentName', 'CustomerRefNo', 'BidDueDate', 'ReturnVia', 'QuoteNo', 'EstLineQuote', 'DueTime', 'WorkUser',]);
 
-        $crud
-            ->displayAs("EventNo", "Event #")
-            ->displayAs("DepartmentName", "Department Name")
-            ->displayAs("CustomerRefNo", "Customer Ref #")
-            ->displayAs("BidDueDate", "Bid Due Date")
-            ->displayAs("Department", "Department")
-            ->displayAs("ReturnVia", "Return Via")
-            ->displayAs("QuoteNo", "Quote No")
-            ->displayAs("EstLineQuote", "Est Line Quote")
-            ->displayAs("DueTime", "Due Time")
-            ->displayAs("WorkUser", "Work User");
-
-
-
-        $output = $crud->render();
-        $data["pagetitle"] = "Event Log";
-
-
-        return $this->_quoteoutput($output, $data);
-    }
-
-    public function Eventq()
-    {
-        $crud = $this->_getGroceryCrudEnterprise();
-        $crud->setTable('InvoiceMaster');
-        $crud->where(["BranchCode" => config('app.MBranchCode')]);
-        $crud->setSubject('Events', 'Events');
-        // $crud->unsetJquery();
-        $crud->unsetAdd();
-        $crud->unsetEdit();
-        $crud->setSkin("bootstrap-v4");
-        $crud->unsetBootstrap();
-        // $crud->fieldType('Inactive', 'checkbox_boolean');
-        // $crud->columns(['InvoiceNo','ActCode','ActName','BidDueDate','ReturnVia','QuoteNo','EstLineQuote','DueTime','WorkUser',]);
-
-        // $crud
-        //     ->displayAs("InvoiceNo","Invoice #")
-        //     ->displayAs("ActCode","Act Code")
-        //     ->displayAs("ActName","Act Name")
-        //     ->displayAs("BidDueDate","Bid Due Date")
-        //     ->displayAs("Department","Department")
-        //     ->displayAs("ReturnVia","Return Via")
-        //     ->displayAs("QuoteNo","Quote No")
-        //     ->displayAs("EstLineQuote","Est Line Quote")
-        //     ->displayAs("DueTime","Due Time")
-        //     ->displayAs("WorkUser","Work User");
-
-
-
-        $output = $crud->render();
-
-
-
-
-        return $this->_eventoutput($output);
-    }
-
-   
-
-    private function _quoteoutput($output, $data = '')
-    {
-        if ($output->isJSONResponse) {
-            return response($output->output, 200)
-                ->header('Content-Type', 'application/json')
-                ->header('charset', 'utf-8');
-        }
-
-        $css_files = $output->css_files;
-        $js_files = $output->js_files;
-        $output = $output->output;
-        $lastid = Quote::orderBy('ID', 'DESC')->first();
-
-
-        return view('partials.Event_log', [
-            'output' => $output,
-            'css_files' => $css_files,
-            'js_files' => $js_files,
-            'data' => $data,
-            'lastid' => $lastid,
-        ]);
-    }
-
-    private function _eventoutput($output)
-    {
-        if ($output->isJSONResponse) {
-            return response($output->output, 200)
-                ->header('Content-Type', 'application/json')
-                ->header('charset', 'utf-8');
-        }
-
-        $css_files = $output->css_files;
-        $js_files = $output->js_files;
-        $output = $output->output;
-        $lastid = DB::table('InvoiceMaster')->orderBy('ID', 'DESC')->first();
-
-
-        return view('partials.Eventq_log', [
-            'output' => $output,
-            // 'output' => $output,
-            'css_files' => $css_files,
-            'js_files' => $js_files,
-            'lastid' => $lastid,
-        ]);
-    }
-    private function _getDatabaseConnection()
-    {
-
-        return [
-            'adapter' => [
-                'driver' => 'Pdo',
-                'dsn' => 'sqlsrv:server = tcp:' . env('DB_HOST') . ',1433; Database = ' . env('DB_DATABASE'),
-                'database' => env('DB_DATABASE'),
-                'username' => env('DB_USERNAME'),
-                'password' => env('DB_PASSWORD'),
-                //'charset' => 'utf8'
-            ]
-        ];
-    }
 
     public function Vplat_quote(Request $request)
     {
@@ -347,20 +216,35 @@ class Quotes extends Controller
         // dd($quoteno);
         // dd($VendorCode);
         // $data = DB::connection('secsqlsrv')->select("SELECT * FROM WEBItemSetup")->where('BranchCode',$BranchCode)->get();
-        $data = RFQVendorGS::where([
-            ['BranchCode', $BranchCode],
-            // ['EventNo', $eventno],
-            ['QuoteNo', $quoteno],
-            ['VendorCode', $VendorCode],
-        ])->get();
-        // dd($data);
-        $dataf = RFQVendorGS::where([
-            ['BranchCode', $BranchCode],
-            // ['EventNo', $eventno],
-            ['QuoteNo', $quoteno],
-            ['VendorCode', $VendorCode],
-        ])->first();
+        // $data = RFQVendorGS::where([
+        //     ['BranchCode', $BranchCode],
+        //     // ['EventNo', $eventno],
+        //     ['QuoteNo', $quoteno],
+        //     ['VendorCode', $VendorCode],
+        // ])->get();
+        // // dd($data);
+        // $dataf = RFQVendorGS::where([
+        //     ['BranchCode', $BranchCode],
+        //     // ['EventNo', $eventno],
+        //     ['QuoteNo', $quoteno],
+        //     ['VendorCode', $VendorCode],
+        // ])->first();
+        $dbh = new PDO("odbc:mssql_odbcG", "global", "Po60ps&1");
+        $sql = "SELECT
+       *
+    FROM rfqvendorgs
+    WHERE VendorCode = :VendorCode
+    AND QuoteNo = :QuoteNo
+    AND BranchCode = :BranchCode";
+    $stmt = $dbh->prepare($sql);
+    $stmt->execute([
+        ':VendorCode'   => $VendorCode,
+        ':QuoteNo'   => $quoteno,
+        ':BranchCode'=> $BranchCode
+    ]);
 
+$data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$dataf = $stmt->fetch(PDO::FETCH_ASSOC);
         return view('Vplat_Quote_New', [
             'data' => $data,
             'dataf' => $dataf,
@@ -487,14 +371,33 @@ class Quotes extends Controller
             //     $date,
             //     $time,
             // ]);
-            $sp = DB::connection('secsqlsrv')->statement("EXEC SPUpdateRFQVendorGS @tablearray = ?, @FreightTotal = ?, @Currency = ?, @date = ?, @time = ?", [
-                $tablearray,
-                $FreightTotal,
-                $Currency,
-                $date,
-                $time
-            ]);
-            info($sp);
+            // $sp = DB::connection('secsqlsrv')->statement("EXEC SPUpdateRFQVendorGS @tablearray = ?, @FreightTotal = ?, @Currency = ?, @date = ?, @time = ?", [
+            //     $tablearray,
+            //     $FreightTotal,
+            //     $Currency,
+            //     $date,
+            //     $time
+            // ]);
+            $dbh = new PDO("odbc:mssql_odbcG", "global", "Po60ps&1");
+
+            $sql = "EXEC SPUpdateRFQVendorGS @tablearray = :tablearray,
+                                 @FreightTotal = :FreightTotal,
+                                 @Currency = :Currency,
+                                 @date = :date,
+                                 @time = :time";
+
+                                 $stmt = $dbh->prepare($sql);
+
+                                 // Bind parameters
+                                 $stmt->bindParam(':tablearray', $tablearray, PDO::PARAM_STR);
+                                 $stmt->bindParam(':FreightTotal', $FreightTotal, PDO::PARAM_STR);
+                                 $stmt->bindParam(':Currency', $Currency, PDO::PARAM_STR);
+                                 $stmt->bindParam(':date', $date, PDO::PARAM_STR);
+                                 $stmt->bindParam(':time', $time, PDO::PARAM_STR);
+
+                                 // Execute the stored procedure
+                                 $stmt->execute();
+            // info($sp);
             // Proceed with further actions if the stored procedure was executed successfully
 
         } catch (\Exception $e) {
@@ -502,7 +405,9 @@ class Quotes extends Controller
             $errorMessage = $e->getMessage();
             // You can log or display the error message as per your requirements
             // For example:
-            echo "Error executing the stored procedure: " . $errorMessage;
+            info($errorMessage);
+
+            // echo "Error executing the stored procedure: " . $errorMessage;
         }
 
         $data = [
@@ -514,7 +419,7 @@ class Quotes extends Controller
             'CustomerName' => $CustomerName,
             'VesselName' => $VesselName,
             'VendorName' => $VendorName,
-            'Link' => 'http://194.163.163.21/Vplat-Quote?&quoteNo=' . $quoteNumber . '&VendorCode=' . $vendorCode . '&BranchCode=' . $branchCode,
+            'Link' => 'http://shipchandling.christmasquarter.com/Vplat-Quote?&quoteNo=' . $quoteNumber . '&VendorCode=' . $vendorCode . '&BranchCode=' . $branchCode,
         ];
         if ($WorkUserEmail == '' || !$WorkUserEmail && $WorkUser !== null) {
             $WorkUserEmail = 'naeemulhaq06@gmail.com';
@@ -523,7 +428,7 @@ class Quotes extends Controller
         $toEmails = [
             $WorkUserEmail => $WorkUser,
         ];
-        $fromEmail = 'wci20231@outlook.com';
+        $fromEmail = 'shipchandling@christmasquarter.com';
         Mail::send('emails.test', $data, function ($message) use ($toEmails, $fromEmail) {
             $message->to($toEmails)->subject('Vplat Quote Email');
             $message->from($fromEmail, 'Vplatform');

@@ -42,8 +42,8 @@ use PDOException;
 class Quotation extends Controller
 {
 
-    
-    
+
+
     public function SPIMPAItem(Request $request)
     {
         $param1 = $request->keywords;
@@ -430,193 +430,98 @@ class Quotation extends Controller
                         $query->execute(['SNO' => $row['SNo'], 'VendorCode' => $MVendorCode, 'QuoteNo' => $QuoteNo, 'EventNo' => $EventNo]);
                         $count = $query->fetchColumn();
 
+                        $dbh = new PDO("odbc:mssql_odbcG", "global", "Po60ps&1");
+                        $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
                         if ($count > 0) {
-                            // SNO exists, perform UPDATE
-                            $stmt = $dbh->prepare("
-                                UPDATE rfqvendorgs
-                                SET
-                                    EntryType = :EntryType,
-                                    VendorName = :VendorName,
-                                    BranchCode = :BranchCode,
-                                    CustomerRefNo = :CustomerRefNo,
-                                    DepartmentCode = :DepartmentCode,
-                                    DepartmentName = :DepartmentName,
-                                    PortCode = :PortCode,
-                                    PortName = :PortName,
-                                    RequiredDate = :RequiredDate,
-                                    RequiredTime = :RequiredTime,
-                                    ETADate = :ETADate,
-                                    SendDate = :SendDate,
-                                    SendTime = :SendTime,
-                                    ProductCode = :ProductCode,
-                                    ProductName = :ProductName,
-                                    Qty = :Qty,
-                                    UOM = :UOM,
-                                    UnitPrice = :UnitPrice,
-                                    IMPACode = :IMPACode,
-                                    Currency = :Currency,
-                                    CompanyName = :CompanyName,
-                                    CompanyAddress = :CompanyAddress,
-                                    CompanyEmailAddress = :CompanyEmailAddress,
-                                    CompanyWebSite = :CompanyWebSite,
-                                    CompanyPhoneNo = :CompanyPhoneNo,
-                                    CompanyFaxNo = :CompanyFaxNo,
-                                    Address = :Address,
-                                    PhoneNo = :PhoneNo,
-                                    VendorEmail = :VendorEmail,
-                                    WorkUSer = :WorkUSer
-                                WHERE
-                                    SNO = :SNO
-                                    AND VendorCode = :VendorCode
-                                    AND QuoteNo = :QuoteNo
-                                    AND EventNo = :EventNo
-                            ");
+                            $sql = "UPDATE rfqvendorgs SET
+                                EntryType = 'QUOTE',
+                                VendorName = '".$MVendorName."',
+                                BranchCode = '".$MBranchCode."',
+                                CustomerRefNo = '".$request->input('TxtCustRefNo')."',
+                                DepartmentCode = '".$request->input('TxtDepartmentCode')."',
+                                DepartmentName = '".$request->input('CmbDepartment')."',
+                                PortCode = '".$request->input('TxtGodownCode')."',
+                                PortName = '".$request->input('CmdGodownName')."',
+                                RequiredDate = '".$request->input('TxtReqDate')."',
+                                RequiredTime = '".$request->input('TxtReqTime')."',
+                                ETADate = '".$request->input('TxtETADAte')."',
+                                SendDate = '".date('Y-m-d')."',
+                                SendTime = '".date('H:i:s')."',
+                                ProductCode = '".$row['ItemCode']."',
+                                ProductName = '".$row['ItemName']."',
+                                Qty = '".$row['Qty']."',
+                                UOM = '".$row['PUOM']."',
+                                UnitPrice = '".$row['SuggestPrice']."',
+                                IMPACode = '".$row['IMPAItemCode']."',
+                                Currency = '".$MCurrency."',
+                                WorkUSer = '".$MWorkUser."',
+                                CompanyName = '".$CompanySetup->CompanyName."',
+                                CompanyAddress = '".$CompanySetup->CompanyAddress."',
+                                CompanyEmailAddress = '".$CompanySetup->EmailAddress."',
+                                CompanyWebSite = '".$CompanySetup->WebsiteAddress."',
+                                CompanyPhoneNo = '".$CompanySetup->PhoneNo."',
+                                CompanyFaxNo = '".$CompanySetup->FaxNo."',
+                                Address = '".$vendorDetails->Address."',
+                                PhoneNo = '".$vendorDetails->PhoneNo."',
+                                VendorEmail = '".$vendorDetails->EmailAddress."'
+                            WHERE SNO = '".$row['SNo']."'
+                                AND VendorCode = '".$MVendorCode."'
+                                AND QuoteNo = '".$QuoteNo."'
+                                AND EventNo = '".$EventNo."'";
+
+                            $dbh->query($sql);
+
+
                         } else {
-                            // SNO does not exist, perform INSERT
-                            $stmt = $dbh->prepare("
-                                INSERT INTO rfqvendorgs (
-                                    EntryType,
-                                    VendorName,
-                                    BranchCode,
-                                    CustomerRefNo,
-                                    DepartmentCode,
-                                    DepartmentName,
-                                    PortCode,
-                                    PortName,
-                                    RequiredDate,
-                                    RequiredTime,
-                                    ETADate,
-                                    SendDate,
-                                    SendTime,
-                                    ProductCode,
-                                    ProductName,
-                                    Qty,
-                                    UOM,
-                                    UnitPrice,
-                                    IMPACode,
-                                    Currency,
-                                    WorkUSer,
-                                    SNO,
-                                    VendorCode,
-                                    QuoteNo,
-                                    CompanyName,
-                                    CompanyAddress,
-                                    CompanyEmailAddress,
-                                    CompanyWebSite,
-                                    CompanyPhoneNo,
-                                    CompanyFaxNo,
-                                    Address,
-                                    PhoneNo,
-                                    VendorEmail,
-                                    EventNo
-                                ) VALUES (
-                                    :EntryType,
-                                    :VendorName,
-                                    :BranchCode,
-                                    :CustomerRefNo,
-                                    :DepartmentCode,
-                                    :DepartmentName,
-                                    :PortCode,
-                                    :PortName,
-                                    :RequiredDate,
-                                    :RequiredTime,
-                                    :ETADate,
-                                    :SendDate,
-                                    :SendTime,
-                                    :ProductCode,
-                                    :ProductName,
-                                    :Qty,
-                                    :UOM,
-                                    :UnitPrice,
-                                    :IMPACode,
-                                    :Currency,
-                                    :WorkUSer,
-                                    :SNO,
-                                    :VendorCode,
-                                    :QuoteNo,
-                                    :CompanyName,
-                                    :CompanyAddress,
-                                    :CompanyEmailAddress,
-                                    :CompanyWebSite,
-                                    :CompanyPhoneNo,
-                                    :CompanyFaxNo,
-                                    :Address,
-                                    :PhoneNo,
-                                    :VendorEmail,
-                                    :EventNo
-                                )
-                            ");
+                            $sql = "INSERT INTO rfqvendorgs (
+                                EntryType, SNO, EventNo, QuoteNo, VendorCode, VendorName, BranchCode, CustomerRefNo, DepartmentCode,
+                                DepartmentName, PortCode, PortName, RequiredDate, RequiredTime,
+                                ETADate, SendDate, SendTime, ProductCode, ProductName, Qty,
+                                UOM, UnitPrice, IMPACode, Currency, WorkUSer, CompanyName,
+                                CompanyAddress, CompanyEmailAddress, CompanyWebSite,
+                                CompanyPhoneNo, CompanyFaxNo, Address, PhoneNo, VendorEmail
+                            ) VALUES (
+                                'QUOTE',
+                                '".$row['SNo']."',
+                                '".$EventNo."',
+                                '".$QuoteNo."',
+                                '".$MVendorCode."',
+                                '".$MVendorName."',
+                                '".$MBranchCode."',
+                                '".$request->input('TxtCustRefNo')."',
+                                '".$request->input('TxtDepartmentCode')."',
+                                '".$request->input('CmbDepartment')."',
+                                '".$request->input('TxtGodownCode')."',
+                                '".$request->input('CmdGodownName')."',
+                                '".$request->input('TxtReqDate')."',
+                                '".$request->input('TxtReqTime')."',
+                                '".$request->input('TxtETADAte')."',
+                                '".date('Y-m-d')."',
+                                '".date('H:i:s')."',
+                                '".$row['ItemCode']."',
+                                '".$row['ItemName']."',
+                                '".$row['Qty']."',
+                                '".$row['PUOM']."',
+                                '".$row['SuggestPrice']."',
+                                '".$row['IMPAItemCode']."',
+                                '".$MCurrency."',
+                                '".$MWorkUser."',
+                                '".$CompanySetup->CompanyName."',
+                                '".$CompanySetup->CompanyAddress."',
+                                '".$CompanySetup->EmailAddress."',
+                                '".$CompanySetup->WebsiteAddress."',
+                                '".$CompanySetup->PhoneNo."',
+                                '".$CompanySetup->FaxNo."',
+                                '".$vendorDetails->Address."',
+                                '".$vendorDetails->PhoneNo."',
+                                '".$vendorDetails->EmailAddress."'
+                            )";
+
+                    $dbh->query($sql);
+
                         }
 
-                        // Execute the prepared statement with the values
-                        $stmt->execute([
-                            'EntryType' => 'QUOTE',
-                            'VendorName' => $MVendorName,
-                            'BranchCode' => $MBranchCode,
-                            'CustomerRefNo' => $request->input('TxtCustRefNo'),
-                            'DepartmentCode' => $request->input('TxtDepartmentCode'),
-                            'DepartmentName' => $request->input('CmbDepartment'),
-                            'PortCode' => $request->input('TxtGodownCode'),
-                            'PortName' => $request->input('CmdGodownName'),
-                            'RequiredDate' => $request->input('TxtReqDate'),
-                            'RequiredTime' => $request->input('TxtReqTime'),
-                            'ETADate' => $request->input('TxtETADAte'),
-                            'SendDate' => date('Y-m-d'),
-                            'SendTime' => date('H:i:s'),
-                            'ProductCode' => $row['ItemCode'],
-                            'ProductName' => $row['ItemName'],
-                            'Qty' => $row['Qty'],
-                            'UOM' => $row['PUOM'],
-                            'UnitPrice' => $row['SuggestPrice'],
-                            'IMPACode' => $row['IMPAItemCode'],
-                            'Currency' => $MCurrency,
-                            'WorkUSer' => $MWorkUser,
-                            'SNO' => $row['SNo'],
-                            'VendorCode' => $MVendorCode,
-                            'QuoteNo' => $QuoteNo,
-                            'CompanyName' => $CompanySetup->CompanyName,
-                            'CompanyAddress' => $CompanySetup->CompanyAddress,
-                            'CompanyEmailAddress' => $CompanySetup->EmailAddress,
-                            'CompanyWebSite' => $CompanySetup->WebsiteAddress,
-                            'CompanyPhoneNo' => $CompanySetup->PhoneNo,
-                            'CompanyFaxNo' => $CompanySetup->FaxNo,
-                            'Address' => $vendorDetails->Address,
-                            'PhoneNo' => $vendorDetails->PhoneNo,
-                            'VendorEmail' => $vendorDetails->EmailAddress,
-                            'EventNo' => $EventNo
-                        ]);
-
-
-                        // Insert into RFQVendorGS
-                        // RFQVendorGS::updateOrCreate([
-                        //     'SNO' => $row['SNo'],
-                        //     'VendorCode' => $MVendorCode,
-                        //     'QuoteNo' => $QuoteNo,
-                        //     'EventNo' => $EventNo,
-                        //     'BranchCode' => $MBranchCode,
-                        // ], [
-                        //     'EntryType' => 'QUOTE',
-                        //     'VendorName' => $MVendorName,
-                        //     'BranchCode' => $MBranchCode,
-                        //     'CustomerRefNo' => $request->input('TxtCustRefNo'),
-                        //     'DepartmentCode' => $request->input('TxtDepartmentCode'),
-                        //     'DepartmentName' => $request->input('CmbDepartment'),
-                        //     'PortCode' => $request->input('TxtGodownCode'),
-                        //     'PortName' => $request->input('CmdGodownName'),
-                        //     'RequiredDate' => $request->input('TxtReqDate'),
-                        //     'RequiredTime' => $request->input('TxtReqTime'),
-                        //     'ETADate' => $request->input('TxtETADAte'),
-                        //     'SendDate' => now()->toDateString(),
-                        //     'SendTime' => now()->toTimeString(),
-                        //     'ProductCode' => $row['ItemCode'],
-                        //     'ProductName' => $row['ItemName'],
-                        //     'Qty' => $row['Qty'],
-                        //     'UOM' => $row['PUOM'],
-                        //     'UnitPrice' => $row['SuggestPrice'],
-                        //     'IMPACode' => $row['IMPAItemCode'],
-                        //     'Currency' => $MCurrency,
-                        //     'WorkUSer' => $MWorkUser,
-                        // ]);
                     }
                 }
             }
@@ -776,44 +681,90 @@ class Quotation extends Controller
         $EventNo = $quotesmaster->EventNo;
 
         // Fetch RFQ Results
-        $results = RFQVendorGS::select(
-            'EventNo',
-            'DepartmentCode',
-            'DepartmentName',
-            'CustomerRefNo',
-            'PortCode',
-            'PortName',
-            'RequiredDate',
-            'RequiredTime',
-            'ETADate',
-            'SendDate',
-            'SendTime',
-            'WorkUser',
-            'SNo',
-            'ProductName',
-            'Qty',
-            'UOM',
-            'UnitPrice',
-            'VendorName',
-            'SendCustomerNote',
-            'SendVendorNote',
-            'VendorRcvdPrice',
-            DB::raw('(Qty * VendorRcvdPrice) as MTotCost'),
-            'ReceivedDate',
-            'ReceivedTime',
-            'VendorCode',
-            'VendorRecRemarks',
-            'ProductCode'
-        )
-            ->where([
-                ['EventNo', '=', $EventNo],
-                ['QuoteNo', '=', $QuoteNo],
-                ['BranchCode', '=', $BranchCode],
-            ])
-            ->orderBy('VendorCode')
-            ->orderBy('SNo')
-            ->orderBy('ID')
-            ->get();
+        // $results = RFQVendorGS::select(
+        //     'EventNo',
+        //     'DepartmentCode',
+        //     'DepartmentName',
+        //     'CustomerRefNo',
+        //     'PortCode',
+        //     'PortName',
+        //     'RequiredDate',
+        //     'RequiredTime',
+        //     'ETADate',
+        //     'SendDate',
+        //     'SendTime',
+        //     'WorkUser',
+        //     'SNo',
+        //     'ProductName',
+        //     'Qty',
+        //     'UOM',
+        //     'UnitPrice',
+        //     'VendorName',
+        //     'SendCustomerNote',
+        //     'SendVendorNote',
+        //     'VendorRcvdPrice',
+        //     DB::raw('(Qty * VendorRcvdPrice) as MTotCost'),
+        //     'ReceivedDate',
+        //     'ReceivedTime',
+        //     'VendorCode',
+        //     'VendorRecRemarks',
+        //     'ProductCode'
+        // )
+        //     ->where([
+        //         ['EventNo', '=', $EventNo],
+        //         ['QuoteNo', '=', $QuoteNo],
+        //         ['BranchCode', '=', $BranchCode],
+        //     ])
+        //     ->orderBy('VendorCode')
+        //     ->orderBy('SNo')
+        //     ->orderBy('ID')
+        //     ->get();
+        $dbh = new PDO("odbc:mssql_odbcG", "global", "Po60ps&1");
+
+        $sql = "SELECT
+            EventNo,
+            DepartmentCode,
+            DepartmentName,
+            CustomerRefNo,
+            PortCode,
+            PortName,
+            RequiredDate,
+            RequiredTime,
+            ETADate,
+            SendDate,
+            SendTime,
+            WorkUser,
+            SNo,
+            ProductName,
+            Qty,
+            UOM,
+            UnitPrice,
+            VendorName,
+            SendCustomerNote,
+            SendVendorNote,
+            VendorRcvdPrice,
+            (Qty * VendorRcvdPrice) AS MTotCost,
+            ReceivedDate,
+            ReceivedTime,
+            VendorCode,
+            VendorRecRemarks,
+            ProductCode
+        FROM rfqvendorgs
+        WHERE EventNo = :EventNo
+        AND QuoteNo = :QuoteNo
+        AND BranchCode = :BranchCode
+        ORDER BY VendorCode, SNo, ID";
+
+// Prepare and execute the query
+$stmt = $dbh->prepare($sql);
+$stmt->execute([
+    ':EventNo'   => $EventNo,
+    ':QuoteNo'   => $QuoteNo,
+    ':BranchCode'=> $BranchCode
+]);
+
+// Fetch all results as an associative array
+$results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         // Return JSON Response
         return response()->json([

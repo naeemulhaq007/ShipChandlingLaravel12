@@ -46,27 +46,27 @@ $VendorCode = request()->get('VendorCode');
             <div class="card-header px-4 pt-2">
                 <div class="row">
                     <div class="col-xl-4">
-                        <p><strong style="color: #a8729a;font-size: 14px;">{{ $dataf ? $dataf->CompanyName : 'GSS'}}</strong><br>
-                            <strong style="color: #a8729a;font-size: 12px;">{{ $dataf ? $dataf->CompanyAddress : 'Address'}}</strong><br>
-                            <strong style="color: #a8729a;font-size: 10px;">{{ $dataf ? $dataf->CompanyEmailAddress : 'usa@GSS.us'}} </strong>
-                            <br><span style="color: #a8729a;font-size: 10px;">{{ $dataf ? $dataf->CompanyWebSite : 'www.GSS.us'}}</span></p>
+                        <p><strong style="color: #a8729a;font-size: 14px;">{{ $dataf ? $dataf['CompanyName'] : 'GSS'}}</strong><br>
+                            <strong style="color: #a8729a;font-size: 12px;">{{ $dataf ? $dataf['CompanyAddress'] : 'Address'}}</strong><br>
+                            <strong style="color: #a8729a;font-size: 10px;">{{ $dataf ? $dataf['CompanyEmailAddress'] : 'usa@GSS.us'}} </strong>
+                            <br><span style="color: #a8729a;font-size: 10px;">{{ $dataf ? $dataf['CompanyWebSite'] : 'www.GSS.us'}}</span></p>
 
                         </div>
                         <div class="col-xl-3 mt-auto">
                         <ul class="list-unstyled ">
                           <li class="text-muted">Please advise/confirmed price and availability, </li>
-                          <li class="text-muted">Thanks for your Quote, <span style="color: #a8729a;">{{ $dataf ? $dataf->VendorName : 'Vendor Name'}}</span>!</li>
-                          <li class="text-muted"><i class="fas fa-envelope"></i><span style="color: #a8729a;">{{ $dataf ? $dataf->Address : 'Vendor Address'}}</span></li>
-                          <li class="text-muted"><i class="fas fa-phone"></i> <span style="color: #a8729a;">{{ $dataf ? $dataf->PhoneNo : 'Vendor PhoneNo'}}</span></li>
+                          <li class="text-muted">Thanks for your Quote, <span style="color: #a8729a;">{{ $dataf ? $dataf['VendorName'] : 'Vendor Name'}}</span>!</li>
+                          <li class="text-muted"><i class="fas fa-envelope"></i><span style="color: #a8729a;">{{ $dataf ? $dataf['Address'] : 'Vendor Address'}}</span></li>
+                          <li class="text-muted"><i class="fas fa-phone"></i> <span style="color: #a8729a;">{{ $dataf ? $dataf['PhoneNo'] : 'Vendor PhoneNo'}}</span></li>
                         </ul>
                       </div>
                       <div class="col-xl-4 mt-auto">
                           <ul class="list-unstyled ">
 
-                              <li class="text-muted"><span class="fw-bold">Cust. Ref # :&nbsp;</span> <span style="color: #a8729a;">{{$dataf ? $dataf->CustomerRefNo : 'NoRefrence'}}</span></li>
-                              <li class="text-muted">Department : <span style="color: #a8729a;" id="">{{$dataf ? $dataf->DepartmentName : 'DepartmentName'}}</span></li>
-                              <li class="text-muted">Dated : <span style="color: #a8729a;" id="">{{$dataf ? date('M-d-Y', strtotime($dataf->SendDate)) : 'SendDate'}},{{$dataf ? date('h:i:a', strtotime($dataf->SendTime)) : 'SendTime'}}</span></li>
-                            <li class="text-muted">Required Date : <span style="color: #a8729a;" id="">{{$dataf ? date('M-d-Y', strtotime($dataf->SendDate)) : 'SendDate'}},{{$dataf ? date('h:i:a', strtotime($dataf->RequiredTime)) : 'SendTime'}}</span></li>
+                              <li class="text-muted"><span class="fw-bold">Cust. Ref # :&nbsp;</span> <span style="color: #a8729a;">{{$dataf ? $dataf['CustomerRefNo'] : 'NoRefrence'}}</span></li>
+                              <li class="text-muted">Department : <span style="color: #a8729a;" id="">{{$dataf ? $dataf['DepartmentName'] : 'DepartmentName'}}</span></li>
+                              <li class="text-muted">Dated : <span style="color: #a8729a;" id="">{{$dataf ? date('M-d-Y', strtotime($dataf['SendDate'])) : 'SendDate'}},{{$dataf ? date('h:i:a', strtotime($dataf['SendTime'])) : 'SendTime'}}</span></li>
+                            <li class="text-muted">Required Date : <span style="color: #a8729a;" id="">{{$dataf ? date('M-d-Y', strtotime($dataf['SendDate'])) : 'SendDate'}},{{$dataf ? date('h:i:a', strtotime($dataf['RequiredTime'])) : 'SendTime'}}</span></li>
                         </ul>
                     </div>
                     <div class="col-xl-1 p-2 ">
@@ -130,27 +130,27 @@ $VendorCode = request()->get('VendorCode');
                                 @foreach ($data as $item)
                                 <tr >
                                   <td class="text-center card-body">{{ $loop->iteration }}</td>
-                                  <td class="text-center">{{number_format($item->Qty, 2, '.', '')}}</td>
-                                  <td class="text-center">{{$item->UOM}}</td>
-                                  <td>{{$item->ProductCode}}</td>
-                                  <td>{{$item->ProductName}}</td>
-                                  <td style="width:100px"><input type="number" name="" class="cellblur text-right form-control form-controlc" value="{{$item->VendorQty ? number_format($item->VendorQty, 2, '.', '') : number_format($item->Qty, 2, '.', '')}}" id=""></td>
-                                  <td style="width:100px; "><input type="number" name="" style="" class="cellblur text-right form-control form-controlc" value="{{$item->VendorRcvdPrice ? round($item->VendorRcvdPrice,2) :0}}" id=""></td>
+                                  <td class="text-center">{{number_format($item['Qty'], 2, '.', '')}}</td>
+                                  <td class="text-center">{{$item['UOM']}}</td>
+                                  <td>{{$item['ProductCode']}}</td>
+                                  <td>{{$item['ProductName']}}</td>
+                                  <td style="width:100px"><input type="number" name="" class="cellblur text-right form-control form-controlc" value="{{$item['VendorQty'] ? number_format($item['VendorQty'], 2, '.', '') : number_format($item['Qty'], 2, '.', '')}}" id=""></td>
+                                  <td style="width:100px; "><input type="number" name="" style="" class="cellblur text-right form-control form-controlc" value="{{$item['VendorRcvdPrice'] ? round($item['VendorRcvdPrice'],2) :0}}" id=""></td>
                                   <td class="text-right"></td>
-                                  <td><input type="text" name="" class="celldo text-center form-control form-controlc" value="{{$item->VendorUOM ? $item->VendorUOM : $item->UOM}}" id=""></td>
-                                  <td><input type="text" name="" class="celldo form-control form-controlc" value="{{$item->VendorPartNo}}" id=""></td>
-                                  <td><input type="text" name="" class="celldo form-control form-controlc" value="{{$item->VendorRecRemarks}}" id=""></td>
-                                  <td hidden>{{$item->ID}}</td>
+                                  <td><input type="text" name="" class="celldo text-center form-control form-controlc" value="{{$item['VendorUOM'] ? $item['VendorUOM'] : $item['UOM']}}" id=""></td>
+                                  <td><input type="text" name="" class="celldo form-control form-controlc" value="{{$item['VendorPartNo']}}" id=""></td>
+                                  <td><input type="text" name="" class="celldo form-control form-controlc" value="{{$item['VendorRecRemarks']}}" id=""></td>
+                                  <td hidden>{{$item['ID']}}</td>
                                   <td>
-                                    {!! $item->PicPath ? '<a href="' . url('images/Quote/' .$item->PicPath.'') . '" target="_blank"><img style="max-width:60px; height:30px" class="image-preview" src="' . url('images/Quote/' .$item->PicPath.'') . '" alt=""></a>' : '<a href="' . url('images/Quote/Noimage.png') . '" target="_blank"><img class="image-preview" class="image-preview" src="' . url('images/Quote/Noimage.png') . '" style="max-width:60px; height:30px"></a>' !!}
+                                    {!! $item['PicPath'] ? '<a href="' . url('images/Quote/' .$item['PicPath'].'') . '" target="_blank"><img style="max-width:60px; height:30px" class="image-preview" src="' . url('images/Quote/' .$item['PicPath'].'') . '" alt=""></a>' : '<a href="' . url('images/Quote/Noimage.png') . '" target="_blank"><img class="image-preview" class="image-preview" src="' . url('images/Quote/Noimage.png') . '" style="max-width:60px; height:30px"></a>' !!}
                                   </td>
                                   <td >
-                                    <input type="file" id="image-{{$item->ID}}" data-quoteno="{{$item->QuoteNo}}" class="image-upload btn btncolor" accept="image/*">
-                                    <input type="hidden" id="image-name-{{$item->ID}}" class="image-name" value="{{$item->PicPath}}">
+                                    <input type="file" id="image-{{$item['ID']}}" data-quoteno="{{$item['QuoteNo']}}" class="image-upload btn btncolor" accept="image/*">
+                                    <input type="hidden" id="image-name-{{$item['ID']}}" class="image-name" value="{{$item['PicPath']}}">
                                   </td>
                                   <td>
-                                        <input type="file"   id="fileID-{{$VendorCode}}" data-quoteno="{{$item->ProductCode}}" data-qid="{{$item->ID}}"  class="DataFile-upload btn btncolor" >
-                                        <span id="file-name-preview-{{$item->ID}}">{{$item->DataFile ? $item->DataFile : ''}}</span>
+                                        <input type="file"   id="fileID-{{$VendorCode}}" data-quoteno="{{$item['ProductCode']}}" data-qid="{{$item['ID']}}"  class="DataFile-upload btn btncolor" >
+                                        <span id="file-name-preview-{{$item['ID']}}">{{$item['Datafile'] ? $item['Datafile'] : ''}}</span>
                                   </td>
                                 </tr>
                                 @endforeach
@@ -166,7 +166,7 @@ $VendorCode = request()->get('VendorCode');
               </div>
 
               <div class="d-flex justify-content-between pt-2">
-                <p class="text-muted mr-auto mb-0">Event : <span style="color: #a8729a;">{{$dataf ? $dataf->EventNo : ''}}</span></p>
+                <p class="text-muted mr-auto mb-0">Event : <span style="color: #a8729a;">{{$dataf ? $dataf['EventNo'] : ''}}</span></p>
               </div>
 
               <div class="d-flex ">
@@ -179,11 +179,11 @@ $VendorCode = request()->get('VendorCode');
               </div>
 
               <div class="d-flex  mb-5">
-                <p class="text-muted mr-auto mb-0">Required Date : <span style="color: #a8729a;">{{$dataf ? date('M-d-Y', strtotime($dataf->SendDate)) : 'SendDate'}}</span></p>
+                <p class="text-muted mr-auto mb-0">Required Date : <span style="color: #a8729a;">{{$dataf ? date('M-d-Y', strtotime($dataf['SendDate'])) : 'SendDate'}}</span></p>
                 <p class="text-muted mb-0"><span class="fw-bold me-4">Other Charges</span></p>
 
                 {{-- <p class="text-muted mb-0"><span class="fw-bold me-4">Delivery Charges</span> Free</p> --}}
-                <input type="text" name="" value="{{$dataf ? $dataf->FreightTotal : 0}}" id="FreightTotal" class="form-control form-controlc FreightTotal col-sm-1 text-right">
+                <input type="text" name="" value="{{$dataf ? $dataf['FreightTotal'] : 0}}" id="FreightTotal" class="form-control form-controlc FreightTotal col-sm-1 text-right">
 
               </div>
             </div>
@@ -591,7 +591,7 @@ $('#FreightTotal').keyup(function () {
     });
 
     $(document).ready(function() {
-        let currency ='{{$dataf ? $dataf->Currency : "USD"}}';
+        let currency ='{{$dataf ? $dataf['Currency'] : "USD"}}';
         // console.log(currency);
         $('#Currency').val(currency);
         // totalcalc();
@@ -811,11 +811,11 @@ function savedata() {
   const VendorCode = '{{$VendorCode}}';
   const FreightTotal = $('#FreightTotal').val();
   const Currency = $('#Currency').val();
-//   const WorkUserEmail = '{{$dataf ? $dataf->WorkUserEmail : ''}}';
-  const WorkUser = '{{$dataf ? $dataf->WorkUser : ''}}';
-//   const CustomerName = '{{$dataf ? $dataf->WorkUser : ''}}';
-//   const VesselName = '{{$dataf ? $dataf->WorkUser : ''}}';
-  const VendorName = '{{$dataf ? $dataf->VendorName : ''}}';
+//   const WorkUserEmail = '{{$dataf ? $dataf['WorkUserEmail'] : ''}}';
+  const WorkUser = '{{$dataf ? $dataf['WorkUser'] : ''}}';
+//   const CustomerName = '{{$dataf ? $dataf['WorkUser'] : ''}}';
+//   const VesselName = '{{$dataf ? $dataf['WorkUser'] : ''}}';
+  const VendorName = '{{$dataf ? $dataf['VendorName'] : ''}}';
   const WorkUserEmail = '';
 
   const table = document.getElementById('podata');
