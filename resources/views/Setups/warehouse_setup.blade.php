@@ -79,7 +79,7 @@
                                     <span class="Txtspan">
                                         Stock A/C </span>
                                 </div>
-                                    <span class="input-group-text col-3 bg-info my-2" style="cursor: pointer;" id="CmdStock"><i
+                                    <span class="input-group-text col-3 col-sm-1 bg-info my-2" style="cursor: pointer;" id="CmdStock"><i
                                             class="fas fa-search"></i></span>
 
 

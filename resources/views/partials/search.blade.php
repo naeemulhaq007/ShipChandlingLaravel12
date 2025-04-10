@@ -68,11 +68,11 @@
       .attr("src", $(this).data("logo"));
   });
 
-  $('#searchrmod').on('shown.bs.modal', function () {
-  $('#cussearch').focus();
-})
+//   $('#searchrmod').on('shown.bs.modal', function () {
+//   $('#cussearch').focus();
+// })
 
-  $("#searchrmod").on("show.bs.modal", function(event) {
+  $("#searchrmod").on("shown.bs.modal", function(event) {
     var button = $(event.relatedTarget);
     var modal = $(this);
     // modal.find(".modal-logo").attr("src", button.data("logo"));
@@ -81,8 +81,8 @@
     modal.find(".modal-th3").text(button.data("th3"));
     modal.find(".modal-th4").text(button.data("th4"));
     modal.find(".modal-th5").text(button.data("th5"));
-    modal.find(".modal-serc").attr("id", button.data("id"));
-    modal.find(".modal-serc").attr("name", button.data("name"));
+    // modal.find(".modal-serc").attr("id", button.data("id"));
+    // modal.find(".modal-serc").attr("name", button.data("name"));
     $('#cussearch').focus();
 
   });

@@ -984,6 +984,107 @@
             $('#netprofit').text((netsales - netcost).toFixed(2));
 
         }
+        function showSuggestions(item) {
+                var suggestions = $('#suggestions');
+                suggestions.empty();
+                // console.log(item);
+                if (item.length === 0) {
+                    suggestions.hide();
+                    return;
+                }
+
+                var ul = $('<ul>').addClass('suggestions-list list-group').css({
+                    'position': 'absolute',
+                    'z-index': '100',
+                    'width': '800px'
+                });
+
+                for (var i = 0; i < item.length; i++) {
+                    console.log(item[i]);
+                    var lastdate = new Date(item[i].LastDate);
+                    const lDate = lastdate.toISOString().substring(0, 10);
+                    // item[i].LastDate
+                    var li = $('<li>')
+                        .addClass('list-group-item')
+                        .text('ItemName : ' + item[i].ItemName + ',|  Type : ' + item[i].Type + ',| Last Date : '+ lDate )
+                        .data('ITemCode', item[i].ItemCode)
+                        .data('ItemName', item[i].ItemName)
+                        .data('UOM', item[i].UOM)
+                        .data('Type', item[i].Type)
+                        .data('VendorPrice', item[i].VendorPrice)
+                        .data('VenderCode', item[i].VenderCode)
+                        .data('VenderName', item[i].VenderName)
+                        .data('OurPrice', item[i].OurPrice)
+                        .data('VPartCode', item[i].VPartCode)
+                        .data('lastdate', lDate)
+                    ul.append(li);
+                }
+
+                // adjust the position of the ul element
+                ul.css({
+                    'top': -32 + 'px',
+                    'left': 4 + 'px'
+                });
+
+                suggestions.append(ul).show();
+
+            }
+        function ImpaSearch($value){
+            var DepartmentCode = $('#DepartmentCode').val();
+                    var GodownCode = $('#GodownCode').val();
+                    var ChkDeckEngin = $('#ChkDeckEngin').val();
+
+
+                    $.ajaxSetup({
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        }
+                    });
+                    $.ajax({
+                        type: 'post',
+                        url: '{{ URL::to('itemnameserimpa') }}',
+                        data: {
+                            'impa': $value,
+
+                        },
+                        beforeSend: function() {
+                            // Show the overlay and spinner before sending the request
+                            $('.overlay').show();
+                        },
+                        success: function(item) {
+                            console.log(item);
+                            if (item.length > 1) {
+                                // alert('list');
+                                showSuggestions(item);
+                            } else if (item.length = 1) {
+                                $('#item_code').val(item[0].ItemCode);
+                                $('#item_desc').val(item[0].ItemName);
+                                $('#uom').val(item[0].UOM);
+                                $('#vpart_no').val(item[0].VPartCode);
+                                $('#vendor_price').val(parseFloat(item[0].VendorPrice).toFixed(
+                                    2));
+                                $('#sell_price').val(parseFloat(item[0].OurPrice).toFixed(2));
+                                $('select[name="VenderName"]').val(item[0].VenderCode);
+                                var lastdate = new Date(item[0].LastDate);
+                                const LDate = lastdate.toISOString().substring(0, 10);
+
+                                $('#sell_price').attr('title', LDate);
+
+
+                                $('#qty').focus();
+                                // alert('item');
+                                // console.log(item[0].ITemCode);
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            // Handle error
+                        },
+                        complete: function() {
+                            // Hide the overlay and spinner after the request is complete
+                            $('.overlay').hide();
+                        }
+                    });
+        }
         $(document).ready(function() {
 
             $('#btnimpa').click(function (e) {
@@ -1216,110 +1317,16 @@
                 updateDataOrder();
 
             });
-            function showSuggestions(item) {
-                var suggestions = $('#suggestions');
-                suggestions.empty();
-                // console.log(item);
-                if (item.length === 0) {
-                    suggestions.hide();
-                    return;
-                }
 
-                var ul = $('<ul>').addClass('suggestions-list list-group').css({
-                    'position': 'absolute',
-                    'z-index': '100',
-                    'width': '800px'
-                });
-
-                for (var i = 0; i < item.length; i++) {
-                    console.log(item[i]);
-                    var lastdate = new Date(item[i].LastDate);
-                    const lDate = lastdate.toISOString().substring(0, 10);
-                    // item[i].LastDate
-                    var li = $('<li>')
-                        .addClass('list-group-item')
-                        .text('ItemName : ' + item[i].ItemName + ',|  Type : ' + item[i].Type + ',| Last Date : '+ lDate )
-                        .data('ITemCode', item[i].ItemCode)
-                        .data('ItemName', item[i].ItemName)
-                        .data('UOM', item[i].UOM)
-                        .data('Type', item[i].Type)
-                        .data('VendorPrice', item[i].VendorPrice)
-                        .data('VenderCode', item[i].VenderCode)
-                        .data('VenderName', item[i].VenderName)
-                        .data('OurPrice', item[i].OurPrice)
-                        .data('VPartCode', item[i].VPartCode)
-                        .data('lastdate', lDate)
-                    ul.append(li);
-                }
-
-                // adjust the position of the ul element
-                ul.css({
-                    'top': -32 + 'px',
-                    'left': 4 + 'px'
-                });
-
-                suggestions.append(ul).show();
-
-            }
             $('#impa').on('keypress', function(event) {
                 if (event.keyCode === 13) {
-                    console.log('going');
-                    var DepartmentCode = $('#DepartmentCode').val();
-                    var GodownCode = $('#GodownCode').val();
-                    var ChkDeckEngin = $('#ChkDeckEngin').val();
                     $value = $(this).val();
-
-
-                    $.ajaxSetup({
-                        headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                        }
-                    });
-                    $.ajax({
-                        type: 'post',
-                        url: '{{ URL::to('itemnameserimpa') }}',
-                        data: {
-                            'impa': $value,
-
-                        },
-                        beforeSend: function() {
-                            // Show the overlay and spinner before sending the request
-                            $('.overlay').show();
-                        },
-                        success: function(item) {
-                            console.log(item);
-                            if (item.length > 1) {
-                                // alert('list');
-                                showSuggestions(item);
-                            } else if (item.length = 1) {
-                                $('#item_code').val(item[0].ItemCode);
-                                $('#item_desc').val(item[0].ItemName);
-                                $('#uom').val(item[0].UOM);
-                                $('#vpart_no').val(item[0].VPartCode);
-                                $('#vendor_price').val(parseFloat(item[0].VendorPrice).toFixed(
-                                    2));
-                                $('#sell_price').val(parseFloat(item[0].OurPrice).toFixed(2));
-                                $('select[name="VenderName"]').val(item[0].VenderCode);
-                                var lastdate = new Date(item[0].LastDate);
-                                const LDate = lastdate.toISOString().substring(0, 10);
-
-                                $('#sell_price').attr('title', LDate);
-
-
-                                $('#qty').focus();
-                                // alert('item');
-                                // console.log(item[0].ITemCode);
-                            }
-                        },
-                        error: function(xhr, status, error) {
-                            // Handle error
-                        },
-                        complete: function() {
-                            // Hide the overlay and spinner after the request is complete
-                            $('.overlay').hide();
-                        }
-                    });
+                    ImpaSearch($value);
                 }
+            });
+            $('#impa').on('blur', function(event) {
+                    $value = $(this).val();
+                    ImpaSearch($value);
             });
 
 

@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\DB;
 
 class ItemSetup extends Controller
 {
- 
+
     public function ItemRegisterSetup(Request $request)
     {
 
@@ -45,7 +45,8 @@ class ItemSetup extends Controller
             ->orderBy('VenderName')
             ->get();
         // $maxItemCode = VenderProductList::select('ItemCode')->orderBy('ItemCode','desc')->first();
-        $maxItemCode = ItemSetupNew::max('ItemCode');
+        $maxItemCode = VenderProductList::max('ItemCode');
+        // $maxItemCode = ItemSetupNew::max('ItemCode');
         $matches = [];
         info($maxItemCode);
         if (preg_match('/^([A-Za-z]*)(\d+)$/', $maxItemCode, $matches)) {
@@ -86,8 +87,8 @@ class ItemSetup extends Controller
 
     public function itemregsearch(Request $request)
     {
-        $MBranchCode = config('app.MBranchCode');
-        $PVendorCode = config('app.PVendorCode');
+        $MBranchCode = session('MBranchCode');
+        $PVendorCode = session('PVendorCode');
         $MItemDesc = $request->productname;
 
         $data = DB::table('qryitemsetupnew')->where('Itemname', 'like', '%' . $MItemDesc . '%')->where('BranchCode', $MBranchCode)->orderBy('ItemName')->get();
@@ -137,7 +138,7 @@ class ItemSetup extends Controller
         // info($request->all());
 
 
-        $CategoryCode = $request->CategoryCode;
+        // $CategoryCode = $request->CategoryCode;
         $ItemCode = $request->ItemCode;
 
 

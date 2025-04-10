@@ -429,7 +429,7 @@ class HomeController extends Controller
     {
         $crud = $this->_getGroceryCrudEnterprise();
         $crud->setTable('QuoteMaster');
-        $crud->where(["BranchCode" => config('app.MBranchCode')]);
+        $crud->where(["BranchCode" => Auth::user()->BranchCode]);
         $crud->setSubject('Quote Setup', 'Quote Setup');
 
 
@@ -576,7 +576,7 @@ class HomeController extends Controller
 
     public function vendorsave(Request $request)
     {
-        $MBranchCode = config('app.MBranchCode');
+        $MBranchCode = Auth::user()->BranchCode;
         $ChkInactive = 0;
         info($request->all());
         $VenderCode = (int) $request->VenderCode;
@@ -635,7 +635,7 @@ class HomeController extends Controller
     public function vendor_setup()
     {
 
-        $MBranchCode = config('app.MBranchCode');
+        $MBranchCode = Auth::user()->BranchCode;
         $lastid = VenderSetup::where('BranchCode', $MBranchCode)->max('VenderCode');
         $TypeSetup = Typesetup::where('BranchCode', $MBranchCode)->get();
         $VenderSetup = VenderSetup::where('BranchCode', $MBranchCode)->get();
@@ -899,7 +899,7 @@ class HomeController extends Controller
     }
     public function FixAccountSetup()
     {
-        $MBranchCode = config('app.MBranchCode');
+        $MBranchCode = Auth::user()->BranchCode;
 
 
         return view('Setups.FixAccountSetup', [
@@ -908,7 +908,7 @@ class HomeController extends Controller
     }
     public function FixAccountSetupGet()
     {
-        $MBranchCode = config('app.MBranchCode');
+        $MBranchCode = Auth::user()->BranchCode;
 
         $FixAccountSetup = FixAccountSetup::where('BranchCode', $MBranchCode)->first();
         // $FixAccountSetup = FixAccountSetup::first();
@@ -996,7 +996,7 @@ class HomeController extends Controller
     }
     public function FixAccountSetupupdate(Request $request)
     {
-        $MBranchCode = config('app.MBranchCode');
+        $MBranchCode = Auth::user()->BranchCode;
         $Message = 'Started';
 
         $FixAccountSetup = FixAccountSetup::where('BranchCode', $MBranchCode)->first();
@@ -1113,7 +1113,7 @@ class HomeController extends Controller
 
     public function State_Setup()
     {
-        $MBranchCode = config('app.MBranchCode');
+        $MBranchCode = Auth::user()->BranchCode;
         $state = DB::table('statesetup')->select('StateCode', 'StateName', 'ChkInactive')->where('BranchCode', $MBranchCode)->get();
         return view('Setups.State_Setup', [
             'state' => $state,
@@ -1123,7 +1123,7 @@ class HomeController extends Controller
 
     public function Status_Setup()
     {
-        $MBranchCode = config('app.MBranchCode');
+        $MBranchCode = Auth::user()->BranchCode;
         $status = DB::table('statussetup')->where('BranchCode', $MBranchCode)->orderBy('StatusCode')->get();
         return view('Setups.Status_Setup', [
             'status' => $status,
@@ -1133,7 +1133,7 @@ class HomeController extends Controller
 
     public function Priority_Setup()
     {
-        $MBranchCode = config('app.MBranchCode');
+        $MBranchCode = Auth::user()->BranchCode;
 
         $priority = DB::table('prioritysetup')->where('BranchCode', $MBranchCode)->orderBy('PriorityCode')->get();
         return view('Setups.Priority_Setup', [
@@ -1144,7 +1144,7 @@ class HomeController extends Controller
 
     public function Log_Setup()
     {
-        $MBranchCode = config('app.MBranchCode');
+        $MBranchCode = Auth::user()->BranchCode;
 
         $log = DB::table('logremarks')->where('BranchCode', $MBranchCode)->orderBy('Code')->get();
 
@@ -1157,7 +1157,7 @@ class HomeController extends Controller
     public function Uomdelete(Request $request)
     {
         $Message = '';
-        $MBranchCode = config('app.MBranchCode');
+        $MBranchCode = Auth::user()->BranchCode;
         $TxtCode = $request->input('TxtCode');
         $UOMsetup = UOMModel::find($TxtCode);
         if ($UOMsetup) {
@@ -1177,7 +1177,7 @@ class HomeController extends Controller
     }
     public function UomSave(Request $request)
     {
-        $MBranchCode = config('app.MBranchCode');
+        $MBranchCode = Auth::user()->BranchCode;
 
         $TxtCode = $request->input('TxtCode');
         $TxtStateName = $request->input('TxtStateName');
@@ -1210,7 +1210,7 @@ class HomeController extends Controller
     }
     public function UOM_Setup()
     {
-        $MBranchCode = config('app.MBranchCode');
+        $MBranchCode = Auth::user()->BranchCode;
         $UOM = UOMModel::where('BranchCode', $MBranchCode)->get();
         return view('Setups.UOM_Setup', [
             'UOM' => $UOM,
@@ -1220,7 +1220,7 @@ class HomeController extends Controller
     public function Shipserv_Setup()
     {
 
-        $MBranchCode = config('app.MBranchCode');
+        $MBranchCode = Auth::user()->BranchCode;
         $result = DB::table('shipservsetup')
             ->where('BranchCode', $MBranchCode)
             ->orderBy('ShipServCode')
@@ -1234,7 +1234,7 @@ class HomeController extends Controller
 
     public function Shipvia_Setup()
     {
-        $MBranchCode = config('app.MBranchCode');
+        $MBranchCode = Auth::user()->BranchCode;
         $shipvia = DB::table('shipvia')->where('BranchCode', $MBranchCode)->orderBy('ShipVIACode')->get();
 
         return view('Setups.Shipvia_Setup', [
@@ -1246,7 +1246,7 @@ class HomeController extends Controller
     public function CategoryDelete(Request $request)
     {
         $Message = '';
-        $MBranchCode = config('app.MBranchCode');
+        $MBranchCode = Auth::user()->BranchCode;
         $TxtCode = $request->input('TxtCode');
         $Category = CategoryModel::find($TxtCode);
 
@@ -1267,7 +1267,7 @@ class HomeController extends Controller
     }
     public function CategorySave(Request $request)
     {
-        $MBranchCode = config('app.MBranchCode');
+        $MBranchCode = Auth::user()->BranchCode;
 
 
         $TxtCode = $request->input('TxtCode');
@@ -1296,7 +1296,7 @@ class HomeController extends Controller
     }
     public function Category_Setup()
     {
-        $MBranchCode = config('app.MBranchCode');
+        $MBranchCode = Auth::user()->BranchCode;
         $category = CategoryModel::where('BranchCode', $MBranchCode)->orderBy('CategoryCode')->get();
 
         return view('Setups.Category_Setup', [
@@ -1307,7 +1307,7 @@ class HomeController extends Controller
 
     public function currencyDelete(Request $request)
     {
-        $MBranchCode = config('app.MBranchCode');
+        $MBranchCode = Auth::user()->BranchCode;
         $ID = $request->input('ID');
         $currency = CurrencyModel::find($ID);
         $Message = '';
@@ -1330,7 +1330,7 @@ class HomeController extends Controller
 
     public function CurrencySave(Request $request)
     {
-        $MBranchCode = config('app.MBranchCode');
+        $MBranchCode = Auth::user()->BranchCode;
         $ID = $request->input('ID');
         $TxtSerialNo = $request->input('TxtSerialNo');
         $TxtCurrency = $request->input('TxtCurrency');
@@ -1366,7 +1366,7 @@ class HomeController extends Controller
 
     public function Currencydataget()
     {
-        $MBranchCode = config('app.MBranchCode');
+        $MBranchCode = Auth::user()->BranchCode;
         $currency = CurrencyModel::where('BranchCode', $MBranchCode)->orderBy('SerialNo')->get();
 
         return response()->json([

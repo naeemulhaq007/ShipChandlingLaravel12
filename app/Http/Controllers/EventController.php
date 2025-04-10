@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Ship;
 use App\Http\Requests\EventRequest;
 use App\Models\Quote;
 use App\Models\Vessel;
@@ -317,7 +318,7 @@ class EventController extends Controller
         $quote->fill($request->all());
         $quote->EventNo = $request->EventNo2;
         $quote->DepartmentName = $request->DepartmentName;
-        $quote->DepartmentCode = $request->DepartmentCode;
+        $quote->DepartmentCode = $request->DepartmentCode ? $request->DepartmentCode : Ship::DeptCodeByName($request->DepartmentName);
         $quote->CustomerRefNo = $request->CustomerRef;
         $quote->BidDueDate = $request->BidDUeDate2;
         $quote->ReturnVia = $request->ReturnVia;

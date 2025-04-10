@@ -454,6 +454,16 @@
                 ]
             });
 
+
+            $('#discompanyname').on('keypress', function(e) {
+                if (e.which === 13) { // Check if Enter key is pressed
+                    e.preventDefault();
+                    $('#searchrmod').modal('show'); // Open the modal
+                }
+            });
+
+
+
             $('#Vesseltable tbody').on('dblclick', 'tr', function() {
                 var data = table1.row(this).data(); // Get the data of the clicked row
                 // You can now use the 'data' object to access the row data

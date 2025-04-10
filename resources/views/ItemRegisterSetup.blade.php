@@ -55,7 +55,7 @@
                             </span>
                         </div>
 
-                        <a name="" id="" class="btn btn-primary my-2 col-sm-1 col-3" href="#" role="button"><i
+                        <a name="" id="BtnSearch" class="btn btn-primary my-2 col-sm-1 col-3" href="#" role="button"><i
                                 class="fa fa-search" aria-hidden="true"></i></a>
 
                         <div class="inputbox col-sm-4 py-2">
@@ -71,6 +71,7 @@
                                 IMPA Code
                             </span>
                         </div>
+                        <div id="suggestions"></div>
 
                     </div>
                     <div class="row ">
@@ -104,7 +105,7 @@
                     </div>
                     <div class="row">
 
-                        <div class="inputbox col-sm-6 py-2">
+                        <div class="inputbox col-sm-5 py-2">
 
                             <span class="Txtspan">
                                 UOM
@@ -117,6 +118,8 @@
                                 @endforeach
                             </select>
                         </div>
+                        <a name=""  class="btn btn-primary my-2 col-sm-1 col-1" href="{{route('UOM_Setup')}}" role="button"><i
+                            class="fa fa-plus" aria-hidden="true"></i></a>
                         <div class="inputbox col-sm-6 py-2">
                             <input class="" type="text" name="SalePrice" id="SalePrice" required>
 
@@ -154,7 +157,7 @@
                     <div class="row">
 
 
-                        <div class="inputbox col-sm-6 py-2">
+                        <div class="inputbox col-sm-5 py-2">
                             <span class="Txtspan">
                                 Category
                             </span>
@@ -164,9 +167,12 @@
                                     <option value="{{ $Citem->CategoryCode }}">{{ $Citem->CategoryName }}</option>
                                 @endforeach
                             </select>
-
                         </div>
-                        <div class="inputbox col-sm-6 py-2">
+                        <a name=""  class="btn btn-primary my-2 col-sm-1 col-1" href="{{route('Category_Setup')}}" role="button"><i
+                            class="fa fa-plus" aria-hidden="true"></i></a>
+
+
+                        <div class="inputbox col-sm-5 py-2">
                             <span class="Txtspan">
                                 Warehouse
                             </span>
@@ -178,12 +184,13 @@
                             </select>
                         </div>
 
-
+                        <a name=""  class="btn btn-primary my-2 col-sm-1 col-1" href="{{route('warehouse-setup')}}" role="button"><i
+                            class="fa fa-plus" aria-hidden="true"></i></a>
                     </div>
 
                     <div class="row">
 
-                        <div class="inputbox col-sm-12 py-2">
+                        <div class="inputbox col-sm-11 py-2">
                             <span class="Txtspan">
                                 Brand
                             </span>
@@ -196,12 +203,13 @@
 
                         </div>
 
-
+                        <a name=""  class="btn btn-primary my-2 col-sm-1 col-1" href="{{route('origin-setup')}}" role="button"><i
+                            class="fa fa-plus" aria-hidden="true"></i></a>
 
                     </div>
                     <div class="row">
 
-                        <div class="inputbox col-sm-6 py-2">
+                        <div class="inputbox col-sm-5 py-2">
                             <span class="Txtspan">
                                 Sub Category
                             </span>
@@ -214,7 +222,8 @@
                             </select>
 
                         </div>
-
+                        {{-- <a name=""  class="btn btn-primary my-2 col-sm-1 col-1" href="{{route('Category_Setup')}}" role="button"><i
+                            class="fa fa-plus" aria-hidden="true"></i></a> --}}
 
 
                         <div class="inputbox col-sm-6 py-2">
@@ -653,7 +662,7 @@ function opload() {
 }
 
 
-
+var table2 ;
         $(document).ready(function() {
 
             function setdate() {
@@ -675,7 +684,7 @@ function opload() {
 
 
             });
-            var table2 = $('#Vendotable').DataTable({
+             table2 = $('#Vendotable').DataTable({
 
                 scrollY: 150,
                 deferRender: true,
@@ -942,27 +951,9 @@ function opload() {
 
             }
         });
-        $(document).on("click", "#NewItem", function() {
-
-            var Itemcode = $('#Itemcode').val('');
-            var Dateq = $('#Dateq').val('');
-            var IMPACode = $('#IMPACode').val('');
-            var ItemitemName = $('#ItemitemName').val('');
-            var Departmentcode = $('#Departmentselect').val('');
-            var Departmentname = $('#Departmentselect option:selected').text('');
-            var uoms = $('#uoms').val('');
-            var SalePrice = $('#SalePrice').val('');
-            var Currency = $('#Currency').val('');
-            var ReorderLevel = $('#ReorderLevel').val('');
-            var CategoryCode = $('#Category').val('');
-            var Category = $('#Category option:selected').text('');
-            var OrignCode = $('#OrignCode').val('');
-            var Orign = $('#Orign option:selected').text('');
-            var SubCategoryCode = $('#SubCategory').val('');
-            var SubCategory = $('#SubCategory option:selected').text('');
-            var ReorderQty = $('#ReorderQty').val('');
+        function GenerateCode(){
             @php
-                $maxItemCode = DB::table('itemsetupnew')->max('ItemCode');
+                $maxItemCode = DB::table('venderproductlist')->max('ItemCode');
                 $matches = [];
                 if (preg_match('/^([A-Za-z]*)(\d+)$/', $maxItemCode, $matches)) {
                     $alphabetPart = $matches[1];
@@ -972,12 +963,140 @@ function opload() {
 
                     $dnewItemCode = $alphabetPart . $newNumericPart;
                 } else {
-                    // Handle the case when the regular expression doesn't match
-    // You can provide a default value or throw an exception depending on your requirements.
-    $newItemCode = '0000001';
+                    $newItemCode = '0000001';
                 }
             @endphp
             $('#Itemcode').val('{{ $dnewItemCode }}');
+        }
+
+        function Cleardata(){
+            // var Itemcode = $('#Itemcode').val('');
+            $('#Dateq').val('');
+            $('#IMPACode').val('');
+            $('#ItemitemName').val('');
+            $('#Departmentselect').val('');
+            $('#Departmentselect option:selected').text('');
+            $('#uoms').val('');
+            $('#SalePrice').val('');
+            $('#Currency').val('');
+            $('#ReorderLevel').val('');
+            $('#Category').val('');
+            $('#Category option:selected').text('');
+            $('#OrignCode').val('');
+            $('#Orign option:selected').text('');
+            $('#SubCategory').val('');
+            $('#SubCategory option:selected').text('');
+            $('#ReorderQty').val('');
+            table2.clear().draw();
+
+
+
+
+
+        }
+        $(document).on("click", "#NewItem", function() {
+            Cleardata();
+            GenerateCode();
+        });
+
+        $(document).on("blur", "#IMPACode", function() {
+            $value = $(this).val();
+            ImpaSearch($value);
+
+        });
+
+        function showSuggestions(item) {
+                var suggestions = $('#suggestions');
+                suggestions.empty();
+                // console.log(item);
+                if (item.length === 0) {
+                    suggestions.hide();
+                    return;
+                }
+
+                var ul = $('<ul>').addClass('suggestions-list list-group').css({
+                    'position': 'absolute',
+                    'z-index': '100',
+                    'width': '1000px'
+                });
+
+                for (var i = 0; i < item.length; i++) {
+                    console.log(item[i]);
+                    var lastdate = new Date(item[i].LastDate);
+                    const lDate = lastdate.toISOString().substring(0, 10);
+                    // item[i].LastDate
+                    var li = $('<li>')
+                        .addClass('list-group-item')
+                        .text('ItemName : ' + item[i].ItemName + ',|  Type : ' + item[i].Type + ',| Last Date : '+ lDate )
+                        .data('ITemCode', item[i].ItemCode)
+                        .data('ItemName', item[i].ItemName)
+                        .data('UOM', item[i].UOM)
+                        .data('Type', item[i].Type)
+                        .data('VendorPrice', item[i].VendorPrice)
+                        .data('VenderCode', item[i].VenderCode)
+                        .data('VenderName', item[i].VenderName)
+                        .data('OurPrice', item[i].OurPrice)
+                        .data('VPartCode', item[i].VPartCode)
+                        .data('lastdate', lDate)
+                    ul.append(li);
+                }
+
+                // adjust the position of the ul element
+                ul.css({
+                    'top': 0 + 'px',
+                    'left': 'auto'
+                });
+
+                suggestions.append(ul).show();
+
+            }
+        function ImpaSearch($value){
+            var DepartmentCode = $('#DepartmentCode').val();
+                    var GodownCode = $('#GodownCode').val();
+                    var ChkDeckEngin = $('#ChkDeckEngin').val();
+
+
+                    $.ajaxSetup({
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        }
+                    });
+                    $.ajax({
+                        type: 'post',
+                        url: '{{ URL::to('itemnameserimpa') }}',
+                        data: {
+                            'impa': $value,
+
+                        },
+                        beforeSend: function() {
+                            // Show the overlay and spinner before sending the request
+                            $('.overlay').show();
+                        },
+                        success: function(item) {
+                            console.log(item);
+                            if (item.length > 1) {
+                                // alert('list');
+                                showSuggestions(item);
+                            } else if (item.length = 1) {
+                                $('#Itemcode').val(item[0].ItemCode).blur();
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            // Handle error
+                        },
+                        complete: function() {
+                            // Hide the overlay and spinner after the request is complete
+                            $('.overlay').hide();
+                        }
+                    });
+        }
+        $(document).on('dblclick', '.suggestions-list li', function() {
+                var suggestions = $('#suggestions');
+
+                $('#Itemcode').val($(this).data('ITemCode')).blur();
+
+                suggestions.hide();
+
         });
         $(document).on("click", "#SaveItem", function() {
 
@@ -1267,14 +1386,17 @@ function opload() {
                     }
                 }
             });
+            $('#Itemcode').blur(function (e) {
+                e.preventDefault();
+                var ItemCode = $(this).val();
+                if (ItemCode.length > 0) {
+                    DataLoad(ItemCode);
+                }
+
+            });
         });
 
-        $(document).on("dblclick", "#rowcell", function() {
-            $ItemCode = $(this).attr('data-ItemCode');
-            $DepartmentCode = $(this).attr('data-DepartmentCode');
-            $CategoryCode = $(this).attr('data-CategoryCode');
-
-            console.log('itemcode' + $ItemCode);
+        function DataLoad($ItemCode, $DepartmentCode=null, $CategoryCode=null) {
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -1291,6 +1413,8 @@ function opload() {
                 },
                 success: function(response) {
                     console.log(response);
+                    if (response.data) {
+
                     var item = response.data;
                     $('#Itemcode').val(item.ItemCode);
                     $('.ItemitemNameg').val(item.VenderName);
@@ -1391,9 +1515,29 @@ function opload() {
                         let WorkUserCell = row.insertCell(6);
                         WorkUserCell.innerHTML = item.WorkUser;
                     });
+                }else{
+                    Swaal.fire({
+                        icon: 'info',
+                        title: 'Item Not Found!',
+                        text: 'Your Item Code Has No Item!',
+                        showConfirmButton: true,
+                        timer: 3500
+                    })
+                    Cleardata();
+
+                }
 
                 }
             });
+        }
+        $(document).on("dblclick", "#rowcell", function() {
+            $ItemCode = $(this).attr('data-ItemCode');
+            $DepartmentCode = $(this).attr('data-DepartmentCode');
+            $CategoryCode = $(this).attr('data-CategoryCode');
+
+            // console.log('itemcode' + $ItemCode);
+
+           DataLoad($ItemCode, $DepartmentCode, $CategoryCode);
 
             // $.ajax({
             //     type: 'post',
@@ -1549,6 +1693,10 @@ function opload() {
                 });
 
 
+            });
+            $('#BtnSearch').click(function (e) {
+                e.preventDefault();
+                $('#ItemitemNameg').focus();
             });
 
         });

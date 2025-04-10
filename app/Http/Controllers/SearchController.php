@@ -162,18 +162,23 @@ public function searchvendor(Request $request){
     //    $gitem = DB::select(DB::raw("SET NOCOUNT ON ;exec SPVendorProductListWithStock @BranchCode='$BranchCode',@GodownCode='$GodownCode',@DateTo='$DateTo',@DateFrom='$DateFrom',@ItemName='$ItemName',@DepartmentCode='$DepartmentCode',@ChkDeckEngin='$ChkDeckEngin'"));
 //     $gitem = DB::select(DB::raw("SET @BranchCode = $BranchCode, @GodownCode = $GodownCode, @DateTo = '$DateTo', @DateFrom = '$DateFrom', @ItemName = '$ItemName', @DepartmentCode = '$DepartmentCode', @ChkDeckEngin = $ChkDeckEngin;"));
 // $gitem = DB::select(DB::raw("CALL SPVendorProductListWithStock(@BranchCode, @GodownCode, @DateTo, @DateFrom, @ItemName, @DepartmentCode, @ChkDeckEngin)"));
-$gitem = DB::select(
-    DB::raw("CALL SPVendorProductListWithStock(:BranchCode, :GodownCode, :DateTo, :DateFrom, :SearchItemName, :DepartmentCode, :ChkDeckEngin)"),
-    [
-        'BranchCode' => $BranchCode,
-        'GodownCode' => $GodownCode,
-        'DateTo' => $DateTo,
-        'DateFrom' => $DateFrom,
-        'SearchItemName' => $ItemName,
-        'DepartmentCode' => $DepartmentCode,
-        'ChkDeckEngin' => (int)$ChkDeckEngin, // Convert to integer (0 or 1)
-    ]
-);
+try {
+    $gitem = DB::select(
+        "CALL SPVendorProductListWithStock(:BranchCode, :GodownCode, :DateTo, :DateFrom, :SearchItemName, :DepartmentCode, :ChkDeckEngin)",
+        [
+            'BranchCode' => $BranchCode,
+            'GodownCode' => $GodownCode,
+            'DateTo' => $DateTo,
+            'DateFrom' => $DateFrom,
+            'SearchItemName' => $ItemName,
+            'DepartmentCode' => $DepartmentCode,
+            'ChkDeckEngin' => (int)$ChkDeckEngin,
+        ]
+    );
+} catch (\Exception $e) {
+    info('Stored Procedure Error: ' . $e->getMessage());
+    // Handle error gracefully
+}
 
 
     //    info($gitem);

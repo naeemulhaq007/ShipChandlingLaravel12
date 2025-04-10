@@ -455,7 +455,7 @@
 
                                 <div class="inputbox col-sm-4">
                                     <span class="Txtspan" id="">Est.Lines Quote</span>
-                                    <input type="text" name="EstLineQuote" id="EstLinesQuote" title="EstLinesQuote"
+                                    <input type="number" name="EstLineQuote" id="EstLinesQuote" title="EstLinesQuote"
                                         placeholder="">
                                 </div>
 

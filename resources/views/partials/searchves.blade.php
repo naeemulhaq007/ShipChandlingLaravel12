@@ -5,7 +5,7 @@
         <h5 class="modal-title" id="exampleModalLongTitle">Search</h5>
 
         <div class="card-tools ml-auto">
-            <a name="" id="vesseltran" class=" btn btn-default ml-auto"   role="button">Create Vessel</a>
+            <a name="" id="vesseltran"  class=" btn btn-default ml-auto"   role="button">Create Vessel</a>
             {{-- <button class="btn btn-primary" id="Newbtn">New</button> --}}
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
@@ -130,13 +130,14 @@ function vesFunction() {
   $('#serchbtn').on('click', function(){
     search();
   });
-    $("#searchrmodw").on("show.bs.modal", function(event) {
+    $("#searchrmodw").on("shown.bs.modal", function(event) {
       search();
-      $('#searchbox').trigger('focus')
+    //   $('#searchbox').trigger('focus')
+      $('#vesselserach').focus();
 
     //   alert("Wait a few Second");
   });
-  search();
+//   search();
   function search(){
        var keyword = $('#searchbox').val();
        $.post('{{ route("employee.search") }}',
@@ -168,13 +169,15 @@ function vesFunction() {
           </tr>`;
   }
        $('.ves').html(htmlView);
+      $('#vesselserach').focus();
+
   }
 
   $(document).ready(function () {
     $('#vesseltran').click(function(e){
        let code = $('#companycode').val();
        let name = $('#companyname').val();
-        window.location.href = "/vessel-setup?code="+code+'&name='+name;
+        window.open("/vessel-setup?code="+code+'&name='+name, "_blank");
 
     });
   });

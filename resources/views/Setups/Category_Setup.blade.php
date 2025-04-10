@@ -36,31 +36,23 @@
 
                             <div class="row">
                                 <div class="inputbox col-sm-8 py-2">
-                                    <input readonly type="text" class="" id="TxtSerialNo" name="TxtSerialNo"
+                                    <input readonly type="text" class="" id="TxtCode" name="TxtCode"
                                         required="required">
                                     <span class="Txtspan">
-                                        Serial # : </span>
+                                        Category Code </span>
                                 </div>
                             </div>
                             <div class="row">
 
                                 <div class="inputbox col-sm-8 py-2">
-                                    <input type="text" class="" id="TxtCurrency" name="TxtCurrency"
+                                    <input type="text" class="" id="TxtCategoryName" name="TxtCategoryName"
                                         required="required">
                                     <span class="Txtspan">
-                                        Currency Name </span>
+                                        Category Name </span>
                                 </div>
                             </div>
 
-                            <div class="row">
 
-                                <div class="inputbox col-sm-8 py-2">
-                                    <input type="text" class="" id="TxtExchangeRate" name="TxtExchangeRate"
-                                        required="required">
-                                    <span class="Txtspan">
-                                        Exchange Rate</span>
-                                </div>
-                            </div>
 
 
 
@@ -74,7 +66,7 @@
                                 <button class="btn btn-warning mx-2" id="CmdDelete" role="button"> <i
                                         class="fa fa-multiply mr-1" aria-hidden="true"></i>Delete</button>
 
-                                <button class="btn btn-danger mx-2" id="CmdExit" role="button"> <i
+                                <button class="btn btn-danger mx-2" id="CmdExit" onclick="window.location.href='/'" role="button"> <i
                                         class="fa fa-door-open mr-1" aria-hidden="true"></i>Exit</button>
                             </div>
 
@@ -101,9 +93,8 @@
                                         <table class="table small" id="Gd1">
                                             <thead class="bg-info">
                                                 <tr>
-                                                    <th>Serial&nbsp;#</th>
-                                                    <th>Currency</th>
-                                                    <th>Exchange&nbsp;Rate</th>
+                                                    <th>Category Code</th>
+                                                    <th>Category Name</th>
                                                 </tr>
                                             </thead>
                                             <tbody id="Gd1body">
@@ -309,7 +300,7 @@
             });
 
 
-            $('#Button2').click(function(e) {
+            $('#CmdSave').click(function(e) {
                 e.preventDefault();
                 var TxtCode = $('#TxtCode').val();
                 var TxtCategoryName = $('#TxtCategoryName').val();
@@ -364,14 +355,14 @@
 
 
 
-            $('#Button1').click(function(e) {
+            $('#CmdAdd').click(function(e) {
                 e.preventDefault();
                 $('#TxtCode').val('');
                 $('#TxtCategoryName').val('');
 
             });
 
-            $('#Button3').click(function(e) {
+            $('#CmdDelete').click(function(e) {
                 e.preventDefault();
                 var TxtCode = $('#TxtCode').val();
                 if (TxtCode == '') {

@@ -2,7 +2,7 @@
 namespace App\Helpers;
 use Illuminate\Support\Facades\DB;
 use App\Models\Quote;
-
+use App\Models\Typesetup;
 
 class Ship
 {
@@ -140,6 +140,16 @@ class Ship
             'VenderSetupterms' => $VenderSetup,
             'PurchaseOrderNo' => $PurchaseOrderNo,
         ]);
+
+    }
+    static function DeptCodeByName($Departname){
+         $Department = Typesetup::where('DepartmentName', $Departname)->first();
+            if ($Department) {
+                $DepartmentCode = $Department->DepartmentCode;
+            } else {
+                $DepartmentCode = null;
+            }
+            return $DepartmentCode;
 
     }
 

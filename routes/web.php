@@ -289,7 +289,7 @@ Route::match(['get', 'post'], 'event/update', [EventController::class, 'update_e
 
 
 //Origin Setups
-Route::match(['get', 'post'], 'origin-setup', [HomeController::class, 'Origin_Setup']);
+Route::match(['get', 'post'], 'origin-setup', [HomeController::class, 'Origin_Setup'])->name('origin-setup');
 
 //Quates
 Route::match(['get', 'post'], 'quote-setup', [HomeController::class, 'quote_setup']);
