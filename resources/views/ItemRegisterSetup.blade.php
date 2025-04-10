@@ -1074,11 +1074,14 @@ var table2 ;
                         },
                         success: function(item) {
                             console.log(item);
-                            if (item.length > 1) {
-                                // alert('list');
-                                showSuggestions(item);
-                            } else if (item.length = 1) {
-                                $('#Itemcode').val(item[0].ItemCode).blur();
+                            if (item) {
+
+                                if (item.length > 1) {
+                                    // alert('list');
+                                    showSuggestions(item);
+                                } else if (item[0]) {
+                                    $('#Itemcode').val(item[0].ItemCode).blur();
+                                }
                             }
                         },
                         error: function(xhr, status, error) {
@@ -1456,7 +1459,7 @@ var table2 ;
                             0];
 
                         const formattedDate = checkDate.toISOString().substring(0, 10);
-                        console.log(formattedDate);
+                        // console.log(formattedDate);
 
                         let row = table.insertRow();
                         let IDCell = row.insertCell(0);
@@ -1480,7 +1483,7 @@ var table2 ;
                         let dropdownHtmls =
                             '<select class="custom-select" name="venuoms" id="venuoms">';
 
-                        console.log(dataU);
+                        // console.log(dataU);
                         dataU.forEach(function(itemu) {
                             dropdownHtmls += '<option value="' + itemu.UOMName + '"';
                             if (item.UOM == itemu.UOMName) {

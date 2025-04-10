@@ -334,13 +334,13 @@ return [
                     //'label'       => 4,
                     //'label_color' => 'success',
                 ],
-                [
-                    'text' => 'Vendor Item Setup',
-                    'url' => 'Vendor-Item-Setup',
-                    // 'icon' => 'far fa-fw fa-file',
-                    //'label'       => 4,
-                    //'label_color' => 'success',
-                ],
+                // [
+                //     'text' => 'Vendor Item Setup',
+                //     'url' => 'Vendor-Item-Setup',
+                //     // 'icon' => 'far fa-fw fa-file',
+                //     //'label'       => 4,
+                //     //'label_color' => 'success',
+                // ],
                 [
                     'text' => 'Item Registration Setup',
                     'url' => 'Item-Register-Setup',
