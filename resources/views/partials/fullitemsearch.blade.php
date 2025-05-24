@@ -28,7 +28,7 @@
                             <th>Code</th>
                             <th>Name</th>
                             <th>UOM</th>
-                            <th>IMPA&nbsp;Code</th>
+                            <th>IMPA&nbsp;Codessssssssss</th>
                             <th>Last&nbsp;Date</th>
                             <th>Cost</th>
                             <th>Price</th>
@@ -77,30 +77,60 @@
 
 var tableData2 = []; // Array to store the table data
 
-function fetchData2() {
-  var itemName = '%' + $('#itemnameser2').val() + '%';
-  var DepartmentCode = $('#DepartmentCode').val();
-  var GodownCode = $('#GodownCode').val();
-  var ChkDeckEngin = $('#ChkDeckEngin').val();
+// function fetchData2() {
 
-  $.ajax({
-    url: "/indexitema",
-    method: "GET",
-    data: {
-      ItemName: itemName,
-      DepartmentCode: DepartmentCode,
-      GodownCode: GodownCode,
-      ChkDeckEngin: ChkDeckEngin
-    },
-    success: function(response) {
-      tableData2 = response; // Assuming the response is an array of objects
-      renderTable2();
-    },
-    error: function(error) {
-      console.log(error);
-    }
-  });
+
+//     // var itemName = $('#itemnameser2').val();
+
+// //   var itemName = '%' + $('#itemnameser2').val() + '%';
+//   var DepartmentCode = $('#DepartmentCode').val();
+//   var GodownCode = $('#GodownCode').val();
+//   var ChkDeckEngin = $('#ChkDeckEngin').val();
+
+//   $.ajax({
+//     url: "/indexitema",
+//     method: "GET",
+//     data: {
+//       ItemName: itemName,
+//       DepartmentCode: DepartmentCode,
+//       GodownCode: GodownCode,
+//       ChkDeckEngin: ChkDeckEngin
+//     },
+//     success: function(response) {
+//       tableData2 = response; // Assuming the response is an array of objects
+//       renderTable2();
+//     },
+//     error: function(error) {
+//       console.log(error);
+//     }
+//   });
+// }
+function fetchData2() {
+  var itemName = $('#itemnameser2').val(); // ✅ No %
+
+    var DepartmentCode = $('#DepartmentCode').val();
+    var GodownCode = $('#GodownCode').val();
+    var ChkDeckEngin = $('#ChkDeckEngin').val();
+
+    $.ajax({
+        url: "/indexitema",
+        method: "GET",
+        data: {
+            ItemName: itemName,
+            DepartmentCode: DepartmentCode,
+            GodownCode: GodownCode,
+            ChkDeckEngin: ChkDeckEngin
+        },
+        success: function(response) {
+            tableData2 = response;
+            renderTable2();
+        },
+        error: function(error) {
+            console.log(error);
+        }
+    });
 }
+
 
 function renderTable2() {
   var tableBody2 = $('#producers-tables tbody');
@@ -184,120 +214,19 @@ function renderTable2() {
     });
 }
 
-
-$("#itemnameser2").on("keyup", function() {
-  var keywordss = $('#itemnameser2').val();
-  if (keywordss.length == 3) {
-    console.log(keywordss);
-    fetchData2();
-  }
-
-});
-//////////////////////////////////
-
-
-//     });
-// var DepartmentCode = $('#DepartmentCode').val();
-//         var GodownCode = $('#GodownCode').val();
-//         var ChkDeckEngin = $('#ChkDeckEngin').val();
-// console.log(ChkDeckEngin+'e');
-
-
-//         var table2 = $('#producers-tables').DataTable({
-//     processing: true,
-//     serverSide: true,
-//     ordering:false,
-//     ajax: {
-//         url: "{{ url('/indexitema') }}?GodownCode="+GodownCode+"&DepartmentCode="+DepartmentCode+"&ChkDeckEngin="+ChkDeckEngin,
-//         data: function (d) {
-//             d.ItemName = '%'+$('#itemnameser2').val()+'%'; // Get the value from the input field with id "item-name-input"
-//         }
-//     },
-//     columns: [
-//     { data: 'ItemCode', name: 'ItemCode' },
-//     { data: 'ItemName', name: 'ItemName' },
-//     { data: 'UOM', name: 'UOM' },
-//     { data: 'IMPAItemCode', name: 'IMPAItemCode' },
-//     { data: 'LastDate', name: 'LastDate', render: function(data, type, row) {
-//         // format LastDate as "2022-JUN-10"
-//         if (type === 'display') {
-//             var date = new Date(data);
-//             var months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
-//             data = date.getFullYear() + '-' + months[date.getMonth()] + '-' + date.getDate();
-//         }
-//         return data;
-//     } },
-//     { data: 'OurPrice', name: 'OurPrice', render: function(data, type, row) {
-//         // round OurPrice to 2 decimal places
-//         if (type === 'display') {
-//             data = parseFloat(data).toFixed(2);
-//         }
-//         return data;
-//     } },
-//     { data: 'FixedPrice', name: 'FixedPrice', render: function(data, type, row) {
-//         // round OurPrice to 2 decimal places
-//         if (type === 'display') {
-//             data = parseFloat(data).toFixed(2);
-//         }
-//         return data;
-//     } },
-//     { data: 'MStockQty', name: 'Stock' },
-//     { data: 'VenderName', name: 'VendorName' },
-//     { data: 'Type', name: 'Type' },
-//     { data: 'VendorPartNo', name: 'VendorPart' },
-//     { data: 'WorkUser', name: 'User' },
-//     { data: 'VenderCode', name: 'VendorCode' },
-//     { data: 'ChkStromme', name: 'Store' },
-//     { data: 'Remarks', name: 'Remarks' },
-// ],
-// createdRow: function(row, data, dataIndex) {
-//     if (data.Type == 'CONTRACT') {
-//         $(row).css('background-color', 'yellow');
-//     } else if (data.Type == 'STOCK') {
-//         $(row).css('background-color', '#90EE90');
-//     }
-// },
-// rowCallback: function(row, data, index) {
-//             $(row).attr('tabindex', index + 3);
-//         }
-// });
-
-// // Trigger search on enter key press
-// $('#itemnameser2').on('keypress', function(e) {
-//   if (e.which === 13) {
-//     table2.draw();
+// $("#itemnameser2").on("keyup", function() {
+//   var keywordss = $('#itemnameser2').val();
+//   if (keywordss.length >= 2) { // ⬅️ minimum 2
+//     fetchData2();
 //   }
 // });
-// $("#item_desc").on("keyup", function() {
-//         keywordss = $('#itemnameser2').val();
-//         if (keywordss.length >= 3) {
-//             // $('#searchrmod').modal('show');
-//             // alert('yes');
-//     table2.draw();
 
-//         }
-//     });
-// });
-// $('#producers-tables tbody').on('dblclick', 'tr', function() {
-//         var rowData = table2.row(this).data();
-//         $('#item_code').val(rowData.ItemCode);
-//         $('#item_desc').val(rowData.ItemName);
-//         $('#uom').val(rowData.UOM);
-//         $('#impa').val(rowData.IMPAItemCode);
-//         $('#vpart_no').val(rowData.VendorPartNo);
-//         $('#vendor_price').val(parseFloat(rowData.OurPrice).toFixed(2));
-//         $('#sell_price').val(parseFloat(rowData.FixedPrice).toFixed(2));
 
-//         $('select[name="VenderName"]').val(rowData.VenderCode);
-//         // and so on for other input fields
-//         $('#searchrmodfull').modal('hide');
-//     });
-
-  $('#searchrmodfull').on('shown.bs.modal', function () {
-    //   var val = $('#item_desc').val();
-      $('#itemnameser2').trigger('focus')
-    //   $('#itemnameser2').val(val);
-})
+//   $('#searchrmodfull').on('shown.bs.modal', function () {
+//     //   var val = $('#item_desc').val();
+//       $('#itemnameser2').trigger('focus')
+//     //   $('#itemnameser2').val(val);
+// })
 
 
 $('#itemnameser2').on('keyup', function(e) {
@@ -334,46 +263,6 @@ $('#itemnameser2').on('keyup', function(e) {
 
 
 
-
-//    $('#itemnameser2').on('keypress', function(event){
-//   if(event.keyCode === 13){
-//         $keywords = $(this).val();
-//         var DepartmentCode = $('#DepartmentCode').val();
-//         var GodownCode = $('#GodownCode').val();
-//         var ChkDeckEngin = $('#ChkDeckEngin').val();
-
-//         // console.log(DepartmentCode);
-//         // console.log(GodownCode);
-//         // console.log(ChkDeckEngin);
-
-//     if ($keywords.length >= 3) {
-
-//         $value='%'+$(this).val()+'%';
-//     // console.log($value+'%');
-//     $.ajaxSetup({
-//   headers: {
-//     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-//   }
-// });
-//     $.ajax({
-//     type : 'post',
-//     url : '{{URL::to('itemnameser')}}',
-//     data:{
-//         'itemnameser':$value,
-//         'DepartmentCode':DepartmentCode,
-//         'GodownCode':GodownCode,
-//         'ChkDeckEngin':ChkDeckEngin,
-
-// },
-//     success:function(data){
-//     $('.itemserchdata').html(data);
-//     // console.log(data);
-//     }
-//     });
-//     }
-
-//   }
-//     })
 
     </script>
 

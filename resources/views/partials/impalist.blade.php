@@ -4,7 +4,6 @@ $(document).ready(function () {
     tabledg = $('#Dg1').DataTable({
     scrollY: 600,
     scrollX: true,
-    deferRender:true,
     scroller:true,
     paging: false,
     info:false,
@@ -38,6 +37,7 @@ $('#Dg1 tbody').on('dblclick', 'tr', function() {
     });
 
 $('#TxtIMPAItemCode').on('keyup', function(e) {
+        tabledg.column(0).search(this.value).draw();
   var keywords = $('#TxtIMPAItemCode').val();
 
 

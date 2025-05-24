@@ -34,8 +34,8 @@
                         <a name="" id="lastvoucher" data-voucherno="" class="btn btn-secondary mx-1"
                             role="button"><i class="fa fa-arrow-right" aria-hidden="true"></i></a> --}}
                         <div class="card-tools ml-auto">
-                            <a name="Vendorlistbtn" data-voucherno="" id="Vendorlistbtn"
-                                class="btn btn-default text-success mx-1 ml-auto" role="button">IMPORT List</a>
+                            <!--<a name="Vendorlistbtn" data-voucherno="" id="Vendorlistbtn"-->
+                            <!--    class="btn btn-default text-success mx-1 ml-auto" role="button">IMPORT List</a>-->
                             <button type="button" class="btn btn-tool" data-card-widget="collapse">
                                 <i class="fas fa-minus"></i>
                             </button>
@@ -52,8 +52,19 @@
                         <div class="col-lg-6">
                             <div class="row py-2 ">
                                 <div class="inputbox col-sm-8">
-                                    <input type="text" class="" value="{{ $VenderCode }}" id="VenderCode"
-                                        required="required">
+                                    <input type="text" 
+       class="" 
+       value="{{ $VenderCode }}" 
+       id="VenderCode"
+       name="VenderCode"
+       required="required"
+       readonly
+       autocomplete="off"
+       data-lpignore="true"
+       onfocus="this.blur();">
+
+                                    <!--<input type="text" class="" value="{{ $VenderCode }}" id="VenderCode"-->
+                                    <!--    required="required">-->
                                     <span class="Txtspan">
                                         Vendor Code
                                     </span>
@@ -229,9 +240,17 @@
 
                         <div class="btn-toolbar float-right" role="toolbar" aria-label="">
                             <div class="btn-group ml-2" role="group" aria-label="">
-                                <button type="button" id="save" class="btn btn-primary">
-                                    <i class="fa fa-file-archive" aria-hidden="true"></i> Save
-                                </button>
+                                      <button class="btn btn-primary my-2 mx-2" id="CmdAdd"  onclick="location.reload();" role="button"> <i class="fa fa-plus mr-1"
+                            aria-hidden="true"></i>New</button>
+
+                    <button class="btn btn-success my-2 mx-2" id="save" role="button"> <i class="fa fa-cloud mr-1"
+                            aria-hidden="true"></i>Save</button>
+
+                    <button class="btn btn-warning my-2 mx-2" id="CmdDelete" role="button"> <i
+                            class="fa fa-multiply mr-1" aria-hidden="true"></i>Delete</button>
+                    <a href="{{url('vendor-setup') }}" class="btn btn-danger my-2 mx-2" id="CmdExit" role="button">
+                        <i class="fa fa-door-open mr-1" aria-hidden="true"></i>Exit</a>
+                             
                             </div>
                         </div>
 
@@ -367,6 +386,24 @@
             src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.html5.min.js"></script>
         <script type="text/javascript" language="javascript"
             src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.print.min.js"></script>
+            
+            
+            
+            
+            
+            
+
+            
+        
+            
+            
+            
+            
+            
+            
+            
+            
+            
         <script>
             function ajaxSetup() {
                 $.ajaxSetup({
@@ -425,80 +462,89 @@
                     });
                 });
 
-                function displayImportedData(data) {
-                    let table = document.getElementById('Vendorlisttablebody');
-                    table.innerHTML = ""; // Clear the table
-                    data.forEach(function(item) {
-                        let row = table.insertRow();
+                    function displayImportedData(data) {
+    let table = document.getElementById('Vendorlisttablebody');
+    table.innerHTML = ""; // Clear the table
 
-                        function createCell(content) {
-                            let cell = row.insertCell();
-                            cell.innerHTML = content;
-                            return cell;
-                        }
-                        createCell(item.VendorCode);
-                        createCell(item.VendorName);
-                        createCell(item.Department);
-                        createCell(item.Status);
-                        createCell(item.CallSign);
+    data.forEach(function (item) {
+        let row = table.insertRow();
 
+        function createCell(content) {
+            let cell = row.insertCell();
+            cell.innerHTML = content;
+            return cell;
+        }
 
-                    });
+        createCell(item.VendorCode);
+        createCell(item.VendorName);
+        createCell(item.Department);
+        createCell(item.Status);
+        createCell(item.CallSign);
+    });
 
-                    $('#Vendorlisttables').show();
-                    $('#Savelist').show();
-                    table2.columns.adjust();
-
-                    function tablecompser() {
-                        let table = document.getElementById('Vendorlisttablebody');
-                        let rows = table.rows;
-                        let dataarray = [];
-                        for (let i = 0; i < rows.length; i++) {
-                            let cells = rows[i].cells;
-                            dataarray.push({
-
-                                VendorCode: cells[0] ? cells[0].innerHTML : '',
-                                VendorName: cells[1] ? cells[1].innerHTML : '',
-                                Department: cells[2] ? cells[2].innerHTML : '',
-                                Status: cells[3] ? cells[3].innerHTML : '',
-                                CallSign: cells[4] ? cells[4].innerHTML : '',
-
-                            });
-                        }
-                        return dataarray;
-                    }
+    $('#Vendorlisttables').show();
+    $('#Savelist').show();
+    table2.columns.adjust();
+}
 
 
+                 function tablecompser() {
+    let table = document.getElementById('Vendorlisttablebody');
+    let rows = table.rows;
+    let dataarray = [];
+
+    for (let i = 0; i < rows.length; i++) {
+        let cells = rows[i].cells;
+        dataarray.push({
+            VendorCode: cells[0] ? cells[0].innerHTML : '',
+            VendorName: cells[1] ? cells[1].innerHTML : '',
+            Department: cells[2] ? cells[2].innerHTML : '',
+            Status: cells[3] ? cells[3].innerHTML : '',
+            CallSign: cells[4] ? cells[4].innerHTML : '',
+        });
+    }
+
+    return dataarray;
+}
 
 
-                    $('#Savelist').click(function(e) {
-                        e.preventDefault();
-                        var dataarray = tablecompser();
-                        console.log(dataarray);
-                        ajaxSetup();
-                        $.ajax({
-                            url: '{{ route('Vendorlist_save') }}',
-                            type: 'POST',
-                            data: {
-                                dataarray
-                            },
-                            beforeSend: function() {
-                                // Show the overlay and spinner before sending the request
-                                $('.overlay').show();
-                                $("#Savelist").attr("disabled", true);
-                            },
-                            success: function(response) {
-                                console.log(response);
-                            },
-                            complete: function() {
-                                // Hide the overlay and spinner after the request is complete
-                                $('.overlay').hide();
-                            }
-                        });
-                    });
+    
+
+               $('#Savelist').click(function(e) {
+    e.preventDefault();
+    var dataarray = tablecompser();
+    console.log(dataarray);
+    ajaxSetup();
+    $.ajax({
+        url: '{{ route('Vendorlist_save') }}',
+        type: 'POST',
+        data: {
+            dataarray
+        },
+        beforeSend: function() {
+            $('.overlay').show();
+            $("#Savelist").attr("disabled", true);
+        },
+        success: function(response) {
+            console.log(response);
+            Swal.fire({
+                icon: 'success',
+                title: 'Saved Successfully!',
+                text: 'Vendor list has been saved.',
+                showConfirmButton: true,
+                timer: 2500
+            });
+        },
+        complete: function() {
+            $('.overlay').hide();
+            $("#Savelist").attr("disabled", false);
+        }
+    }); 
+});
 
 
-                }
+
+                
 
                 $('.js-row').dblclick(function(e) {
                     e.preventDefault();
@@ -597,8 +643,11 @@
                             $('.overlay').hide();
                         }
                     });
-                });
-                $('#save').click(function(e) {
+            
+               
+            });
+            
+             $('#save').click(function(e) {
 
 
                     let formData = new FormData();
@@ -677,13 +726,138 @@
                             $("#alert-container").html(alertMessage);
                         },
                         complete: function() {
-                            // Hide the overlay and spinner after the request is complete
+                    
                             $('.overlay').hide();
                         }
                     });
-                });
+              
+             });  
+            });  
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+       $(document).ready(function () {
+
+    // Row selection
+    $(document).on('click', '.js-row', function () {
+        $('.js-row').removeClass('selected');
+        $(this).addClass('selected');
+    });
+
+    // Delete button click
+    $(document).on('click', '#CmdDelete', function () {
+        let selectedRow = $('.js-row.selected');
+        if (selectedRow.length === 0) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'No Row Selected!',
+                text: 'Please click on a row to select it before deleting.',
             });
-        </script>
+            return;
+        }
+
+        let VenderCode = selectedRow.find('td:eq(0)').text();
+
+        // Ask for password before showing final delete confirmation
+        Swal.fire({
+            title: 'Authentication Required',
+            input: 'password',
+            inputLabel: 'Enter your password to confirm',
+            inputPlaceholder: 'Password',
+            inputAttributes: {
+                autocapitalize: 'off',
+                autocorrect: 'off'
+            },
+            showCancelButton: true,
+            confirmButtonText: 'Authenticate',
+            cancelButtonText: 'Cancel',
+            preConfirm: (password) => {
+                if (!password) {
+                    Swal.showValidationMessage('Password is required');
+                }
+                return password;
+            }
+        }).then((authResult) => {
+            if (authResult.isConfirmed) {
+                const enteredPassword = authResult.value;
+
+                // Proceed to confirm deletion
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: `Vendor Code ${VenderCode} will be deleted permanently!`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#aaa',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((deleteConfirm) => {
+                    if (deleteConfirm.isConfirmed) {
+                        $.ajaxSetup({
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            }
+                        });
+
+                        $.ajax({
+                            url: '{{ route("VendorDelete") }}',
+                            type: 'POST',
+                            data: {
+                                VenderCode: VenderCode,
+                                password: enteredPassword // send password to backend
+                            },
+                            beforeSend: function () {
+                                $('.overlay').show();
+                            },
+                            success: function (response) {
+                                if (response.status === 'success') {
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Deleted!',
+                                        text: `Vendor ${VenderCode} deleted successfully.`,
+                                        timer: 2000
+                                    });
+                                    selectedRow.remove();
+                                } else {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Delete Failed!',
+                                        text: response.message || 'Unable to delete vendor.',
+                                    });
+                                }
+                            },
+                            error: function () {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Server Error!',
+                                    text: 'Something went wrong while deleting.',
+                                });
+                            },
+                            complete: function () {
+                                $('.overlay').hide();
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    });
+});
+
+
+
+</script>
+          
+      
+        
+        
     @stop
 
 

@@ -57,6 +57,7 @@ class Quotation extends Controller
 
     public function index(Request $request)
     {
+        
         $BranchCode= Auth::user()->BranchCode;
         $MWorkUser = Auth::user()->UserName;
         $quote_no = $request->quote_no;
@@ -2330,4 +2331,59 @@ $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
         // Pass data to view
         return view('emails.preview', compact('to', 'subject', 'attachmentPath'));
     }
+    
+    
+    
+//     public function getData() {
+//     $data = VenderProductList::orderBy('id', 'desc')->get();
+//     return response()->json($data);
+// }
+
+    
+// public function getData() {
+//     $data = VenderProductList::limit(60)->orderBy('id','desc')->get(); // <- this runs the query
+//     return response()->json($data);
+// }
+
+
+
+public function getData() {
+    $data = VenderProductList::limit(700)->orderBy('id', 'desc')->get()->map(function ($item) {
+        return [
+            'id' => $item->id,
+            'IMPAItemCode' => $item->IMPAItemCode,
+            'ItemCode' => $item->ItemCode,
+            'ItemName' => $item->ItemName,
+            'StockQty' => $item->StockQty,
+            'UOM' => $item->UOM,
+            'VPartCode' => $item->VPartCode,
+            'VendorPrice' => $item->VendorPrice,
+            'OurPrice' => $item->OurPrice,
+            'VenderName' => $item->VenderName,
+            'CustomerNote' => $item->CustomerNote,
+            'VendorNote' => $item->VendorNote,
+            'InternalBuyerNote' => $item->InternalBuyerNote,
+            'vessel_notes' => $item->vessel_notes,
+            'VenderCode' => $item->VenderCode,
+        ];
+    });
+
+    return response()->json($data);
+}
+
+
+public function QuatationDeleteItem($id)
+{
+    $item = VenderProductList::find($id); 
+    if ($item) {
+        $item->delete();
+        return response()->json(['message' => 'Item deleted successfully']);
+    } else {
+        return response()->json(['message' => 'Item not found'], 404);
+    }
+}
+
+
+
+    
 }

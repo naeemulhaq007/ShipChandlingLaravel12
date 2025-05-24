@@ -4,10 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\termssetup;
 use JeroenNoten\LaravelAdminLte\View\Components\Tool\Datatable;
 
 class TermsSetup extends Controller
 {
+    
+
+
     // public function index()
     // {
         // if ($request->ajax()) {
@@ -34,31 +38,58 @@ class TermsSetup extends Controller
     // }
 
     //get request
+    // public function Terms_setup(){
+    //     $crud = $this->_getGroceryCrudEnterprise();
+    //     $crud->setTable('TermsSetup');
+    //     $crud->where(["BranchCode"=>config('app.MBranchCode')]);
+    //     $crud->setSubject('Terms Setup', 'Terms Setup');
+    //     // $crud->unsetJquery();
+
+    //     $crud->setSkin("bootstrap-v4");
+    //     // $crud->unsetBootstrap();
+    //     // $crud->unsetFields(['BranchCode']);
+
+    //     $crud
+    //         ->displayAs("TermsCode","Terms Code")
+    //         ->displayAs("Terms","Terms")
+    //         ->displayAs("Days","Days");
+
+
+
+    //     $output = $crud->render();
+    //     $data["pagetitle"]="Terms Setup";
+        
+        
+
+
+    //     return $this->_showOutput($output,$data);
+
+    // }
     public function Terms_setup(){
-        $crud = $this->_getGroceryCrudEnterprise();
-        $crud->setTable('TermsSetup');
-        $crud->where(["BranchCode"=>config('app.MBranchCode')]);
-        $crud->setSubject('Terms Setup', 'Terms Setup');
-        // $crud->unsetJquery();
+    $crud = $this->_getGroceryCrudEnterprise();
+    $crud->setTable('TermsSetup');
+    $crud->where(["BranchCode" => config('app.MBranchCode')]);
+    $crud->setSubject('Terms Setup', 'Terms Setup');
+    $crud->setSkin("bootstrap-v4");
 
-        $crud->setSkin("bootstrap-v4");
-        // $crud->unsetBootstrap();
-        // $crud->unsetFields(['BranchCode']);
+    $crud
+        ->displayAs("TermsCode", "Terms Code")
+        ->displayAs("Terms", "Terms")
+        ->displayAs("Days", "Days");
 
-        $crud
-            ->displayAs("TermsCode","Terms Code")
-            ->displayAs("Terms","Terms")
-            ->displayAs("Days","Days");
+    $output = $crud->render();
+    $data["pagetitle"] = "Terms Setup";
 
+    $lastCode = DB::table('TermsSetup')
+        ->where('BranchCode', config('app.MBranchCode'))
+        ->max('TermsCode');
 
+    $nextCode = $lastCode ? $lastCode + 1 : 1;
+    $data["nextCode"] = $nextCode;
 
-        $output = $crud->render();
-        $data["pagetitle"]="Terms Setup";
+    return $this->_showOutput($output, $data);
+}
 
-
-        return $this->_showOutput($output,$data);
-
-    }
 
     private function _getGroceryCrudEnterprise() {
         $database = $this->_getDatabaseConnection();

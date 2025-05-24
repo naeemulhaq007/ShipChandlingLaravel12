@@ -9,8 +9,7 @@
 @stop
 
 @section('content')
-    <?php// echo View::make('partials.impalistitemmodal'); ?>
-    <?php// echo View::make('partials.itemsearchmodal'); ?>
+ 
     <?php echo View::make('partials.search'); ?>
     <?php echo View::make('partials.searchves'); ?>
 
@@ -41,8 +40,14 @@
 
 
                                 <div class="inputbox col-sm-2 py-2">
-                                    <input type="text" class="" id="TxtCode" name="TxtCode"
-                                        required="required">
+                                    <!--<input type="text" class="" id="TxtCode" name="TxtCode"-->
+                                    <!--    required="required">-->
+                                    
+                                    @php
+    $nextCode = DB::table('originsetup')->where('BranchCode', $BranchCode)->max('OriginCode');
+    $nextCode = $nextCode ? $nextCode + 1 : 1;
+@endphp
+                                    <input type="text" class="" id="TxtCode" name="TxtCode" value="{{ $nextCode }}" readonly required="required">
                                     <span class="Txtspan">
                                         Code </span>
                                 </div>
@@ -75,6 +80,7 @@
                                 <div class="col-sm-12">
 
                                     <div class="rounded shadow">
+                                              <input type="hidden" id="originId" name="originId">
                                         <table class="table small" id="Gd1">
                                             <thead class="bg-info">
                                                 <tr>
@@ -83,15 +89,28 @@
                                                     <th>Origin&nbsp;Name</th>
                                                 </tr>
                                             </thead>
-                                            <tbody id="Gd1body">
-                                                @foreach ($OriginSetup as $OriginSetupitem)
-                                                    <tr>
-                                                        <td>{{ $OriginSetupitem->OriginCode }}</td>
+                                      
 
-                                                        <td>{{ $OriginSetupitem->OriginName }}</td>
-                                                    </tr>
-                                                @endforeach
-                                            </tbody>
+                                            <tbody id="Gd1body">
+    @foreach ($OriginSetup as $OriginSetupitem)
+        <tr class="origin-row"
+            data-code="{{ $OriginSetupitem->OriginCode }}"
+            data-name="{{ $OriginSetupitem->OriginName }}">
+            <td>{{ $OriginSetupitem->OriginCode }}</td>
+            <td>{{ $OriginSetupitem->OriginName }}</td>
+        </tr>
+    @endforeach
+</tbody>
+
+                                            <!--<tbody id="Gd1body">-->
+                                            <!--    @foreach ($OriginSetup as $OriginSetupitem)-->
+                                            <!--        <tr>-->
+                                            <!--            <td>{{ $OriginSetupitem->OriginCode }}</td>-->
+
+                                            <!--            <td>{{ $OriginSetupitem->OriginName }}</td>-->
+                                            <!--        </tr>-->
+                                            <!--    @endforeach-->
+                                            <!--</tbody>-->
                                         </table>
                                     </div>
                                 </div>
@@ -111,16 +130,21 @@
                             </div>
                         </div>
                         <div class="row ml-1">
-                            <button class="btn btn-primary my-2 mx-2" id="CmdAdd" role="button"> <i
-                                    class="fa fa-plus mr-1" aria-hidden="true"></i>Add</button>
+                            <button class="btn btn-primary my-2 mx-2" id="CmdAdd"  onclick="location.reload();" role="button"> <i
+                                    class="fa fa-plus mr-1" aria-hidden="true"></i>New</button>
 
                             <button class="btn btn-success my-2 mx-2" id="CmdSave" role="button"> <i
                                     class="fa fa-cloud mr-1" aria-hidden="true"></i>Save</button>
 
-                                    <button class="btn btn-warning mx-2 my-2" id="CmdPrint" role="button"> <i
+                                    <button class="btn btn-warning mx-2 my-2" id="CmdDelete" role="button"> <i
                                         class="fa fa-multiply mr-1" aria-hidden="true"></i>Delete</button>
-                                        <button class="btn btn-danger mx-2 my-2" id="CmdExit" role="button"> <i
-                                            class="fa fa-door-open mr-1" aria-hidden="true"></i>Exit</button>
+                              <a class="btn btn-danger mx-2 my-2" id="CmdExit" href="{{ url('origin-setup') }}" role="button">
+    <i class="fa fa-door-open mr-1" aria-hidden="true"></i> Exit
+</a>
+
+
+                                        <!--<button class="btn btn-danger mx-2 my-2" id="CmdExit" href="{{url('origin-setup') }}" role="button"> <i-->
+                                        <!--    class="fa fa-door-open mr-1" aria-hidden="true"></i>Exit</button>-->
                         </div>
 
                     </div>
@@ -295,6 +319,21 @@
 
 
         });
+        
+        
+      $(document).ready(function () {
+    // Click row to fill form
+    $('#Gd1body').on('click', '.origin-row', function () {
+        const code = $(this).data('code');
+        const name = $(this).data('name');
+
+        $('#originId').val(code); // hidden ID for update
+        $('#TxtCode').val(code);  // input field
+        $('#TxtTerms').val(name); // input field
+    });
+});
+
+
 
         function cusFunction() {
   var input, filter, table, tr, td, i, txtValue;
@@ -317,6 +356,90 @@
         $(document).ready(function() {
 
 
+            $('#CmdSave').click(function(e) {
+    e.preventDefault();
+    ajaxSetup();
+
+    let formData = new FormData();
+    formData.append('OriginCode', $('#TxtCode').val());
+    formData.append('OriginName', $('#TxtTerms').val());
+
+    $.ajax({
+        url: '{{ route("origin.save") }}', // ðŸ‘ˆ define this route
+        type: 'POST',
+        data: formData,
+        contentType: false,
+        processData: false,
+        beforeSend: function () {
+            $('.overlay').show();
+        },
+
+//         success: function(response) {
+//     if (response.status === 'success') {
+//         Swal.fire({
+//             icon: 'success',
+//             title: 'Saved!',
+//             text: 'Origin saved successfully!',
+//             confirmButtonColor: '#3085d6',
+//             confirmButtonText: 'OK'
+//         }).then((result) => {
+//             if (result.isConfirmed) {
+//                 location.reload();
+//             }
+//         });
+//     } else {
+//         Swal.fire({
+//             icon: 'error',
+//             title: 'Failed!',
+//             text: 'Failed to save origin.',
+//             confirmButtonColor: '#d33',
+//             confirmButtonText: 'Close'
+//         });
+//     }
+// },
+success: function(response) {
+    if (response.status === 'success') {
+        let msgTitle = response.message === 'Updated' ? 'Updated!' : 'Saved!';
+        let msgText = response.message === 'Updated'
+            ? 'Origin updated successfully!'
+            : 'Origin saved successfully!';
+
+        Swal.fire({
+            icon: 'success',
+            title: msgTitle,
+            text: msgText,
+            confirmButtonColor: '#3085d6',
+            confirmButtonText: 'OK'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                location.reload();
+            }
+        });
+    } else {
+        Swal.fire({
+            icon: 'error',
+            title: 'Failed!',
+            text: 'Failed to save origin.',
+            confirmButtonColor: '#d33',
+            confirmButtonText: 'Close'
+        });
+    }
+},
+
+error: function(xhr, status, error) {
+    console.error("Save error:", error);
+    Swal.fire({
+        icon: 'error',
+        title: 'Error!',
+        text: 'Something went wrong while saving.',
+    });
+},
+
+        complete: function () {
+            $('.overlay').hide();
+        }
+    });
+});
 
 
 
@@ -324,6 +447,101 @@
 
 
         });
+        
+        
+        
+        
+        
+        
+$(document).on('click', '#CmdDelete', function (e) {
+    e.preventDefault();
+
+    const code = $('#TxtCode').val();
+
+    if (!code) {
+        Swal.fire('Please select a row first.');
+        return;
+    }
+
+    // 🔐 Step 1: Prompt for admin password
+    const password = prompt("Enter Admin Authentication Password:");
+
+    if (password !== "332211") {
+        Swal.fire('Authentication Failed', 'Incorrect password. Access denied.', 'error');
+        return;
+    }
+
+    // ✅ Step 2: Password is correct → show confirmation dialog
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "This origin will be deleted permanently!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'Cancel',
+        confirmButtonColor: '#d33'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            deleteOrigin(code); // call the delete function
+        }
+    });
+});
+
+
+
+function deleteOrigin(code) {
+    ajaxSetup();
+
+    $.ajax({
+        url: '{{ route("origin.delete") }}',
+        type: 'POST',
+        data: {
+            OriginCode: code
+        },
+        success: function (response) {
+            if (response.status === 'success') {
+                Swal.fire('Deleted!', 'Origin has been deleted.', 'success');
+
+           
+                $('#Gd1body tr').filter(function () {
+                    return $(this).find('td:first').text().trim() == response.code;
+                }).remove();
+
+      
+                $('#TxtCode').val('');
+                $('#TxtTerms').val('');
+                $('#originId').val('');
+            } else {
+                Swal.fire('Error', response.message, 'error');
+            }
+        },
+        error: function (xhr) {
+            Swal.fire('Error', 'Something went wrong during deletion.', 'error');
+        }
+    });
+}
+
+
+// function deleteOrigin(code) {
+//     ajaxSetup();
+
+//     console.log('Deleting OriginCode:', code); // ✅ yahan check karo
+
+//     $.ajax({
+//         url: '{{ route("origin.delete") }}',
+//         type: 'POST',
+//         data: {
+//             OriginCode: code
+//         },
+//         success: function (response) {
+//             console.log('Success:', response);
+//         },
+//         error: function (xhr) {
+//             console.error('Error:', xhr);
+//         }
+//     });
+// }
+
     </script>
 
 

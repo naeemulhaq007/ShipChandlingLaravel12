@@ -39,7 +39,7 @@
                             <div class="row">
                                 <div class="inputbox col-sm-8 py-2">
                                     <input readonly type="text" class="" id="TxtCode" name="TxtCode"
-                                        required="required">
+                                        required="required" value="{{ old('TxtCode', $nextCode) }}">
                                     <span class="Txtspan">
                                         Code </span>
                                 </div>
@@ -64,15 +64,17 @@
 
                             <div class="row py-2">
                                 <button class="btn btn-primary  mx-2" id="CmdAdd" role="button"> <i
-                                        class="fa fa-plus mr-1" aria-hidden="true"></i>Add</button>
+                                        class="fa fa-plus mr-1" aria-hidden="true"></i>New</button>
 
                                 <button class="btn btn-success mx-2" id="CmdSave" role="button"> <i
                                         class="fa fa-cloud mr-1" aria-hidden="true"></i>Save</button>
 
                                 <button class="btn btn-warning mx-2" id="CmdDelete" role="button"> <i
                                         class="fa fa-multiply mr-1" aria-hidden="true"></i>Delete</button>
-                                <button class="btn btn-danger mx-2" id="CmdExit" role="button"> <i
-                                        class="fa fa-door-open mr-1" aria-hidden="true"></i>Exit</button>
+                                <a href="{{url('UOM-Setup') }}" class="btn btn-danger mx-2" id="CmdExit" role="button"> <i
+                                        class="fa fa-door-open mr-1" aria-hidden="true"></i>Exit</a>
+                                        
+                                        
                             </div>
 
 
@@ -219,26 +221,53 @@
             $('#ChkInactive').prop('checked', false);
         }
 
-        function createlist(tabledata) {
-            let table = document.getElementById('Gd1body');
-            table.innerHTML = ""; // Clear the table
-            tabledata.forEach(function(item) {
-                let row = table.insertRow();
-                row.classList.add("js-row");
+        // function createlist(tabledata) {
+        //     let table = document.getElementById('Gd1body');
+        //     table.innerHTML = ""; // Clear the table
+        //     tabledata.forEach(function(item) {
+        //         let row = table.insertRow();
+        //         row.classList.add("js-row");
 
-                function createCell(content) {
-                    let cell = row.insertCell();
-                    cell.innerHTML = content;
-                    return cell;
-                }
-                createCell(item.UOMCode);
-                createCell(item.UOMName);
-                createCell(item.ChkInactive);
+        //         function createCell(content) {
+        //             let cell = row.insertCell();
+        //             cell.innerHTML = content;
+        //             return cell;
+        //         }
+        //         createCell(item.UOMCode);
+        //         createCell(item.UOMName);
+        //         createCell(item.ChkInactive);
+        //     });
+
+
+
+        // }
+
+
+
+function createlist(tabledata) {
+    let table = document.getElementById('Gd1body');
+    table.innerHTML = ""; // Clear existing rows
+    tabledata.forEach(function(item) {
+        if (item.UOMCode && item.UOMName) { // prevent empty rows
+            let row = table.insertRow();
+            row.classList.add("js-row");
+
+            function createCell(content) {
+                let cell = row.insertCell();
+                cell.innerHTML = content;
+                return cell;
+            }
+            createCell(item.UOMCode);
+            createCell(item.UOMName);
+            createCell(item.ChkInactive);
+
+            // Add double click event for the new row
+            row.addEventListener("dblclick", function() {
+                jsdblfunc($(this));
             });
-
-
-
         }
+    });
+}
 
         function performdelete() {
             var TxtCode = $('#TxtCode').val();
@@ -311,59 +340,161 @@
 
             });
 
-            $('#CmdSave').click(function(e) {
+//             $('#CmdSave').click(function(e) {
+//                 e.preventDefault();
+//                 var TxtCode = $('#TxtCode').val();
+//                 var TxtStateName = $('#TxtStateName').val();
+//                 var ChkInactive = $('#ChkInactive').is(':checked');
+
+//                 ajaxSetup();
+//                 $.ajax({
+//                     url: "{{ route('UomSave') }}",
+//                     type: 'POST',
+//                     data: {
+//                         TxtCode,
+//                         TxtStateName,
+//                         ChkInactive,
+//                     },
+//                     beforeSend: function() {
+//                         $('.overlay').show();
+//                     },
+//                     success: function(resposne) {
+//     console.log(resposne);
+//     if (resposne.Message == 'Inserted') {
+//         Swal.fire('Saved!', 'UOM has been created.', 'success');
+//     } else if (resposne.Message == 'Updated') {
+//         Swal.fire('Updated!', 'UOM has been updated.', 'info');
+//     }
+
+//     if (resposne.UOMsetups.length > 0) {
+//         var UOMsetups = resposne.UOMsetups;
+//         createlist(UOMsetups);
+//     }
+
+//     clearform();
+
+//     $('.js-row').dblclick(function(e) {
+//         e.preventDefault();
+//         var row = $(this);
+//         jsdblfunc(row);
+//     });
+// },
+
+//                     // success: function(resposne) {
+//                     //     console.log(resposne);
+//                     //     if (resposne.Message == 'Saved') {
+//                     //         if (resposne.UOMsetups.length > 0) {
+//                     //             var UOMsetups = resposne.UOMsetups;
+//                     //             createlist(UOMsetups);
+//                     //         }
+
+
+//                     //         clearform();
+//                     //         Swal.fire(
+//                     //             'Confirmed!',
+//                     //             'Uom Is Saved.',
+//                     //             'success'
+//                     //         );
+
+//                     //     }
+//                     //     $('.js-row').dblclick(function(e) {
+//                     //         e.preventDefault();
+//                     //         var row = $(this);
+//                     //         jsdblfunc(row);
+
+//                     //     });
+//                     // },
+//                     error: function(data) {
+//                         console.log(data);
+//                         $('.overlay').hide();
+//                     },
+//                     complete: function() {
+//                         $('.overlay').hide();
+//                     }
+
+
+//                 });
+//             });
+
+
+
+
+$('#CmdSave').click(function(e) {
+    e.preventDefault();
+    var TxtCode = $('#TxtCode').val();
+    var TxtStateName = $('#TxtStateName').val();
+    var ChkInactive = $('#ChkInactive').is(':checked');
+
+    ajaxSetup();
+
+    $.ajax({
+        url: "{{ route('UomSave') }}",
+        type: 'POST',
+        data: {
+            TxtCode,
+            TxtStateName,
+            ChkInactive,
+        },
+        beforeSend: function() {
+            $('.overlay').show();
+        },
+        success: function(resposne) {
+            console.log(resposne);
+
+            if (resposne.Message == 'Inserted') {
+                Swal.fire('Saved!', 'UOM has been created.', 'success');
+            } else if (resposne.Message == 'Updated') {
+                Swal.fire('Updated!', 'UOM has been updated.', 'info');
+            }
+
+            if (resposne.UOMsetups.length > 0) {
+                var UOMsetups = resposne.UOMsetups;
+                createlist(UOMsetups);
+            }
+
+            // Reset form fields
+            clearform();
+
+            // Rebind row double-click
+            $('.js-row').dblclick(function(e) {
                 e.preventDefault();
-                var TxtCode = $('#TxtCode').val();
-                var TxtStateName = $('#TxtStateName').val();
-                var ChkInactive = $('#ChkInactive').is(':checked');
-
-                ajaxSetup();
-                $.ajax({
-                    url: "{{ route('UomSave') }}",
-                    type: 'POST',
-                    data: {
-                        TxtCode,
-                        TxtStateName,
-                        ChkInactive,
-                    },
-                    beforeSend: function() {
-                        $('.overlay').show();
-                    },
-                    success: function(resposne) {
-                        console.log(resposne);
-                        if (resposne.Message == 'Saved') {
-                            if (resposne.UOMsetups.length > 0) {
-                                var UOMsetups = resposne.UOMsetups;
-                                createlist(UOMsetups);
-                            }
-
-
-                            clearform();
-                            Swal.fire(
-                                'Confirmed!',
-                                'Uom Is Saved.',
-                                'success'
-                            );
-
-                        }
-                        $('.js-row').dblclick(function(e) {
-                            e.preventDefault();
-                            var row = $(this);
-                            jsdblfunc(row);
-
-                        });
-                    },
-                    error: function(data) {
-                        console.log(data);
-                        $('.overlay').hide();
-                    },
-                    complete: function() {
-                        $('.overlay').hide();
-                    }
-
-
-                });
+                var row = $(this);
+                jsdblfunc(row);
             });
+
+     
+            $('#TxtCode').val(resposne.SavedCode);
+            $('#TxtStateName').val(resposne.SavedName);
+            $('#ChkInactive').prop('checked', resposne.ChkInactive == 1);
+
+            // Optional: Highlight saved row
+            setTimeout(() => {
+                $("#Gd1body tr").each(function() {
+                    if ($(this).find('td:first').text() === resposne.SavedCode) {
+                        $(this).css("background-color", "#d4edda"); // light green
+                    }
+                });
+            }, 500);
+        },
+        error: function(xhr) {
+            if (xhr.status === 422) {
+                let errors = xhr.responseJSON.errors;
+                let messages = Object.values(errors).flat().join('<br>');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Validation Error',
+                    html: messages
+                });
+            } else {
+                console.log(xhr);
+            }
+            $('.overlay').hide();
+        },
+        complete: function() {
+            $('.overlay').hide();
+        }
+    });
+});
 
             $('#CmdAdd').click(function(e) {
                 e.preventDefault();
@@ -399,7 +530,7 @@
                     preConfirm: (password) => {
                         return new Promise((resolve, reject) => {
                             // Example password validation
-                            if (password === '33221') {
+                            if (password === '332211') {
                                 resolve();
                             } else {
                                 Swal.showValidationMessage('Incorrect password');

@@ -58,7 +58,9 @@
 
                         <div class="inputbox col-sm-4">
                             <input type="hidden" id="ID" name="" value="">
-                            <input type="text" id="TxtSerialNo" name="" value="">
+                            <input type="text" id="TxtSerialNo" name=""   value="{{ old('TxtSerialNo', $nextSerial) }}">
+                        
+
                             <span>Serial No.</span>
                         </div>
 
@@ -84,14 +86,15 @@
 
                     <div class="row py-2">
                         <div class="mx-auto">
-                            <a name="CmdAdd" id="CmdAdd" class="btn btn-primary mx-2" role="button"><i
-                                    class="fa fa-plus mr-1" aria-hidden="true"></i> Add</a>
+                     
+                                              <button class="btn btn-primary  mx-2" id="CmdAdd" role="button"> <i
+                                        class="fa fa-plus mr-1" aria-hidden="true"></i>New</button>
                             <a name="CmdSave" id="CmdSave" class="btn btn-success mx-2" role="button"><i
                                     class="fa fa-cloud mr-1" aria-hidden="true"></i> Save</a>
                             <a name="CmdDelete" id="CmdDelete" class="btn btn-warning mx-2" href="#" role="button">
                                 <i class="fas fa-trash  mr-1"></i> Delete</a>
 
-                            <a name="CmdExit" id="CmdExit" class="btn btn-danger mx-2" href="#" role="button"><i
+                            <a name="CmdExit" id="CmdExit" class="btn btn-danger mx-2" href="{{url('Currency-Setup') }}" role="button"><i
                                     class="fas fa-door-open  mr-1"></i> Exit</a>
                         </div>
                     </div>
@@ -210,78 +213,165 @@
                         TxtCurrency,
                         TxtExchangeRate,
                     },
-                    success: function(response) {
-                        console.log(response);
-                        if (response.Message == 'Saved') {
-                            alert(response.Message)
+                    success: function(resposne) {
+    console.log(resposne);
+    let data = resposne.currencyysetup;
+    let table = document.getElementById('Receiptvocvertablebody');
+    table.innerHTML = ""; // Clear the table
 
-                            if (response.currencyysetup.length > 0) {
-                                var currency = response.CurrencySetup;
-                                let table = document.getElementById('Receiptvocvertablebody');
-                                table.innerHTML = ""; // Clear the table
-                                currency.forEach(function(item) {
-                                    let row = table.insertRow();
-                                    row.classList.add("js-row");
+    let maxSerial = 0;
 
-                                    function createCell(content) {
-                                        let cell = row.insertCell();
-                                        cell.innerHTML = content;
-                                        return cell;
-                                    }
-                                    createCell(item.id);
-                                    createCell(item.TxtSerialNo);
-                                    createCell(item.TxtCurrency);
-                                    createCell(item.TxtExchangeRate);
-                                });
-                                dblcvkui()
-                            }
-                        }
-                    }
+    data.forEach(function(item) {
+        let row = table.insertRow();
+        row.classList.add("js-row");
+
+        function createCell(content) {
+            let cell = row.insertCell();
+            cell.innerHTML = content;
+            return cell;
+        }
+
+        createCell(item.id).hidden = true;
+        createCell(item.SerialNo);
+        createCell(item.Currency);
+        createCell(item.ExchangeRate);
+
+        // Get max SerialNo
+        const sn = parseInt(item.SerialNo);
+        if (!isNaN(sn) && sn > maxSerial) {
+            maxSerial = sn;
+        }
+    });
+
+    // Set next SerialNo
+    $('#TxtSerialNo').val(maxSerial + 1);
+
+    // Reset other inputs
+    $('#ID').val('');
+    $('#TxtCurrency').val('');
+    $('#TxtExchangeRate').val('');
+
+    // Show alert
+    let message = $('#ID').val() ? 'Updated Successfully' : 'Saved Successfully';
+    Swal.fire({
+        icon: 'success',
+        title: message,
+        timer: 1500,
+        showConfirmButton: false
+    });
+
+    dblcvkui();
+}
+
+                    // success: function(response) {
+                    //     console.log(response);
+                    //     if (response.Message == 'Saved') {
+                    //         alert(response.Message)
+
+                    //         if (response.currencyysetup.length > 0) {
+                    //             var currency = response.currencyysetup;
+                    //             let table = document.getElementById('Receiptvocvertablebody');
+                    //             table.innerHTML = ""; // Clear the table
+                    //             currency.forEach(function(item) {
+                    //                 let row = table.insertRow();
+                    //                 row.classList.add("js-row");
+
+                    //                 function createCell(content) {
+                    //                     let cell = row.insertCell();
+                    //                     cell.innerHTML = content;
+                    //                     return cell;
+                    //                 }
+                    //                 createCell(item.id);
+                    //                 createCell(item.TxtSerialNo);
+                    //                 createCell(item.TxtCurrency);
+                    //                 createCell(item.TxtExchangeRate);
+                    //             });
+                    //             dblcvkui()
+                    //         }
+                    //     }
+                    // }
                 });
 
             });
 
+    
             $('#CmdDelete').click(function(e) {
+    e.preventDefault();
 
-                var ID = $('#ID').val();
-                e.preventDefault();
-                ajaxSetup();
-                $.ajax({
-                    type: "post",
-                    url: "{{ route('currencyDelete') }}",
-                    data: {
-                        ID,
-                    },
-                    success: function(response) {
-                        console.log(response);
-                        if (response.Message == 'Deleted') {
-                            alert(response.Message)
+    var ID = $('#ID').val();
+    if (!ID) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'No Entry Selected!',
+            text: 'Please select a row to delete.',
+        });
+        return;
+    }
 
-                            if (response.currencyysetup.length > 0) {
-                                var currency = response.CurrencySetup;
-                                let table = document.getElementById('Receiptvocvertablebody');
-                                table.innerHTML = ""; // Clear the table
-                                currency.forEach(function(item) {
-                                    let row = table.insertRow();
-                                    row.classList.add("js-row");
+    Swal.fire({
+        title: 'Admin Authentication',
+        text: 'Please enter your password to confirm deletion:',
+        input: 'password',
+        inputPlaceholder: 'Enter admin password',
+        inputAttributes: {
+            autocapitalize: 'off'
+        },
+        showCancelButton: true,
+        confirmButtonText: 'Delete',
+        cancelButtonText: 'Cancel',
+        showLoaderOnConfirm: true,
+        preConfirm: (password) => {
+            return new Promise((resolve, reject) => {
+                if (password === '332211') {
+                    resolve();
+                } else {
+                    Swal.showValidationMessage('Incorrect password');
+                }
+            });
+        },
+        allowOutsideClick: () => !Swal.isLoading()
+    }).then((result) => {
+        if (result.isConfirmed) {
+            ajaxSetup();
+            $.ajax({
+                type: "post",
+                url: "{{ route('currencyDelete') }}",
+                data: { ID },
+                success: function(response) {
+                    console.log(response);
+                    if (response.Message == 'Deleted') {
+                        Swal.fire(
+                            'Deleted!',
+                            'Currency entry has been deleted.',
+                            'success'
+                        );
 
-                                    function createCell(content) {
-                                        let cell = row.insertCell();
-                                        cell.innerHTML = content;
-                                        return cell;
-                                    }
-                                    createCell(item.id);
-                                    createCell(item.TxtSerialNo);
-                                    createCell(item.TxtCurrency);
-                                    createCell(item.TxtExchangeRate);
-                                });
-                                dblcvkui()
-                            }
+                        if (response.currencyysetup.length > 0) {
+                            var currency = response.currencyysetup;
+                            let table = document.getElementById('Receiptvocvertablebody');
+                            table.innerHTML = "";
+                            currency.forEach(function(item) {
+                                let row = table.insertRow();
+                                row.classList.add("js-row");
+
+                                function createCell(content) {
+                                    let cell = row.insertCell();
+                                    cell.innerHTML = content;
+                                    return cell;
+                                }
+                                createCell(item.id);
+                                createCell(item.SerialNo);
+                                createCell(item.Currency);
+                                createCell(item.ExchangeRate);
+                            });
+                            dblcvkui();
                         }
                     }
-                });
-
+                }
             });
+        }
+    });
+});
 
 
         });
@@ -318,6 +408,8 @@
                 }
             });
         }
+        
+        
 
         function dataget() {
 
@@ -359,6 +451,16 @@
 
                     dblcvkui();
 
+                             
+                             
+                             function getNextSerialNumber(currencyList) {
+    let max = 0;
+    currencyList.forEach(item => {
+        const sn = parseInt(item.SerialNo);
+        if (!isNaN(sn) && sn > max) max = sn;
+    });
+    return max + 1;
+}
 
 
 
@@ -376,6 +478,18 @@
 
                 $('#TxtVoucherDate').val('');
                 $('#TxtActCashName').val('');
+
+            });
+            
+            $('#CmdAdd').click(function(e) {
+                e.preventDefault();
+             
+                
+                
+                    $('#ID').val('');
+                    $('#TxtSerialNo').val('');
+                    $('#TxtCurrency').val('');
+                    $('#TxtExchangeRate').val('');
 
             });
 

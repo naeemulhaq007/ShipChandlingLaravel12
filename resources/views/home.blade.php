@@ -228,7 +228,580 @@
 
         </div>
 
+        <!--<div class="row">-->
+        <!--    <div class="col-md-12">-->
+        <!--        <div class="card">-->
+        <!--            <div class="card-header">-->
+        <!--                <h5 class="card-title">Monthly Recap Report</h5>-->
+
+        <!--                <div class="card-tools">-->
+        <!--                    <button type="button" class="btn btn-tool" data-card-widget="collapse">-->
+        <!--                        <i class="fas fa-minus"></i>-->
+        <!--                    </button>-->
+        <!--                    <div class="btn-group">-->
+        <!--                        <button type="button" class="btn btn-tool dropdown-toggle" data-toggle="dropdown">-->
+        <!--                            <i class="fas fa-wrench"></i>-->
+        <!--                        </button>-->
+        <!--                        <div class="dropdown-menu dropdown-menu-right" role="menu">-->
+        <!--                            {{-- <a href="#" class="dropdown-item">Action</a>-->
+        <!--                            <a href="#" class="dropdown-item">Another action</a>-->
+        <!--                            <a href="#" class="dropdown-item">Something else here</a>-->
+        <!--                            <a class="dropdown-divider"></a>-->
+        <!--                            <a href="#" class="dropdown-item">Separated link</a> --}}-->
+        <!--                        </div>-->
+        <!--                    </div>-->
+        <!--                    {{-- <button type="button" class="btn btn-tool" data-card-widget="remove">-->
+        <!--                        <i class="fas fa-times"></i>-->
+        <!--                    </button> --}}-->
+        <!--                </div>-->
+        <!--            </div>-->
+                    <!-- /.card-header -->
+        <!--            <div class="card-body">-->
+        <!--                <div class="row">-->
+        <!--                    <div class="col-md-8">-->
+        <!--                        <p class="text-center">-->
+        <!--                            <strong>Sales: 1 Jan, 2022 - 30 Jul, 2022</strong>-->
+        <!--                        </p>-->
+
+        <!--                        <div class="chart">-->
+                                    <!-- Sales Chart Canvas -->
+        <!--                            <canvas id="salesChart" height="180" style="height: 180px;"></canvas>-->
+        <!--                        </div>-->
+                                <!-- /.chart-responsive -->
+        <!--                    </div>-->
+                            <!-- /.col -->
+        <!--                    <div class="col-md-4">-->
+        <!--                        <p class="text-center">-->
+        <!--                            <strong>Goal Completion</strong>-->
+        <!--                        </p>-->
+
+        <!--                        <div class="progress-group">-->
+        <!--                            Add Products to Cart-->
+        <!--                            <span class="float-right"><b>160</b>/200</span>-->
+        <!--                            <div class="progress progress-sm">-->
+        <!--                                <div class="progress-bar bg-primary" style="width: 80%"></div>-->
+        <!--                            </div>-->
+        <!--                        </div>-->
+                                <!-- /.progress-group -->
+
+        <!--                        <div class="progress-group">-->
+        <!--                            Complete Purchase-->
+        <!--                            <span class="float-right"><b>310</b>/400</span>-->
+        <!--                            <div class="progress progress-sm">-->
+        <!--                                <div class="progress-bar bg-danger" style="width: 75%"></div>-->
+        <!--                            </div>-->
+        <!--                        </div>-->
+
+                                <!-- /.progress-group -->
+        <!--                        <div class="progress-group">-->
+        <!--                            <span class="progress-text">Visit Premium Page</span>-->
+        <!--                            <span class="float-right"><b>480</b>/800</span>-->
+        <!--                            <div class="progress progress-sm">-->
+        <!--                                <div class="progress-bar bg-success" style="width: 60%"></div>-->
+        <!--                            </div>-->
+        <!--                        </div>-->
+
+                                <!-- /.progress-group -->
+        <!--                        <div class="progress-group">-->
+        <!--                            Send Inquiries-->
+        <!--                            <span class="float-right"><b>250</b>/500</span>-->
+        <!--                            <div class="progress progress-sm">-->
+        <!--                                <div class="progress-bar bg-warning" style="width: 50%"></div>-->
+        <!--                            </div>-->
+        <!--                        </div>-->
+                                <!-- /.progress-group -->
+        <!--                    </div>-->
+                            <!-- /.col -->
+        <!--                </div>-->
+                        <!-- /.row -->
+        <!--            </div>-->
+                    <!-- ./card-body -->
+        <!--            <div class="card-footer">-->
+        <!--                <div class="row">-->
+        <!--                    <div class="col-sm-3 col-6">-->
+        <!--                        <div class="description-block border-right">-->
+        <!--                            <span class="description-percentage text-success"><i class="fas fa-caret-up"></i>-->
+        <!--                                17%</span>-->
+        <!--                            <h5 id="TOTALREVENUE" class="description-header">$35,210.43</h5>-->
+        <!--                            <span class="description-text">TOTAL REVENUE</span>-->
+        <!--                        </div>-->
+                                <!-- /.description-block -->
+        <!--                    </div>-->
+                            <!-- /.col -->
+        <!--                    <div class="col-sm-3 col-6">-->
+        <!--                        <div class="description-block border-right">-->
+        <!--                            <span class="description-percentage text-warning"><i class="fas fa-caret-left"></i>-->
+        <!--                                0%</span>-->
+        <!--                            <h5 id="TOTALCOST" class="description-header">$10,390.90</h5>-->
+        <!--                            <span class="description-text">TOTAL COST</span>-->
+        <!--                        </div>-->
+                                <!-- /.description-block -->
+        <!--                    </div>-->
+                            <!-- /.col -->
+        <!--                    <div class="col-sm-3 col-6">-->
+        <!--                        <div class="description-block border-right">-->
+        <!--                            <span class="description-percentage text-success"><i class="fas fa-caret-up"></i>-->
+        <!--                                20%</span>-->
+        <!--                            <h5 id="TOTALPROFIT" class="description-header">$24,813.53</h5>-->
+        <!--                            <span class="description-text">TOTAL PROFIT</span>-->
+        <!--                        </div>-->
+                                <!-- /.description-block -->
+        <!--                    </div>-->
+                            <!-- /.col -->
+        <!--                    <div class="col-sm-3 col-6">-->
+        <!--                        <div class="description-block">-->
+        <!--                            <span class="description-percentage text-danger"><i class="fas fa-caret-down"></i>-->
+        <!--                                18%</span>-->
+        <!--                            <h5 id="TotalTransaction" class="description-header">1200</h5>-->
+        <!--                            <span class="description-text">Total Transaction</span>-->
+        <!--                        </div>-->
+                                <!-- /.description-block -->
+        <!--                    </div>-->
+        <!--                </div>-->
+                        <!-- /.row -->
+        <!--            </div>-->
+                    <!-- /.card-footer -->
+        <!--        </div>-->
+                <!-- /.card -->
+        <!--    </div>-->
+            <!-- /.col -->
+        <!--</div>-->
+
+
+        <!--<div class="row">-->
+
+        <!--    <section class="col-lg-7 connectedSortable ui-sortable">-->
+
+        <!--        <div class="card">-->
+        <!--            <div class="card-header border-transparent">-->
+        <!--                <h3 class="card-title">Latest Orders</h3>-->
+
+        <!--                <div class="card-tools">-->
+        <!--                    <button type="button" class="btn btn-tool" data-card-widget="collapse">-->
+        <!--                        <i class="fas fa-minus"></i>-->
+        <!--                    </button>-->
+        <!--                    <button type="button" class="btn btn-tool" data-card-widget="remove">-->
+        <!--                        <i class="fas fa-times"></i>-->
+        <!--                    </button>-->
+        <!--                </div>-->
+        <!--            </div>-->
+                    <!-- /.card-header -->
+        <!--            <div class="card-body p-0">-->
+        <!--                <div class="table-responsive">-->
+        <!--                    <table class="table m-0">-->
+        <!--                        <thead>-->
+        <!--                            <tr>-->
+        <!--                                <th>Order ID</th>-->
+        <!--                                <th>Customers</th>-->
+        <!--                                <th>Vessel</th>-->
+        <!--                                <th>Status</th>-->
+        <!--                                <th>Amount</th>-->
+        <!--                            </tr>-->
+        <!--                        </thead>-->
+        <!--                        <tbody id="allordertablebody">-->
+
+        <!--                            {{-- <tr>-->
+        <!--                                <td><a href="pages/examples/invoice.html">OR1847</a></td>-->
+        <!--                                <td>Anglo Ship Management</td>-->
+        <!--                                <td><span class="badge badge-success">Shipped</span></td>-->
+        <!--                                <td>-->
+        <!--                                    <div class="sparkbar" data-color="#00a65a" data-height="20">-->
+        <!--                                        90,80,90,-70,61,-83,63</div>-->
+        <!--                                </td>-->
+        <!--                            </tr>-->
+        <!--                            <tr>-->
+        <!--                                <td><a href="pages/examples/invoice.html">OR1848</a></td>-->
+        <!--                                <td>Samsung Smart TV</td>-->
+        <!--                                <td><span class="badge badge-warning">Pending</span></td>-->
+        <!--                                <td>-->
+        <!--                                    <div class="sparkbar" data-color="#f39c12" data-height="20">-->
+        <!--                                        90,80,-90,70,61,-83,68</div>-->
+        <!--                                </td>-->
+        <!--                            </tr>-->
+        <!--                            <tr>-->
+        <!--                                <td><a href="pages/examples/invoice.html">OR7429</a></td>-->
+        <!--                                <td>iPhone 6 Plus</td>-->
+        <!--                                <td><span class="badge badge-danger">Delivered</span></td>-->
+        <!--                                <td>-->
+        <!--                                    <div class="sparkbar" data-color="#f56954" data-height="20">-->
+        <!--                                        90,-80,90,70,-61,83,63</div>-->
+        <!--                                </td>-->
+        <!--                            </tr>-->
+        <!--                            <tr>-->
+        <!--                                <td><a href="pages/examples/invoice.html">OR7429</a></td>-->
+        <!--                                <td>Samsung Smart TV</td>-->
+        <!--                                <td><span class="badge badge-info">Processing</span></td>-->
+        <!--                                <td>-->
+        <!--                                    <div class="sparkbar" data-color="#00c0ef" data-height="20">-->
+        <!--                                        90,80,-90,70,-61,83,63</div>-->
+        <!--                                </td>-->
+        <!--                            </tr>-->
+        <!--                            <tr>-->
+        <!--                                <td><a href="pages/examples/invoice.html">OR1848</a></td>-->
+        <!--                                <td>Samsung Smart TV</td>-->
+        <!--                                <td><span class="badge badge-warning">Pending</span></td>-->
+        <!--                                <td>-->
+        <!--                                    <div class="sparkbar" data-color="#f39c12" data-height="20">-->
+        <!--                                        90,80,-90,70,61,-83,68</div>-->
+        <!--                                </td>-->
+        <!--                            </tr>-->
+        <!--                            <tr>-->
+        <!--                                <td><a href="pages/examples/invoice.html">OR7429</a></td>-->
+        <!--                                <td>iPhone 6 Plus</td>-->
+        <!--                                <td><span class="badge badge-danger">Delivered</span></td>-->
+        <!--                                <td>-->
+        <!--                                    <div class="sparkbar" data-color="#f56954" data-height="20">-->
+        <!--                                        90,-80,90,70,-61,83,63</div>-->
+        <!--                                </td>-->
+        <!--                            </tr>-->
+        <!--                            <tr>-->
+        <!--                                <td><a href="pages/examples/invoice.html">OR9842</a></td>-->
+        <!--                                <td>Call of Duty IV</td>-->
+        <!--                                <td><span class="badge badge-success">Shipped</span></td>-->
+        <!--                                <td>-->
+        <!--                                    <div class="sparkbar" data-color="#00a65a" data-height="20">-->
+        <!--                                        90,80,90,-70,61,-83,63</div>-->
+        <!--                                </td>-->
+        <!--                            </tr> --}}-->
+        <!--                        </tbody>-->
+        <!--                    </table>-->
+        <!--                </div>-->
+                        <!-- /.table-responsive -->
+        <!--            </div>-->
+                    <!-- /.card-body -->
+        <!--            <div class="card-footer clearfix">-->
+        <!--                <a href="javascript:void(0)" class="btn btn-sm btn-info float-left">Place New Order</a>-->
+        <!--                <a href="javascript:void(0)" class="btn btn-sm btn-secondary float-right">View All Orders</a>-->
+        <!--            </div>-->
+                    <!-- /.card-footer -->
+        <!--        </div>-->
+
+
+
+
+
+        <!--        <div class="card">-->
+        <!--            <div class="card-header border-0">-->
+        <!--                <div class="d-flex justify-content-between">-->
+        <!--                    <h3 class="card-title">Online Store Visitors</h3>-->
+        <!--                    <a href="javascript:void(0);">View Report</a>-->
+        <!--                </div>-->
+        <!--            </div>-->
+        <!--            <div class="card-body">-->
+        <!--                <div class="d-flex">-->
+        <!--                    <p class="d-flex flex-column">-->
+        <!--                        <span class="text-bold text-lg">820</span>-->
+        <!--                        <span>Visitors Over Time</span>-->
+        <!--                    </p>-->
+        <!--                    <p class="ml-auto d-flex flex-column text-right">-->
+        <!--                        <span class="text-success">-->
+        <!--                            <i class="fas fa-arrow-up"></i> 12.5%-->
+        <!--                        </span>-->
+        <!--                        <span class="text-muted">Since last week</span>-->
+        <!--                    </p>-->
+        <!--                </div>-->
+                        <!-- /.d-flex -->
+
+        <!--                <div class="position-relative mb-4">-->
+        <!--                    <canvas id="visitors-chart" height="200"></canvas>-->
+        <!--                </div>-->
+
+        <!--                <div class="d-flex flex-row justify-content-end">-->
+        <!--                    <span class="mr-2">-->
+        <!--                        <i class="fas fa-square text-primary"></i> This Week-->
+        <!--                    </span>-->
+
+        <!--                    <span>-->
+        <!--                        <i class="fas fa-square text-gray"></i> Last Week-->
+        <!--                    </span>-->
+        <!--                </div>-->
+        <!--            </div>-->
+        <!--        </div>-->
+
+        <!--    </section>-->
+
+
+        <!--    <section class="col-lg-5 connectedSortable ui-sortable">-->
+
+        <!--        <div class="col-md-12">-->
+                    <!-- Info Boxes Style 2 -->
+        <!--            <div class="info-box mb-3 bg-warning">-->
+        <!--                <span class="info-box-icon"><i class="fas fa-tag"></i></span>-->
+
+        <!--                <div class="info-box-content">-->
+        <!--                    <span class="info-box-text">Stock</span>-->
+        <!--                    <span class="info-box-number" id="ItemStockCount"></span>-->
+        <!--                </div>-->
+                        <!-- /.info-box-content -->
+        <!--            </div>-->
+                    <!-- /.info-box -->
+        <!--            <div class="info-box mb-3 bg-success">-->
+        <!--                <span class="info-box-icon"><i class="far fa-heart"></i></span>-->
+
+        <!--                <div class="info-box-content">-->
+        <!--                    <span class="info-box-text">Mentions</span>-->
+        <!--                    <span class="info-box-number">92,050</span>-->
+        <!--                </div>-->
+                        <!-- /.info-box-content -->
+        <!--            </div>-->
+                    <!-- /.info-box -->
+        <!--            <div class="info-box mb-3 bg-danger">-->
+        <!--                <span class="info-box-icon"><i class="fas fa-cloud-download-alt"></i></span>-->
+
+        <!--                <div class="info-box-content">-->
+        <!--                    <span class="info-box-text">Downloads</span>-->
+        <!--                    <span class="info-box-number">114,381</span>-->
+        <!--                </div>-->
+                        <!-- /.info-box-content -->
+        <!--            </div>-->
+                    <!-- /.info-box -->
+        <!--            <div class="info-box mb-3 bg-info">-->
+        <!--                <span class="info-box-icon"><i class="far fa-comment"></i></span>-->
+
+        <!--                <div class="info-box-content">-->
+        <!--                    <span class="info-box-text">Direct Messages</span>-->
+        <!--                    <span class="info-box-number">163,921</span>-->
+        <!--                </div>-->
+                        <!-- /.info-box-content -->
+        <!--            </div>-->
+        <!--            <div class="info-box mb-3 bg-primary">-->
+        <!--                <span class="info-box-icon"><i class="far fa-comment"></i></span>-->
+
+        <!--                <div class="info-box-content">-->
+        <!--                    <span class="info-box-text">Direct Messages</span>-->
+        <!--                    <span class="info-box-number">163,921</span>-->
+        <!--                </div>-->
+                        <!-- /.info-box-content -->
+        <!--            </div>-->
+                    <!-- /.info-box -->
+
+        <!--        </div>-->
+
+
+        <!--        <div class="card">-->
+        <!--            <div class="card-header border-0">-->
+        <!--                <div class="d-flex justify-content-between">-->
+        <!--                    <h3 class="card-title">Sales</h3>-->
+        <!--                    <a href="javascript:void(0);">View Report</a>-->
+        <!--                </div>-->
+        <!--            </div>-->
+        <!--            <div class="card-body">-->
+        <!--                <div class="d-flex">-->
+        <!--                    <p class="d-flex flex-column">-->
+        <!--                        <span class="text-bold text-lg">$18,230.00</span>-->
+        <!--                        <span>Sales Over Time</span>-->
+        <!--                    </p>-->
+        <!--                    <p class="ml-auto d-flex flex-column text-right">-->
+        <!--                        <span class="text-success">-->
+        <!--                            <i class="fas fa-arrow-up"></i> 33.1%-->
+        <!--                        </span>-->
+        <!--                        <span class="text-muted">Since last month</span>-->
+        <!--                    </p>-->
+        <!--                </div>-->
+                        <!-- /.d-flex -->
+
+        <!--                <div class="position-relative mb-4">-->
+        <!--                    <canvas id="sales-chart" height="200"></canvas>-->
+        <!--                </div>-->
+
+        <!--                <div class="d-flex flex-row justify-content-end">-->
+        <!--                    <span class="mr-2">-->
+        <!--                        <i class="fas fa-square text-primary"></i> This year-->
+        <!--                    </span>-->
+
+        <!--                    <span>-->
+        <!--                        <i class="fas fa-square text-gray"></i> Last year-->
+        <!--                    </span>-->
+        <!--                </div>-->
+        <!--            </div>-->
+        <!--        </div>-->
+
+
+
+
+        <!--    </section>-->
+
+        <!--</div>-->
+
         <div class="row">
+            <div class="col-md-12">
+                <div class="card" id="SetupsElement">
+                    <div class="card-header">
+                        <h5 class="card-title">Set Ups</h5>
+
+
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+
+
+                        </div>
+
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <p class="text-center">
+
+                                <div class="row">
+
+                                    <div id="CmdCompanySetup" class="col-md-2" style="text-align:center">
+                                        <a href="<?php echo url('company-setup '); ?>"> <img class="img-fluid" src="<?php echo url('assets/images/company.png'); ?>"
+                                                style="max-width:80px" border="0"></a>
+                                        <br />
+                                        Our Company
+                                    </div>
+                                    <div id="CmdBranchsetup" class="col-md-2" style="text-align:center">
+                                        <a href="<?php echo url('branch-setup '); ?>"><img class="img-fluid" border="0"
+                                                src="<?php echo url('assets/images/branch.png'); ?>" style="max-width:80px"></a>
+                                        <br />
+                                        Branch Setup
+                                    </div>
+                                    <div id="Button9" class="col-md-2" style="text-align:center">
+                                        <a href="<?php echo url('warehouse-setup '); ?>"><img class="img-fluid" src="<?php echo url('assets/images/warehouse.png'); ?>"
+                                                style="max-width:80px" boder="0"></a>
+                                        <br />
+                                        Warehouse Setup
+                                    </div>
+                                    <div id="CmdAgentSetup" class="col-md-2" style="text-align:center">
+                                        <a href="<?php echo url('agent-setup '); ?>"> <img class="img-fluid" src="<?php echo url('assets/images/agents.png'); ?>"
+                                                style="max-width:80px" border="0"></a>
+                                        <br />
+                                        Agent Registration
+                                    </div>
+
+
+                                    <div id="CmdDepartmentSetup" class="col-md-2" style="text-align:center">
+                                        <a href="<?php echo url('department-setup '); ?>"> <img class="img-fluid" src="<?php echo url('assets/images/department.png'); ?>"
+                                                style="max-width:80px" border="0"></a>
+                                        <br />
+                                        Department Setup
+                                    </div>
+
+                                    <div id="CmdCategorySetup" class="col-md-2" style="text-align:center">
+                                        <a href="#"> <img class="img-fluid" src="<?php echo url('assets/images/category.png'); ?>"
+                                                style="max-width:80px" border="0"></a>
+                                        <br />
+                                        Category Setup
+                                    </div>
+
+                                    <div id="CmdOriginSetup" class="col-md-2" style="text-align:center">
+                                        <a href="<?php echo url('origin-setup '); ?>"><img class="img-fluid" border="0"
+                                                src="<?php echo url('assets/images/origin.png'); ?>" style="max-width:80px"></a>
+                                        <br />
+                                        Origin Setup
+                                    </div>
+
+
+                                    <div id="CmdVendorSetup" class="col-md-2" style="text-align:center">
+                                        <a href="<?php echo url('vendor-setup '); ?>"><img class="img-fluid" border="0"
+                                                src="<?php echo url('assets/images/vendor-list.png'); ?>" style="max-width:80px"></a>
+                                        <br />
+                                        Vendor Setup
+                                    </div>
+                                    <div id="CmdVesselRegSetup" class="col-md-2" style="text-align:center">
+                                        <a href="<?php echo url('vessel-setup '); ?>"><img class="img-fluid" border="0"
+                                                src="<?php echo url('assets/images/ship-setup.png'); ?>" style="max-width:80px"></a>
+                                        <br />
+                                        Vessel Setup
+                                    </div>
+                                    <div id="Button8" class="col-md-2" style="text-align:center">
+                                        <a href="#"><img class="img-fluid" border="0"
+                                                src="<?php echo url('assets/images/status-setup.png'); ?>" style="max-width:80px"></a>
+                                        <br />
+                                        Status Setup
+                                    </div>
+
+                                    <div id="CmdTermsSetup" class="col-md-2" style="text-align:center">
+                                        <a href="<?php echo url('terms-setup '); ?>"><img class="img-fluid" border="0"
+                                                src="<?php echo url('assets/images/terms-setup.png'); ?>" style="max-width:80px"></a>
+                                        <br />
+                                        Terms Setup
+                                    </div>
+
+                                    <div id="Button26" class="col-md-2" style="text-align:center">
+                                        <a href="#"><img class="img-fluid" border="0"
+                                                src="<?php echo url('assets/images/priority-setup.png'); ?>" style="max-width:80px"></a>
+                                        <br />
+                                        Priority Setup
+                                    </div>
+
+
+                                    <div id="CmdStatusSetup" class="col-md-2" style="text-align:center">
+                                        <a href="<?php echo url('quote-setup '); ?>"><img class="img-fluid" border="0"
+                                                src="<?php echo url('assets/images/quotation-setup.png'); ?>" style="max-width:80px"></a>
+                                        <br />
+                                        Quote Status Setup
+                                    </div>
+
+                                    <div id="CmdAssignUserColors" class="col-md-2" style="text-align:center">
+                                        <a href="#"><img class="img-fluid" border="0"
+                                                src="<?php echo url('assets/images/user-colors.png'); ?>" style="max-width:80px"></a>
+                                        <br />
+                                        Assign User Color
+                                    </div>
+
+                                    <div id="CmdCustomerSetup" class="col-md-2" style="text-align:center">
+                                        <a href="<?php echo url('customer-setup '); ?>"><img class="img-fluid" border="0"
+                                                src="<?php echo url('assets/images/customer-setup.png'); ?>" style="max-width:80px"></a>
+                                        <br />
+                                        Customer Setup
+                                    </div>
+
+
+                                    <div class="col-md-2" style="text-align:center">
+                                        <a href="<?php echo url('shipingport-setup'); ?>"><img class="img-fluid" border="1"
+                                                src="<?php echo url('assets/images/shipinngport.png'); ?>" style="max-width:80px;height:80px"></a>
+                                        <br />
+                                        Shiping Port-setup
+                                    </div>
+                                    <div id="CmdItemSetupProvision" class="col-md-2" style="text-align:center">
+                                        <a href="<?php echo url('Item-Register-Setup'); ?>"><img class="img-fluid" border="1"
+                                                src="<?php echo url('assets/images/quotation-View.png'); ?>" style="max-width:80px"></a>
+                                        <br />
+                                        Item Registration Setup
+                                    </div>
+                                    <div id="Button76" class="col-md-2" style="text-align:center">
+                                        <a href="<?php echo url('Vendor-Contract-Provision'); ?>"><img class="img-fluid" border="1"
+                                                src="<?php echo url('assets/images/vendorcontract.png'); ?>" style="max-width:80px"></a>
+                                        <br />
+                                        Vendor Contract Provision
+                                    </div>
+
+                                </div>
+                                <div class="row">
+                                    <div id="ToolStripMenuItem8" class="col-md-2" style="text-align:center">
+                                        <a href="<?php echo url('Fix-Account-Setup'); ?>"><img class="img-fluid" border="1"
+                                                src="<?php echo url('assets/images/FixAccount.png'); ?>" style="max-width:80px;height:80px"></a>
+                                        <br />
+                                        Fix Account Setup
+                                    </div>
+
+
+                                </div>
+
+                                </p>
+
+
+                            </div>
+                            <!-- /.col -->
+
+                            <!-- /.col -->
+                        </div>
+                        <!-- /.row -->
+                    </div>
+                    <!-- ./card-body -->
+
+                    <!-- /.card-footer -->
+                </div>
+                <!-- /.card -->
+            </div>
+            <!-- /.col -->
+        </div>
+        
+            <div class="row">
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header">
@@ -623,183 +1196,6 @@
 
         </div>
 
-        <div class="row">
-            <div class="col-md-12">
-                <div class="card" id="SetupsElement">
-                    <div class="card-header">
-                        <h5 class="card-title">Set Ups</h5>
-
-
-                        <div class="card-tools">
-                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                                <i class="fas fa-minus"></i>
-                            </button>
-
-
-                        </div>
-
-                    </div>
-                    <!-- /.card-header -->
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <p class="text-center">
-
-                                <div class="row">
-
-                                    <div id="CmdCompanySetup" class="col-md-2" style="text-align:center">
-                                        <a href="<?php echo url('company-setup '); ?>"> <img class="img-fluid" src="<?php echo url('assets/images/company.png'); ?>"
-                                                style="max-width:80px" border="0"></a>
-                                        <br />
-                                        Our Company
-                                    </div>
-                                    <div id="CmdBranchsetup" class="col-md-2" style="text-align:center">
-                                        <a href="<?php echo url('branch-setup '); ?>"><img class="img-fluid" border="0"
-                                                src="<?php echo url('assets/images/branch.png'); ?>" style="max-width:80px"></a>
-                                        <br />
-                                        Branch Setup
-                                    </div>
-                                    <div id="Button9" class="col-md-2" style="text-align:center">
-                                        <a href="<?php echo url('warehouse-setup '); ?>"><img class="img-fluid" src="<?php echo url('assets/images/warehouse.png'); ?>"
-                                                style="max-width:80px" boder="0"></a>
-                                        <br />
-                                        Warehouse Setup
-                                    </div>
-                                    <div id="CmdAgentSetup" class="col-md-2" style="text-align:center">
-                                        <a href="<?php echo url('agent-setup '); ?>"> <img class="img-fluid" src="<?php echo url('assets/images/agents.png'); ?>"
-                                                style="max-width:80px" border="0"></a>
-                                        <br />
-                                        Agent Registration
-                                    </div>
-
-
-                                    <div id="CmdDepartmentSetup" class="col-md-2" style="text-align:center">
-                                        <a href="<?php echo url('department-setup '); ?>"> <img class="img-fluid" src="<?php echo url('assets/images/department.png'); ?>"
-                                                style="max-width:80px" border="0"></a>
-                                        <br />
-                                        Department Setup
-                                    </div>
-
-                                    <div id="CmdCategorySetup" class="col-md-2" style="text-align:center">
-                                        <a href="#"> <img class="img-fluid" src="<?php echo url('assets/images/category.png'); ?>"
-                                                style="max-width:80px" border="0"></a>
-                                        <br />
-                                        Category Setup
-                                    </div>
-
-                                    <div id="CmdOriginSetup" class="col-md-2" style="text-align:center">
-                                        <a href="<?php echo url('origin-setup '); ?>"><img class="img-fluid" border="0"
-                                                src="<?php echo url('assets/images/origin.png'); ?>" style="max-width:80px"></a>
-                                        <br />
-                                        Origin Setup
-                                    </div>
-
-
-                                    <div id="CmdVendorSetup" class="col-md-2" style="text-align:center">
-                                        <a href="<?php echo url('vendor-setup '); ?>"><img class="img-fluid" border="0"
-                                                src="<?php echo url('assets/images/vendor-list.png'); ?>" style="max-width:80px"></a>
-                                        <br />
-                                        Vendor Setup
-                                    </div>
-                                    <div id="CmdVesselRegSetup" class="col-md-2" style="text-align:center">
-                                        <a href="<?php echo url('vessel-setup '); ?>"><img class="img-fluid" border="0"
-                                                src="<?php echo url('assets/images/ship-setup.png'); ?>" style="max-width:80px"></a>
-                                        <br />
-                                        Vessel Setup
-                                    </div>
-                                    <div id="Button8" class="col-md-2" style="text-align:center">
-                                        <a href="#"><img class="img-fluid" border="0"
-                                                src="<?php echo url('assets/images/status-setup.png'); ?>" style="max-width:80px"></a>
-                                        <br />
-                                        Status Setup
-                                    </div>
-
-                                    <div id="CmdTermsSetup" class="col-md-2" style="text-align:center">
-                                        <a href="<?php echo url('terms-setup '); ?>"><img class="img-fluid" border="0"
-                                                src="<?php echo url('assets/images/terms-setup.png'); ?>" style="max-width:80px"></a>
-                                        <br />
-                                        Terms Setup
-                                    </div>
-
-                                    <div id="Button26" class="col-md-2" style="text-align:center">
-                                        <a href="#"><img class="img-fluid" border="0"
-                                                src="<?php echo url('assets/images/priority-setup.png'); ?>" style="max-width:80px"></a>
-                                        <br />
-                                        Priority Setup
-                                    </div>
-
-
-                                    <div id="CmdStatusSetup" class="col-md-2" style="text-align:center">
-                                        <a href="<?php echo url('quote-setup '); ?>"><img class="img-fluid" border="0"
-                                                src="<?php echo url('assets/images/quotation-setup.png'); ?>" style="max-width:80px"></a>
-                                        <br />
-                                        Quote Status Setup
-                                    </div>
-
-                                    <div id="CmdAssignUserColors" class="col-md-2" style="text-align:center">
-                                        <a href="#"><img class="img-fluid" border="0"
-                                                src="<?php echo url('assets/images/user-colors.png'); ?>" style="max-width:80px"></a>
-                                        <br />
-                                        Assign User Color
-                                    </div>
-
-                                    <div id="CmdCustomerSetup" class="col-md-2" style="text-align:center">
-                                        <a href="<?php echo url('customer-setup '); ?>"><img class="img-fluid" border="0"
-                                                src="<?php echo url('assets/images/customer-setup.png'); ?>" style="max-width:80px"></a>
-                                        <br />
-                                        Customer Setup
-                                    </div>
-
-
-                                    <div class="col-md-2" style="text-align:center">
-                                        <a href="<?php echo url('shipingport-setup'); ?>"><img class="img-fluid" border="1"
-                                                src="<?php echo url('assets/images/shipinngport.png'); ?>" style="max-width:80px;height:80px"></a>
-                                        <br />
-                                        Shiping Port-setup
-                                    </div>
-                                    <div id="CmdItemSetupProvision" class="col-md-2" style="text-align:center">
-                                        <a href="<?php echo url('Item-Register-Setup'); ?>"><img class="img-fluid" border="1"
-                                                src="<?php echo url('assets/images/quotation-View.png'); ?>" style="max-width:80px"></a>
-                                        <br />
-                                        Item Registration Setup
-                                    </div>
-                                    <div id="Button76" class="col-md-2" style="text-align:center">
-                                        <a href="<?php echo url('Vendor-Contract-Provision'); ?>"><img class="img-fluid" border="1"
-                                                src="<?php echo url('assets/images/vendorcontract.png'); ?>" style="max-width:80px"></a>
-                                        <br />
-                                        Vendor Contract Provision
-                                    </div>
-
-                                </div>
-                                <div class="row">
-                                    <div id="ToolStripMenuItem8" class="col-md-2" style="text-align:center">
-                                        <a href="<?php echo url('Fix-Account-Setup'); ?>"><img class="img-fluid" border="1"
-                                                src="<?php echo url('assets/images/FixAccount.png'); ?>" style="max-width:80px;height:80px"></a>
-                                        <br />
-                                        Fix Account Setup
-                                    </div>
-
-
-                                </div>
-
-                                </p>
-
-
-                            </div>
-                            <!-- /.col -->
-
-                            <!-- /.col -->
-                        </div>
-                        <!-- /.row -->
-                    </div>
-                    <!-- ./card-body -->
-
-                    <!-- /.card-footer -->
-                </div>
-                <!-- /.card -->
-            </div>
-            <!-- /.col -->
-        </div>
 
         <div class="row">
             <div class="col-md-12">

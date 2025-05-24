@@ -46,7 +46,9 @@ class Quotes extends Controller
             ->get();
         foreach ($Event as $item) {
             $BidDueDatetr = $item->BidDUeDate;
-            $BidDueDatetr = date('dS-M-Y', strtotime($BidDueDatetr));
+            $BidDueDatetr = date('j M Y', strtotime($BidDueDatetr));
+            // $BidDueDatetr = date('j M Y', strtotime($item->BidDUeDate));
+
 
             $ETAr = $item->ETA;
             $ETAr = date('dS-M-Y', strtotime($ETAr));
@@ -64,7 +66,7 @@ class Quotes extends Controller
                 '<td>' . $item->CustomerName . '</td>' .
                 '<td>' . $item->VesselName . '</td>' .
                 '<td>' . $item->ShippingPort . '</td>' .
-                '<td>' . $item->STATUS . '</td>' .
+                '<td>' . $item->Status . '</td>' .
                 '<td>' . $ETAr . '</td>' .
                 '<td>' . $item->Priority . '</td>' .
                 '<td>' . $EventCreatedDater . '</td>' .

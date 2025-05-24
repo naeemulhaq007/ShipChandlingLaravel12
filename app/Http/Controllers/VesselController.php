@@ -193,40 +193,58 @@ class VesselController extends Controller
     {
         $BranchCode = Auth::user()->BranchCode;
         $TableData = $request->input('dataarray');
-
+        
+        // ✅ Initialize status variable
+        $status = false;
+    
         for ($i = 0; $i < count($TableData); $i++) {
             $insert_update = [];
-            $insert_update["CustomerCode"] = $CustomerCode = $TableData[$i]['CustomerCode'];
-            $VesselCode = $TableData[$i]['VesselCode'];
-            $insert_update["VesselName"] = $VesselName = $TableData[$i]['VesselName'];
+    
+            // ✅ Skip header row
+            if (
+                $TableData[$i]['CustomerCode'] === 'CustomerCode' ||
+                $TableData[$i]['VesselName'] === 'VesselName'
+            ) {
+                continue;
+            }
+    
+            // ✅ Convert CustomerCode from 'C001' → 1
+            $rawCode = $TableData[$i]['CustomerCode'];
+            $CustomerCode = (int) preg_replace('/\D/', '', $rawCode);
+    
+            // ✅ Prepare insert data
+            $insert_update["CustomerCode"] = $CustomerCode;
+            $insert_update["VesselName"] = $TableData[$i]['VesselName'];
             $insert_update["IMONo"] = $TableData[$i]['IMO'];
             $insert_update["VesselType"] = $TableData[$i]['Vtype'];
-
-            $status = null;
-
-            // Check if the record already exists
+    
+            $VesselCode = $TableData[$i]['VesselCode'];
+    
+            // ✅ Check if record exists
             $existingRecord = Vessel::where('ID', $VesselCode)
                 ->where('CustomerCode', $CustomerCode)
                 ->first();
-
+    
             if ($existingRecord) {
-                // Update the existing record
+                // ✅ Update existing
                 $status = Vessel::where('ID', $VesselCode)
                     ->where('CustomerCode', $CustomerCode)
                     ->update($insert_update);
             } else {
-                // Insert a new record without specifying the ID column
+                // ✅ Insert new
                 $status = Vessel::insert($insert_update);
             }
-
-
-            info($status);
+    
+            // Optional: log each row status
+            info("Row $i saved with CustomerCode: $CustomerCode", $insert_update);
         }
-
+    
         return response()->json([
             'status' => $status,
+            'message' => 'Vessel records imported successfully.',
         ]);
     }
+    
 
     public function search(Request $request)
     {
@@ -264,6 +282,7 @@ class VesselController extends Controller
         if (!$vesselget) {
 
             $this->validate($request,[
+                'companycode' => 'required',   
             'IMONo' => 'required|unique:vesselsetup',
             'VesselName' => 'required',
             'VesselType' => 'required',
@@ -274,6 +293,7 @@ class VesselController extends Controller
             // Continue with the rest of your logic for storing/updating the record
         }else{
             $this->validate($request,[
+                'companycode' => 'required',
                 'IMONo' => 'required',
             'VesselName' => 'required',
             'VesselType' => 'required',

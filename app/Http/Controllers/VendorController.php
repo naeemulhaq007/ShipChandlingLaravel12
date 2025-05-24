@@ -18,6 +18,52 @@ use Illuminate\Support\Facades\Auth;
 
 class VendorController extends Controller
 {
+    
+    public function saveImportedItems(Request $request)
+{
+    $items = $request->input('items'); // this should be an array of rows
+
+    foreach ($items as $item) {
+        VendorContractItem::create([
+            'ItemCode' => $item['ItemCode'],
+            'ItemName' => $item['ItemName'],
+            'UOM' => $item['UOM'],
+            'Qty' => $item['QTY'],
+            'VendorPrice' => $item['Price'],
+            'VenderName' => $item['Vendor'],
+            'VenderCode' => $item['Vendorcode'],
+            // Add LastDate, WorkUser, Remarks if needed
+        ]);
+    }
+
+    return response()->json(['status' => 'success']);
+}
+public function delete(Request $request)
+{
+    $VenderCode = $request->VenderCode;
+    $BranchCode = Auth::user()->BranchCode;
+
+    try {
+        $deleted = DB::table('vendersetup')
+            ->where('VenderCode', $VenderCode)
+            ->where('BranchCode', $BranchCode)
+            ->delete();
+
+        if ($deleted) {
+            return response()->json(['status' => 'success']);
+        } else {
+            return response()->json(['status' => 'failed', 'message' => 'Vendor not found.']);
+        }
+    } catch (\Exception $e) {
+        return response()->json(['status' => 'failed', 'message' => $e->getMessage()]);
+    }
+}
+
+    
+    
+    
+    
+    
    public function VendorItemSetup(){
     $BranchCode = Auth::user()->BranchCode;
     $VenderSetup = VenderSetup::select('VenderCode','VenderName','Address','PhoneNo','EmailAddress')->distinct()->WHERE('VenderName','<>','','OR','Address','<>','','OR','PhoneNo','<>','','OR','EmailAddress','<>','')->orderBy('VenderName')->get();
@@ -204,7 +250,7 @@ class VendorController extends Controller
     public function venderitem_store(Request $request){
         $BranchCode = Auth::user()->BranchCode;
 
-        // dump($request->all());
+        dump($request->all());
 
         $checkitem = VenderProductList::where('VenderCode',$request->vendorcode)->where('ItemCode',$request->Productcode)->where('BranchCode',$BranchCode)->first();
 // dd($checkitem);
@@ -274,7 +320,7 @@ try {
         // dump($request->all());
 
         $checkitem = VenderProductList::where('VenderCode',$request->vendorcode)->where('ItemCode',$request->Productcode)->where('BranchCode',$BranchCode)->first();
-// dd($checkitem);
+dd($checkitem);
 try {
     if ($checkitem===null) {
        $saveitem = new VenderProductList([
@@ -340,7 +386,13 @@ try {
         $VenderSetup = VenderSetup::select('VenderCode','VenderName','Address','PhoneNo','EmailAddress')->distinct()->WHERE('VenderName','<>','','OR','Address','<>','','OR','PhoneNo','<>','','OR','EmailAddress','<>','')->orderBy('VenderName')->get();
         $Department = Typesetup::where("BranchCode",$BranchCode)->get();
         $GodownSetup = GodownSetup::whereRaw('(ChkNotShow=0 or ChkNotShow is Null)')->where('GodownCode', '>', 0)->where('BranchCode', $BranchCode)->orderBy('GodownName')->get();
-        $qrymaster = DB::table('qryvendorcontractmaster')->where('Type','K')->where('ChkProvBond',1)->where('BranchCode',$BranchCode)->get();
+        $qrymaster = DB::table('qryvendorcontractmaster')
+    ->where('Type','K')
+    ->where('ChkProvBond',1)
+    ->where('BranchCode',$BranchCode)
+    ->get();
+
+        // $qrymaster = DB::table('qryvendorcontractmaster')->where('Type','K')->where('ChkProvBond',1)->where('BranchCode',$BranchCode)->get();
 
 
         return view('Setups.Vendor_Contract_Provision', [
@@ -365,116 +417,280 @@ try {
             'MComputerNo' => $NewComp
          ]);
     }
-        public function VendorContracSave(Request $request){
+        // public function VendorContracSave(Request $request){
+        // $MBranchCode = Auth::user()->BranchCode;
+        // $branchdata = DB::table('branchsetup')->where('BranchCode', $MBranchCode)->first();
+
+        // // $branchdata = DB::table('BranchSetup')->where('BranchCode',$MBranchCode)->first();
+
+        // $Currency = $branchdata->Currency;
+        // $MWorkUser =Auth::user()->UserName;
+        // $CmbDepartment =  $request->input('CmbDepartment');
+        // $CmbGodownName =  $request->input('CmbGodownName');
+        // $CmbVenderName =  $request->input('CmbVenderName');
+        // $TxtDepartmentCode =  $request->input('TxtDepartmentCode');
+        // $TxtGodownCode =  $request->input('TxtGodownCode');
+        // $TxtVenderCode =  $request->input('TxtVenderCode');
+        // $TxtComputerNo =  $request->input('TxtComputerNo');
+        // $TxtVendorCodeText =  $request->input('TxtVendorCodeText');
+        // $TxtDate =  $request->input('TxtDate');
+        // $TxtExpiryDate =  $request->input('TxtExpiryDate');
+        // $Table =  $request->input('dataArray');
+        // $MDEPARTMENTCHK = '';
+        // $Message = 'Start';
+
+        // $Chkdeckengin = DB::table('typesetup')->select('Chkdeckengin')->where('TypeCode',$CmbDepartment)->where('BranchCode',$MBranchCode)->first();
+        // if($Chkdeckengin){
+        //     $MDEPARTMENTCHK = $Chkdeckengin->Chkdeckengin ? $Chkdeckengin->Chkdeckengin : '';
+        // }
+
+        // if($MDEPARTMENTCHK){
+        //     $Message = 'Deck\Engine Contract Cannot Save On this Form';
+        //     return response()->json([
+        //         'Message'=>$Message,
+        //     ]);
+        // }
+
+        // $Rs1 = VendorContractMaster::where('Type','K')->where('ComputerNo',$TxtComputerNo)->where('BranchCode',$MBranchCode)->get();
+        // if(!$Rs1){
+        //     $Rs1 = new VendorContractMaster;
+        //     $Rs1->ComputerNo = $TxtComputerNo;
+        //     $Rs1->BranchCode = $MBranchCode;
+        // }
+        // $Rs1->Type = 'K';
+        // $Rs1->EntryDate = $TxtDate;
+        // $Rs1->ExpiryDate = $TxtExpiryDate;
+        // $Rs1->VendorName = $CmbVenderName;
+        // $Rs1->VendorCode = $TxtVenderCode;
+        // $Rs1->VendorCodeUSA = $TxtVendorCodeText;
+        // $Rs1->GodownCode = $TxtGodownCode;
+        // $Rs1->GodownName = $CmbGodownName;
+        // $Rs1->DepartmentCode = $TxtDepartmentCode;
+        // $Rs1->DepartmentName = $CmbDepartment;
+        // $Rs1->WorkUSer = $MWorkUser;
+        // $Rs1->save();
+
+        // VenderProductList::where('Type','K')->where('ComputerNo',$TxtComputerNo)->where('BranchCode',$MBranchCode)->delete();
+
+        // foreach ($Table as $row) {
+        //     $MProductCode = $row['ItemCode'];
+        //     $MVendorPrice = $row['VendorPrice'];
+        //     if($MProductCode !== ''){
+        //         $Rs1 = '';
+        //         $Rs1 = VenderProductList::where('Type','K')->where('VenderCode',$TxtVenderCode)->where('ItemCode',$MProductCode)->where('BranchCode',$MBranchCode)->first();
+        //         if($Rs1){
+        //             $Rs1 = new VenderProductList;
+        //             $Rs1->ComputerNo = $TxtComputerNo;
+        //         }
+        //         $Rs1->ItemCodeN = $MProductCode;
+        //         $Rs1->ItemCode = $MProductCode;
+        //         $Rs1->VenderCode = $TxtVenderCode;
+        //         $Rs1->Date = $TxtDate;
+        //         $Rs1->ExpiryDate = $TxtExpiryDate;
+        //         $Rs1->ItemName = trim($row['ItemName']);
+        //         $Rs1->UOM = ($row['UOM']);
+        //         $Rs1->VendorPrice = $MVendorPrice;
+        //         $Rs1->OurPrice = $MVendorPrice;
+        //         $Rs1->Currency = $Currency;
+        //         $Rs1->LASTRate = $MVendorPrice;
+        //         $Rs1->Diff = 0;
+        //         $Rs1->LASTDate = $row['LastDate'] ? $row['LastDate'] : date('Y-m-d');
+        //         $Rs1->Rate = $MVendorPrice;
+        //         $Rs1->CommPer = 0;
+        //         $Rs1->GP = 0;
+        //         $Rs1->VCategoryName = '';
+        //         $Rs1->IMPAItemCode = $row['IMPACode'];
+        //         $Rs1->VPartCode = $row['VPartNumber'];
+        //         $Rs1->Remarks = $row['Remarks'];
+        //         $Rs1->VenderName = $CmbVenderName;
+        //         $Rs1->DiscPer = 0;
+        //         $Rs1->GodownCode = $TxtGodownCode;
+        //         $Rs1->GodownName = $CmbGodownName;
+        //         $Rs1->Type = 'K';
+        //         $Rs1->VendorCusCode = $TxtVendorCodeText;
+        //         $Rs1->DepartmentCode = $TxtDepartmentCode;
+        //         $Rs1->WorkUser = $MWorkUser;
+        //         $Rs1->ChkNoGp = False;
+        //         $Rs1->BranchCode = $MBranchCode;
+        //         $Rs1->save();
+
+        //     }
+        // }
+        // if($Rs1){
+        //     $Message = 'Saved';
+        // }
+
+
+        // $data = DB::table('qryvendorcontractmaster')->where('Type','K')->where('ChkProvBond',1)->where('BranchCode',$MBranchCode)->get();
+
+        // return response()->json([
+        //     'Message'=>$Message,
+        //     'table'=>$data,
+        // ]);
+
+        // }
+        
+
+
+public function VendorContracSave(Request $request)
+{
+    try {
         $MBranchCode = Auth::user()->BranchCode;
-        $branchdata = DB::table('BranchSetup')->where('BranchCode',$MBranchCode)->first();
+        $MWorkUser = Auth::user()->UserName;
 
-        $Currency = $branchdata->Currency;
-        $MWorkUser =Auth::user()->UserName;
-        $CmbDepartment =  $request->input('CmbDepartment');
-        $CmbGodownName =  $request->input('CmbGodownName');
-        $CmbVenderName =  $request->input('CmbVenderName');
-        $TxtDepartmentCode =  $request->input('TxtDepartmentCode');
-        $TxtGodownCode =  $request->input('TxtGodownCode');
-        $TxtVenderCode =  $request->input('TxtVenderCode');
-        $TxtComputerNo =  $request->input('TxtComputerNo');
-        $TxtVendorCodeText =  $request->input('TxtVendorCodeText');
-        $TxtDate =  $request->input('TxtDate');
-        $TxtExpiryDate =  $request->input('TxtExpiryDate');
-        $Table =  $request->input('dataArray');
-        $MDEPARTMENTCHK = '';
-        $Message = 'Start';
+        $branchdata = DB::table('branchsetup')->where('BranchCode', $MBranchCode)->first();
+        $Currency = $branchdata->Currency ?? '';
 
-        $Chkdeckengin = DB::table('typesetup')->select('Chkdeckengin')->where('TypeCode',$CmbDepartment)->where('BranchCode',$MBranchCode)->first();
-        if($Chkdeckengin){
-            $MDEPARTMENTCHK = $Chkdeckengin->Chkdeckengin ? $Chkdeckengin->Chkdeckengin : '';
-        }
+        $TxtDate = $request->input('TxtDate');
+        $TxtExpiryDate = $request->input('TxtExpiryDate');
+        $TxtComputerNo = $request->input('TxtComputerNo');
+        $TxtVenderCode = $request->input('TxtVenderCode');
+        $TxtVendorCodeText = $request->input('TxtVendorCodeText');
+        $TxtGodownCode = $request->input('TxtGodownCode');
+        $CmbGodownName = $request->input('CmbGodownName');
+        $TxtDepartmentCode = $request->input('TxtDepartmentCode');
+        $CmbDepartment = $request->input('CmbDepartment');
+        $CmbVenderName = $request->input('CmbVenderName');
+        $Table = $request->input('dataArray');
 
-        if($MDEPARTMENTCHK){
-            $Message = 'Deck\Engine Contract Cannot Save On this Form';
+        $Chkdeckengin = DB::table('typesetup')
+            ->select('Chkdeckengin')
+            ->where('TypeCode', $CmbDepartment)
+            ->where('BranchCode', $MBranchCode)
+            ->first();
+
+        if ($Chkdeckengin && $Chkdeckengin->Chkdeckengin) {
             return response()->json([
-                'Message'=>$Message,
+                'Message' => 'Deck/Engine Contract Cannot Save On this Form',
             ]);
         }
 
-        $Rs1 = VendorContractMaster::where('Type','K')->where('ComputerNo',$TxtComputerNo)->where('BranchCode',$MBranchCode)->get();
-        if(!$Rs1){
-            $Rs1 = new VendorContractMaster;
-            $Rs1->ComputerNo = $TxtComputerNo;
-            $Rs1->BranchCode = $MBranchCode;
-        }
-        $Rs1->Type = 'K';
-        $Rs1->EntryDate = $TxtDate;
-        $Rs1->ExpiryDate = $TxtExpiryDate;
-        $Rs1->VendorName = $CmbVenderName;
-        $Rs1->VendorCode = $TxtVenderCode;
-        $Rs1->VendorCodeUSA = $TxtVendorCodeText;
-        $Rs1->GodownCode = $TxtGodownCode;
-        $Rs1->GodownName = $CmbGodownName;
-        $Rs1->DepartmentCode = $TxtDepartmentCode;
-        $Rs1->DepartmentName = $CmbDepartment;
-        $Rs1->WorkUSer = $MWorkUser;
-        $Rs1->save();
+       
+        VendorContractMaster::updateOrInsert(
+            [
+                'ComputerNo' => $TxtComputerNo,
+                'BranchCode' => $MBranchCode,
+            ],
+            [
+                'Type' => 'K',
+                'EntryDate' => $TxtDate,
+                'ExpiryDate' => $TxtExpiryDate,
+                'VendorName' => $CmbVenderName,
+                'VendorCode' => $TxtVenderCode,
+                'VendorCodeUSA' => $TxtVendorCodeText,
+                'GodownCode' => $TxtGodownCode,
+                'GodownName' => $CmbGodownName,
+                'DepartmentCode' => $TxtDepartmentCode,
+                'DepartmentName' => $CmbDepartment,
+                'WorkUser' => $MWorkUser,
+                'ChkProvBond' => 1,
+            ]
+        );
 
-        VenderProductList::where('Type','K')->where('ComputerNo',$TxtComputerNo)->where('BranchCode',$MBranchCode)->delete();
+     
+        VenderProductList::where('Type', 'K')
+            ->where('ComputerNo', $TxtComputerNo)
+            ->where('BranchCode', $MBranchCode)
+            ->delete();
 
+        
         foreach ($Table as $row) {
-            $MProductCode = $row['ItemCode'];
-            $MVendorPrice = $row['VendorPrice'];
-            if($MProductCode !== ''){
-                $Rs1 = '';
-                $Rs1 = VenderProductList::where('Type','K')->where('VenderCode',$TxtVenderCode)->where('ItemCode',$MProductCode)->where('BranchCode',$MBranchCode)->first();
-                if($Rs1){
-                    $Rs1 = new VenderProductList;
-                    $Rs1->ComputerNo = $TxtComputerNo;
-                }
-                $Rs1->ItemCodeN = $MProductCode;
-                $Rs1->ItemCode = $MProductCode;
-                $Rs1->VenderCode = $TxtVenderCode;
-                $Rs1->Date = $TxtDate;
-                $Rs1->ExpiryDate = $TxtExpiryDate;
-                $Rs1->ItemName = trim($row['ItemName']);
-                $Rs1->UOM = ($row['UOM']);
-                $Rs1->VendorPrice = $MVendorPrice;
-                $Rs1->OurPrice = $MVendorPrice;
-                $Rs1->Currency = $Currency;
-                $Rs1->LASTRate = $MVendorPrice;
-                $Rs1->Diff = 0;
-                $Rs1->LASTDate = $row['LastDate'] ? $row['LastDate'] : date('Y-m-d');
-                $Rs1->Rate = $MVendorPrice;
-                $Rs1->CommPer = 0;
-                $Rs1->GP = 0;
-                $Rs1->VCategoryName = '';
-                $Rs1->IMPAItemCode = $row['IMPACode'];
-                $Rs1->VPartCode = $row['VPartNumber'];
-                $Rs1->Remarks = $row['Remarks'];
-                $Rs1->VenderName = $CmbVenderName;
-                $Rs1->DiscPer = 0;
-                $Rs1->GodownCode = $TxtGodownCode;
-                $Rs1->GodownName = $CmbGodownName;
-                $Rs1->Type = 'K';
-                $Rs1->VendorCusCode = $TxtVendorCodeText;
-                $Rs1->DepartmentCode = $TxtDepartmentCode;
-                $Rs1->WorkUser = $MWorkUser;
-                $Rs1->ChkNoGp = False;
-                $Rs1->BranchCode = $MBranchCode;
-                $Rs1->save();
-
+            if (!empty($row['ItemCode'])) {
+                $Rs2 = new VenderProductList;
+                $Rs2->ComputerNo = $TxtComputerNo;
+                $Rs2->ItemCodeN = $row['ItemCode'];
+                $Rs2->ItemCode = $row['ItemCode'];
+                $Rs2->VenderCode = $TxtVenderCode;
+                $Rs2->Date = $TxtDate;
+                $Rs2->ExpiryDate = $TxtExpiryDate;
+                $Rs2->ItemName = $row['ItemName'] ?? '';
+                $Rs2->UOM = $row['UOM'] ?? '';
+                $Rs2->VendorPrice = $row['VendorPrice'] ?? 0;
+                $Rs2->OurPrice = $row['VendorPrice'] ?? 0;
+                $Rs2->Currency = $Currency;
+                $Rs2->LASTRate = $row['VendorPrice'] ?? 0;
+                $Rs2->Diff = 0;
+                $Rs2->LASTDate = $row['LastDate'] ?? date('Y-m-d');
+                $Rs2->Rate = $row['VendorPrice'] ?? 0;
+                $Rs2->CommPer = 0;
+                $Rs2->GP = 0;
+                $Rs2->VCategoryName = '';
+                $Rs2->IMPAItemCode = $row['IMPACode'] ?? '';
+                $Rs2->VPartCode = $row['VPartNumber'] ?? '';
+                $Rs2->Remarks = $row['Remarks'] ?? '';
+                $Rs2->VenderName = $CmbVenderName;
+                $Rs2->DiscPer = 0;
+                $Rs2->GodownCode = $TxtGodownCode;
+                $Rs2->GodownName = $CmbGodownName;
+                $Rs2->Type = 'K';
+                $Rs2->VendorCusCode = $TxtVendorCodeText;
+                $Rs2->DepartmentCode = $TxtDepartmentCode;
+                $Rs2->WorkUser = $MWorkUser;
+                $Rs2->ChkNoGp = false;
+                $Rs2->BranchCode = $MBranchCode;
+                $Rs2->save();
             }
         }
-        if($Rs1){
-            $Message = 'Saved';
-        }
 
+       
+        // $data = DB::table('qryvendorcontractmaster')
+        //     ->where('Type', 'K')
+        //     ->where('ChkProvBond', 1)
+        //     ->where('BranchCode', $MBranchCode)
+        //     ->get();
+            
+$data = DB::table('qryvendorcontractmaster')
+    ->select('ComputerNo', 'VendorCode', 'EntryDate', 'ExpiryDate', 'GodownName')
+    ->where('Type', 'K')
+    ->where('ChkProvBond', 1)
+    ->where('BranchCode', $MBranchCode)
+     ->distinct()
+    ->get(); 
 
-        $data = DB::table('qryvendorcontractmaster')->where('Type','K')->where('ChkProvBond',1)->where('BranchCode',$MBranchCode)->get();
 
         return response()->json([
-            'Message'=>$Message,
-            'table'=>$data,
+            'Message' => 'Saved',
+            'table' => $data,
         ]);
+    } catch (\Exception $e) {
+        \Log::error('VendorContracSave Error: ' . $e->getMessage());
+        return response()->json([
+            'Message' => 'Error: ' . $e->getMessage(),
+        ]);
+    }
+}
 
-        }
+
+
+
+
+public function deleteContractMaster(Request $request)
+{
+    $request->validate([
+        'ComputerNo' => 'required|integer',
+        'BranchCode' => 'required|integer',
+        'password' => 'required|string',
+    ]);
+
+    // Simple static password check — you can use Auth or hashed check if needed
+    if ($request->password !== '332211') {
+        return response()->json(['status' => 'error', 'message' => 'Invalid password']);
+    }
+
+    $deleted = DB::table('vendorcontractmaster')
+        ->where('ComputerNo', $request->ComputerNo)
+        ->where('BranchCode', $request->BranchCode)
+        ->delete();
+
+    if ($deleted) {
+        return response()->json(['status' => 'success']);
+    } else {
+        return response()->json(['status' => 'error', 'message' => 'Row not found or already deleted']);
+    }
+}
+
+
+
         public function Contactfiller(Request $request){
             $MBranchCode = Auth::user()->BranchCode;
             $TxtComputer2 =  $request->input('TxtComputer2');
@@ -486,24 +702,74 @@ try {
                 'Table'=>$Table,
             ]);
         }
-        public function GetDataVenContract(Request $request){
-            $MBranchCode = Auth::user()->BranchCode;
-            $branchdata = DB::table('BranchSetup')->where('BranchCode',$MBranchCode)->first();
+        
+        
+        
+        
+        
+        
+        
+public function GetDataVenContract(Request $request){
+    $MBranchCode = Auth::user()->BranchCode;
+    $branchdata = DB::table('branchsetup')->where('BranchCode', $MBranchCode)->first();
 
-            $Currency = $branchdata->Currency;
-            $MWorkUser =Auth::user()->UserName;
-            $TxtComputerNo =  $request->input('TxtComputerNo');
-            info($TxtComputerNo);
-            $Master = VendorContractMaster::where('ComputerNo',$TxtComputerNo)->where('BranchCode',$MBranchCode)->first();
-            $Details = DB::table('qryvenderproductlist')->where('Type','k')->where('ComputerNo',$TxtComputerNo)->where('BranchCode',$MBranchCode)->orderBy('Id')->get();
-            info($Details);
+    $Currency = $branchdata->Currency ?? '';
+    $MWorkUser = Auth::user()->UserName;
+    $TxtComputerNo = $request->input('TxtComputerNo');
+    info("TxtComputerNo: " . $TxtComputerNo);
+
+    $Master = VendorContractMaster::where('ComputerNo', $TxtComputerNo)
+                ->where('BranchCode', $MBranchCode)
+                ->first();
+
+  
+    $Details = DB::table('qryvenderproductlist')
+                ->where('ComputerNo', $TxtComputerNo)
+                ->where('BranchCode', $MBranchCode)
+                ->orderBy('Id')
+                ->get();
+
+    info("Details Count: " . $Details->count());
+
+    return response()->json([
+          'Master' => $Master ? $Master->toArray() : null,
+         'Details' => $Details->toArray(),
+    ]);
+}
 
 
-            return response()->json([
-                'Master'=>$Master,
-                'Details'=>$Details,
-            ]);
-        }
+
+        // public function GetDataVenContract(Request $request){
+        //     $MBranchCode = Auth::user()->BranchCode;
+        //     $branchdata = DB::table('BranchSetup')->where('BranchCode',$MBranchCode)->first();
+
+        //     $Currency = $branchdata->Currency;
+        //     $MWorkUser =Auth::user()->UserName;
+        //     $TxtComputerNo =  $request->input('TxtComputerNo');
+        //     info($TxtComputerNo);
+        //     $Master = VendorContractMaster::where('ComputerNo',$TxtComputerNo)->where('BranchCode',$MBranchCode)->first();
+        //     $Details = DB::table('qryvenderproductlist')->where('Type','k')->where('ComputerNo',$TxtComputerNo)->where('BranchCode',$MBranchCode)->orderBy('Id')->get();
+        //     info($Details);
+
+
+        //     return response()->json([
+        //         'Master'=>$Master,
+        //         'Details'=>$Details,
+        //     ]);
+        // }
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+
+
         public function importVendorContract(Request $request){
             $file = $request->file('excel_file');
                     $startRow = $request->input('start_row');
@@ -683,4 +949,24 @@ try {
 
             return response()->json($data);
         }
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        public function getVendorProductList()
+{
+  $data = VenderProductList::orderBy('id', 'desc')->limit(100)->get();
+
+
+    return response()->json(['data' => $data]);
+}
+
 }

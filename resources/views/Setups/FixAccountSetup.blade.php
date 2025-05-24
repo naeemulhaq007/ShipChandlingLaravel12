@@ -511,10 +511,11 @@
 
                             <div class="row py-2">
 
-                                <a name="" id="CmdSave" class="btn btn-primary col-sm-2 ml-2" role="button"><i
-                                        class="fas fa-file mr-1    "></i> Update</a>
-                                <a name="" id="CmdExit" class="btn btn-danger col-sm-2 mx-3" href="/"
-                                    role="button"><i class="fas fa-door-open  mr-1  "></i> Exit</a>
+                                <a name="" id="CmdSave" class="btn btn-primary" role="button"><i
+                                        class="fas fa-file mr-1"></i> Update</a>
+                            
+                                    
+                            <a name="" id="CmdExit" class="btn btn-danger mx-2" href="{{url('Fix-Account-Setup') }}" role="button"><i class="fas fa-door-open  mr-1"></i> Exit</a>
                             </div>
                         </div>
 
@@ -1462,12 +1463,36 @@
                         $('.overlay').show();
                     },
                     success: function(resposne) {
-                        console.log(resposne);
-                        if (resposne.Message == 'Saved') {
-                            alert('Saved');
-                            Dataget();
-                        }
-                    },
+    console.log(resposne);
+
+    if (resposne.Message === 'Saved') {
+        Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: 'Record has been updated successfully.',
+            timer: 2000,
+            showConfirmButton: false
+        });
+        Dataget();
+    } else if (resposne.Message === 'Updated') {
+        Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: 'Record has been updated successfully.',
+            timer: 2000,
+            showConfirmButton: false
+        });
+        Dataget();
+    }
+},
+
+                    // success: function(resposne) {
+                    //     console.log(resposne);
+                    //     if (resposne.Message == 'Saved') {
+                    //         alert('Saved');
+                    //         Dataget();
+                    //     }
+                    // },
                     error: function(data) {
                         console.log(data);
                         $('.overlay').hide();

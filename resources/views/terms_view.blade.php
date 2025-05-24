@@ -88,7 +88,10 @@
       <label class="" for="TermsCode">Terms Code : </label>
       </div>
       <div class="col-sm-5">
-  <input type="text" name="TermsCode" class="form-control" value="" id="TermsCode"  placeholder="">
+  <!--<input type="text" name="TermsCode" class="form-control" value="" id="TermsCode"  placeholder="">-->
+ <input type="text" name="TermsCode" value="{{ $nextCode }}" readonly>
+
+
       </div>
   </div>
   <div class="row" style="margin-bottom: 1%">

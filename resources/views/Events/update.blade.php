@@ -114,6 +114,12 @@
                                             Customer
                                         </span>
                                     </div>
+                                    <div class="inputbox col-sm-2">
+    <input type="text" class="" name="DisplayCustomerCode" id="displaycompanycode"
+        readonly placeholder="Customer Code">
+    <span class="Txtspan">Customer Code</span>
+</div>
+
                                     <div class="input-group-append">
                                         <span data-toggle="modal" data-target="#searchrmod" data-id="cussearch"
                                             class="input-group-text bg-info" style="cursor: pointer;" id="cussearch"><i
@@ -171,13 +177,20 @@
                                         </span>
                                     </div>
                                     <div class="inputbox col-sm-6">
+
                                         <input type="text" class="" value="" readonly required
                                             name="VesselName" data-toggle="modal" data-target="#searchrmodw"
                                             id="vesselname" title="Vessel Name" placeholder="Vessel Name">
+                                            
                                         <span class="Txtspan">
                                             Vessel
                                         </span>
                                     </div>
+                                    <div class="inputbox col-sm-2">
+    <input type="text" class="" readonly
+        name="IMONumber" id="vesselimo" title="IMO Number" placeholder="IMO Number">
+    <span class="Txtspan">IMO Number</span>
+</div>
                                     <div class="input-group-append">
                                         <span class="input-group-text bg-info" style="cursor: pointer;"
                                             data-toggle="modal" data-target="#searchrmodw" id="vensearch">
@@ -514,7 +527,7 @@
                             </div>
                             <div class="row">
                                 <button type="submit" id="SaveQuote" class="btn btn-primary"><i
-                                        class="fa fa-file-archive mr-1" aria-hidden="true"></i>Save Quote</button>
+                                        class="fa fa-file-archive mr-1" aria-hidden="true"></i>Create Quote</button>
                             </div>
                         </div>
 
@@ -679,6 +692,86 @@
                 }
             });
         }
+        
+        
+        
+//         function loadContacts(customercode, selectedContactId = null) {
+//     ajaxSetup();
+//     $.ajax({
+//         url: "/getcontact",
+//         type: "POST",
+//         data: {
+//             customercode,
+//         },
+//         beforeSend: function () {
+//             $('.overlay').show();
+//         },
+//         success: function (response) {
+//             console.log(response);
+
+//             var contacts = response.contacts;
+//             $('#Contact').empty(); // Clear existing options
+//             $('#Contact').append($('<option>', {
+//                 value: '',
+//                 text: '-- Select Contact --'
+//             }));
+
+//             for (let i = 0; i < contacts.length; i++) {
+//                 let option = $('<option>', {
+//                     value: contacts[i].ID,
+//                     text: contacts[i].CustName
+//                 });
+//                 $('#Contact').append(option);
+//             }
+
+//             // ✅ Auto-select saved contact (for update)
+//             if (selectedContactId) {
+//                 $('#Contact').val(selectedContactId).trigger('change');
+//             }
+
+//             // ✅ Bind change event to load full contact details
+//             $('#Contact').off('change').on('change', function (e) {
+//                 e.preventDefault();
+//                 var id = $(this).val();
+//                 if (!id) return;
+
+//                 $.ajax({
+//                     url: "/getcontact",
+//                     type: "POST",
+//                     data: {
+//                         customercode,
+//                         id,
+//                     },
+//                     success: function (response) {
+//                         if (response.Customercon) {
+//                             var c = response.Customercon;
+//                             $('#name').val(c.CustName);
+//                             $('#cell').val(c.Cell);
+//                             $('#email').val(c.Email);
+//                             $('#phoneno').val(c.Phone);
+//                         }
+//                     }
+//                 });
+//             });
+//         },
+//         error: function (output) {
+//             var errors = output.responseJSON;
+//             alert(errors?.message || 'Error loading contacts.');
+//         },
+//         complete: function () {
+//             $('.overlay').hide();
+//         }
+//     });
+// }
+
+// // 🔁 Called when customer changes (new or update)
+// $("#companycode").change(function (e) {
+//     e.preventDefault();
+//     var customercode = $(this).val();
+//     loadContacts(customercode);
+// });
+
+        
 
         function updategodown(code) {
             ajaxSetup();
@@ -769,7 +862,7 @@
                     },
                     success: function($response) {
                         if ($response.Code == 'Success') {
-                            Swaal.fire({
+                            Swal.fire({
                                 icon: 'error',
                                 title: 'CustomerRef is Exits',
                                 text: 'CustomerRef is Exits on this Event : ' + $response.data +
@@ -797,6 +890,7 @@
 
             document.getElementById("companyname").value = $targetcusname;
             document.getElementById("companycode").value = $targetcustcode;
+            document.getElementById("displaycompanycode").value = $targetcustcode;
             $('#searchcustname').val($targetcusname);
 
             document.getElementById("searchbox").value = $targetcustcode;
@@ -933,95 +1027,110 @@
                 // console.log("Selected ID:" + $targetID);
                 // REMOVE WILL COME HERE
             });
-            $("#companycode").change(function(e) {
-                e.preventDefault();
-                var customercode = $(this).val();
-                // alert(customercode);
+            // $("#companycode").change(function(e) {
+            //     e.preventDefault();
+            //     var customercode = $(this).val();
+            //     // alert(customercode);
 
-                ajaxSetup();
-                $.ajax({
-                    url: "/getcontact",
-                    type: "POST",
-                    data: {
-                        customercode,
-                    },
+            //     ajaxSetup();
+            //     $.ajax({
+            //         url: "/getcontact",
+            //         type: "POST",
+            //         data: {
+            //             customercode,
+            //         },
 
-                    beforeSend: function() {
-                        // Show the overlay and spinner before sending the request
-                        $('.overlay').show();
-                    },
-                    success: function(response) {
-                        console.log(response);
+            //         beforeSend: function() {
+            //             // Show the overlay and spinner before sending the request
+            //             $('.overlay').show();
+            //         },
+            //         success: function(response) {
+            //             console.log(response);
 
-                        var contacts = response.contacts;
-                        $('#Contact').empty(); // Clear existing options
-                        $('#Contact').append($('<option>', {
-                            value: '',
-                            text: '-- Select Contact --'
-                        }));
-                        for (let i = 0; i < contacts.length; i++) {
-                            let option = $('<option>', {
-                                value: contacts[i].ID,
-                                text: contacts[i].CustName
-                            });
-                            $('#Contact').append(option);
-                        }
+            //             var contacts = response.contacts;
+            //             $('#Contact').empty(); // Clear existing options
+            //             $('#Contact').append($('<option>', {
+            //                 value: '',
+            //                 text: '-- Select Contact --'
+            //             }));
+            //             for (let i = 0; i < contacts.length; i++) {
+            //                 let option = $('<option>', {
+            //                     value: contacts[i].ID,
+            //                     text: contacts[i].CustName
+            //                 });
+            //                 $('#Contact').append(option);
+            //             }
 
-                        $('#Contact').change(function(e) {
-                            e.preventDefault();
-                            var id = $(this).val();
-                            $.ajax({
-                                url: "/getcontact",
-                                type: "POST",
-                                data: {
-                                    customercode,
-                                    id,
-                                },
-                                success: function(response) {
-                                    console.log(response);
-                                    if (response.Customercon) {
-                                        var Customercon = response
-                                            .Customercon;
-                                        $('#name').val(Customercon
-                                            .CustName);
-                                        $('#cell').val(Customercon.Cell);
-                                        $('#email').val(Customercon.Email);
-                                        $('#phoneno').val(Customercon
-                                            .Phone);
-                                    }
-                                }
-                            });
-
-
-                        });
-
-                    },
-                    failed: function(output) {
-                        var errors = output.responseJSON;
-                        alert(errors.message);
-                        //Swal.close();
-                    },
-                    complete: function() {
-                        // Hide the overlay and spinner after the request is complete
-                        $('.overlay').hide();
-                    }
+            //             $('#Contact').change(function(e) {
+            //                 e.preventDefault();
+            //                 var id = $(this).val();
+            //                 $.ajax({
+            //                     url: "/getcontact",
+            //                     type: "POST",
+            //                     data: {
+            //                         customercode,
+            //                         id,
+            //                     },
+            //                     success: function(response) {
+            //                         console.log(response);
+            //                         if (response.Customercon) {
+            //                             var Customercon = response
+            //                                 .Customercon;
+            //                             $('#name').val(Customercon
+            //                                 .CustName);
+            //                             $('#cell').val(Customercon.Cell);
+            //                             $('#email').val(Customercon.Email);
+            //                             $('#phoneno').val(Customercon
+            //                                 .Phone);
+            //                         }
+            //                     }
+            //                 });
 
 
+            //             });
 
-                });
-            });
+            //         },
+            //         failed: function(output) {
+            //             var errors = output.responseJSON;
+            //             alert(errors.message);
+            //             //Swal.close();
+            //         },
+            //         complete: function() {
+            //             // Hide the overlay and spinner after the request is complete
+            //             $('.overlay').hide();
+            //         }
+
+
+
+            //     });
+            // });
         });
-        $(document).on("dblclick", ".vesrow", function() {
-            $targetvesname = $(this).attr('data-vesname');
-            $targetvesimo = $(this).attr('data-vesimo');
+        
+        
+        
+$(document).on("dblclick", ".vesrow", function () {
+    const vesselName = $(this).attr('data-vesname');
+    const imoNo = $(this).attr('data-vesimo');
 
-            // document.getElementById("vesselname").value = $targetvesname;
-            $('#vesselname').val($targetvesname);
-            $('#vesselcode').val($targetvesimo);
-            // document.getElementById("vesselcode").value = $targetvesimo;
-            $('#searchrmodw').modal('hide');
+    $('#vesselname').val(vesselName);  // Set vessel name
+    $('#vesselimo').val(imoNo);        // Set new IMO input
+    $('#vesselcode').val(imoNo);       // Set hidden field for saving
 
-        });
+    $('#searchrmodw').modal('hide');
+});
+
+
+        // $(document).on("dblclick", ".vesrow", function() {
+        //     $targetvesname = $(this).attr('data-vesname');
+        //     $targetvesimo = $(this).attr('data-vesimo');
+
+        //     // document.getElementById("vesselname").value = $targetvesname;
+        //     $('#vesselname').val($targetvesname);
+        //     $('#vesselcode').val($targetvesimo);
+        //     // document.getElementById("vesselcode").value = $targetvesimo;
+        //     $('#searchrmodw').modal('hide');
+
+        // });
 
         function addRow() {
             var table = document.getElementById("myTable");
@@ -1266,6 +1375,71 @@
             });
 
 
+
+              function loadContacts(customercode, selectedContactId = null) {
+    ajaxSetup();
+    $.ajax({
+        url: "/getcontact",
+        type: "POST",
+        data: {
+            customercode,
+        },
+        beforeSend: function () {
+            $('.overlay').show();
+        },
+        success: function (response) {
+            var contacts = response.contacts;
+            $('#Contact').empty(); // Clear existing
+            $('#Contact').append($('<option>', {
+                value: '',
+                text: '-- Select Contact --'
+            }));
+            for (let i = 0; i < contacts.length; i++) {
+                let option = $('<option>', {
+                    value: contacts[i].ID,
+                    text: contacts[i].CustName
+                });
+                $('#Contact').append(option);
+            }
+
+            if (selectedContactId) {
+                $('#Contact').val(selectedContactId).trigger('change');
+            }
+
+            $('#Contact').off('change').on('change', function () {
+                var id = $(this).val();
+                if (!id) return;
+                $.ajax({
+                    url: "/getcontact",
+                    type: "POST",
+                    data: { customercode, id },
+                    success: function (response) {
+                        if (response.Customercon) {
+                            var c = response.Customercon;
+                            $('#name').val(c.CustName);
+                            $('#cell').val(c.Cell);
+                            $('#email').val(c.Email);
+                            $('#phoneno').val(c.Phone);
+                        }
+                    }
+                });
+            });
+        },
+        error: function (xhr) {
+            alert('Error loading contacts');
+        },
+        complete: function () {
+            $('.overlay').hide();
+        }
+    });
+}
+
+
+
+
+
+
+
             //gettingdata
             function dataget() {
                 $.ajaxSetup({
@@ -1295,6 +1469,9 @@
                             }));
                             $('#ShippingPort').val(eventfiller.ShippingPort);
                             $('#Priority').val(eventfiller.Priority);
+                            $('#displaycompanycode').val(eventfiller.CustomerCode);
+                                $('#vesselimo').val(eventfiller.IMONo); 
+
                             $('#Status').val(eventfiller.Status);
                             console.log(eventfiller.ETA);
 
@@ -1353,6 +1530,7 @@
                             $('#eventno').val(eventfiller.EventNo);
                             $('#generalvessel').val(eventfiller.GeneralVesselNote);
                             $("#companycode").change();
+                            loadContacts(eventfiller.CustomerCode, eventfiller.Contact);
 
                         }
                         let table = document.getElementById('qoutesBody');

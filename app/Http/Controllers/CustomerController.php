@@ -49,9 +49,13 @@ class CustomerController extends Controller
     public function customer_setup()
     {
         $BranchCode = Auth::user()->BranchCode;
+        
+    $CustomerSetup = Customer::where('BranchCode', $BranchCode)->get();
 
         $TermsSetup = termssetup::distinct()->get();
         $TypeSetup = Typesetup::distinct()->get();
+         $contacts = CustomerContacts::all();
+         
         $custset = Customer::select('CustomerName', 'Country', 'AreaCode', 'AreaofBusiness', 'StateName', 'City', 'ActCode')->distinct()->get();
         $AOB = Customer::select('AreaofBusiness')->distinct()->WHERE('AreaofBusiness', '<>', '')->orderBy('AreaofBusiness')->get();
         $Country = Customer::select('Country')->distinct()->WHERE('Country', '<>', '')->orderBy('Country')->get();
@@ -79,6 +83,9 @@ class CustomerController extends Controller
             'StateName' => $StateName,
             'SalesMan' => $SalesMan,
             'lastidcontact' => $lastidcontact,
+ 'contacts' => $contacts, 
+  'CustomerSetup' => $CustomerSetup, 
+ 
         ]);
     }
 
@@ -104,12 +111,17 @@ class CustomerController extends Controller
         $sheet = $spreadsheet->getActiveSheet();
 
         $data = [];
-        for ($row = $startRow; $row <= $endRow; $row++) {
+        for ($row = max(2, $startRow); $row <= $endRow; $row++) {
+
             $rowData = [];
             $CustomerCode = $sheet->getCellByColumnAndRow(
                 Coordinate::columnIndexFromString($CustomerCodeColumn),
                 $row
             )->getValue();
+
+            if (!is_numeric($CustomerCode)) {
+                continue;
+            }
             $CustomerName = $sheet->getCellByColumnAndRow(
                 Coordinate::columnIndexFromString($CustomerNameColumn),
                 $row
@@ -142,38 +154,47 @@ class CustomerController extends Controller
     {
         $BranchCode = Auth::user()->BranchCode;
         $TableData = $request->input('dataarray');
+    
         for ($i = 0; $i < count($TableData); $i++) {
             $insert_update = [];
+    
             $CustomerCode = $TableData[$i]['CustomerCode'];
+    
+         
+            if (!is_numeric($CustomerCode)) {
+                continue;
+            }
+    
+         
             if ($CustomerCode == "" || !$CustomerCode) {
                 $lastid = Customer::where('BranchCode', $BranchCode)->max('CustomerCode');
                 $CustomerCode = $lastid + 1;
-                $insert_update["CustomerCode"] = $CustomerCode;
-            } else {
-
-                $insert_update["CustomerCode"] = $CustomerCode = $TableData[$i]['CustomerCode'];
             }
-            $insert_update["CustomerName"] = $CustomerName = $TableData[$i]['CustomerName'];
+    
+            $CustomerName = $TableData[$i]['CustomerName'];
+            $insert_update["CustomerCode"] = $CustomerCode;
+            $insert_update["CustomerName"] = $CustomerName;
             $insert_update["CType"] = $TableData[$i]['Ctype'];
             $insert_update["VType"] = $TableData[$i]['Vtype'];
             $insert_update["CustCategory"] = $TableData[$i]['Category'];
             $insert_update["BranchCode"] = $BranchCode;
             $insert_update["Status"] = 'Active';
             $insert_update["ChkInactive"] = 0;
-
+    
             $status = DB::table('customersetup')
                 ->updateOrInsert(
                     ['CustomerCode' => $CustomerCode, 'CustomerName' => $CustomerName, 'BranchCode' => $BranchCode],
                     $insert_update
                 );
-
+    
             $MActCode = '1.3.' . $CustomerCode;
-
+    
             $AcFile = AcFile::where('ActCode', $MActCode)->where('BranchCode', $BranchCode)->first();
             if (!$AcFile) {
                 $AcFile = new AcFile;
                 $AcFile->ActCode = $MActCode;
             }
+    
             $AcFile->AcName3 = $CustomerName;
             $AcFile->BranchCode = $BranchCode;
             $AcFile->AcCode1 = 1;
@@ -201,16 +222,26 @@ class CustomerController extends Controller
             $AcFile->ChkSupplier = false;
             $AcFile->save();
         }
+    
         $message = 'NO';
         if ($status) {
             $message = 'Saved';
         }
-
-
+    
         return response()->json([
             'message' => $message,
         ]);
     }
+    
+    
+// public function customer_contacts_view()
+// {
+//     $contacts = CustomerContacts::all();
+
+//     return view('Setups.customer_contacts_view', compact('contacts'));
+// }
+
+
 
     public function SaveCustomer(Request $request)
     {
@@ -396,24 +427,71 @@ class CustomerController extends Controller
             'CustomerName' => $rCustomerName,
         ]);
     }
-    public function DeleteCustomer(Request $request)
-    {
-        $CustomerCode = $request->input('CustomerCode');
-        $message = '';
-        $customerCheck = Customer::where('CustomerCode', $CustomerCode)->first();
-        if ($customerCheck) {
-            $CustomerName = $customerCheck->CustomerName;
-            $customerdelete = Customer::where('CustomerCode', $CustomerCode)->delete();
-            if ($customerdelete) {
-                $message = 'Deleted';
-            }
+    
+    
+public function DeleteCustomer(Request $request)
+{
+    $CustomerCode = $request->input('CustomerCode');
+    $BranchCode = Auth::user()->BranchCode;
+
+    $customerCheck = Customer::where('CustomerCode', $CustomerCode)
+        ->where('BranchCode', $BranchCode)
+        ->first();
+
+    if ($customerCheck) {
+        $CustomerName = $customerCheck->CustomerName;
+        $deleted = Customer::where('CustomerCode', $CustomerCode)
+            ->where('BranchCode', $BranchCode)
+            ->delete();
+
+        if ($deleted) {
+            return response()->json([
+                'message' => 'Deleted',
+                'CustomerCode' => $CustomerCode,
+                'CustomerName' => $CustomerName,
+            ]);
         }
-        return response()->json([
-            'message' => $message,
-            'CustomerCode' => $CustomerCode,
-            'CustomerName' => $CustomerName,
-        ]);
     }
+
+    return response()->json([
+        'message' => 'Error',
+        'CustomerCode' => $CustomerCode,
+        'CustomerName' => '',
+    ]);
+}
+
+    
+// public function DeleteCustomer(Request $request)
+// {
+//      dd('sdsds');
+//     $CustomerCode = $request->input('CustomerCode');
+//     $BranchCode = Auth::user()->BranchCode;
+
+//     $customerCheck = Customer::where('CustomerCode', $CustomerCode)
+//         ->where('BranchCode', $BranchCode)
+//         ->first();
+
+//     if ($customerCheck) {
+//         $CustomerName = $customerCheck->CustomerName;
+//         $deleted = Customer::where('CustomerCode', $CustomerCode)
+//             ->where('BranchCode', $BranchCode)
+//             ->delete();
+
+//         if ($deleted) {
+//             return response()->json([
+//                 'message' => 'Deleted',
+//                 'CustomerCode' => $CustomerCode,
+//                 'CustomerName' => $CustomerName,
+//             ]);
+//         }
+//     }
+
+//     return response()->json([
+//         'message' => 'Error',
+//         'CustomerCode' => $CustomerCode,
+//         'CustomerName' => '',
+//     ]);
+// }
 
 
 
@@ -425,16 +503,28 @@ class CustomerController extends Controller
         info($Customercontact);
         $datacontact = '';
         foreach ($Customercontact as $datakey => $datavalue) {
-            $datacontact .= '
-    <tr id="rowcell" data-ID="' . $datavalue->ID . '" data-CustomerCode="' . $datavalue->CustomerCode . '" data-Title="' . $datavalue->Title . '"
-    data-CustName="' . $datavalue->CustName . '" data-DepartmentName="' . $datavalue->DepartmentName . '" data-Phone="' . $datavalue->Phone . '"
-    data-Cell="' . $datavalue->Cell . '"
-    data-Fax="' . $datavalue->Fax . '" data-Email="' . $datavalue->Email . '" data-Notes="' . $datavalue->Notes . '" data-IMONo="' . $datavalue->IMONo . '"
-    >' .
-                '<td>' . $datavalue->ID . '</td>' .
-                '<td>' . $datavalue->CustName . '</td>' .
-                '<td>' . $datavalue->DepartmentName . '</td>' .
-                '</tr>';
+            
+            
+           $datacontact .= '<tr>
+    <td>' . $datavalue->CustomerCode . '</td>
+    <td>' . $datavalue->CustomerName . '</td>
+    <td>' . $datavalue->Address . '</td>
+    <td>' . $datavalue->EmailAddress . '</td>
+    <td>' . $datavalue->PhoneNo . '</td>
+    <td>' . $datavalue->ContactPerson . '</td>
+</tr>';
+
+
+    //         $datacontact .= '
+    // <tr id="rowcell" data-ID="' . $datavalue->ID . '" data-CustomerCode="' . $datavalue->CustomerCode . '" data-Title="' . $datavalue->Title . '"
+    // data-CustName="' . $datavalue->CustName . '" data-DepartmentName="' . $datavalue->DepartmentName . '" data-Phone="' . $datavalue->Phone . '"
+    // data-Cell="' . $datavalue->Cell . '"
+    // data-Fax="' . $datavalue->Fax . '" data-Email="' . $datavalue->Email . '" data-Notes="' . $datavalue->Notes . '" data-IMONo="' . $datavalue->IMONo . '"
+    // >' .
+    //             '<td>' . $datavalue->ID . '</td>' .
+    //             '<td>' . $datavalue->CustName . '</td>' .
+    //             '<td>' . $datavalue->DepartmentName . '</td>' .
+    //             '</tr>';
         }
         $discountslist = CustomerDiscount::where('CustomerCode', $customercode)->orderBy('DepartmentCode')->get();
         $smancode = Customer::select('SManCode')->where('customercode', $customercode)->first();
@@ -500,7 +590,6 @@ class CustomerController extends Controller
             ]);
         }
     }
-
 
 
 

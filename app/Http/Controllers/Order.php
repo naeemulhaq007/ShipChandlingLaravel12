@@ -612,48 +612,113 @@ class Order extends Controller
     }
 
 
-    public function Orderget(Request $request)
-    {
+    // public function Orderget(Request $request)
+    // {
 
-        $BranchCode = config('app.MBranchCode');
-        $PONO = $request->input('Orderno');
-        // info($PONO);
-        $quotesdetails = DB::table('orderdetail')->where('PONO', $PONO)->where('BranchCode', $BranchCode)->OrderBy('SNo')->get();
-        $DataQuotesMaster = OrderMasterModel::where('PONo', $PONO)->where('BranchCode', $BranchCode)->first();
-        $depcode = $DataQuotesMaster->DepartmentCode;
-        // info($depcode);
-        $eventno = $DataQuotesMaster->EventNo;
-        $TypeSetup = Typesetup::where('TypeCode', $depcode)->first();
-        $CustomerCode = $DataQuotesMaster->CustomerCode;
-        $Customerdicount = CustomerDiscount::where('CustomerCode', $CustomerCode)->where('DepartmentCode', $depcode)->first();
+    //     $BranchCode = config('app.MBranchCode');
+    //     $PONO = $request->input('Orderno');
+    //     // info($PONO);
+    //     $quotesdetails = DB::table('orderdetail')->where('PONO', $PONO)->where('BranchCode', $BranchCode)->OrderBy('SNo')->get();
+    //     $DataQuotesMaster = OrderMasterModel::where('PONo', $PONO)->where('BranchCode', $BranchCode)->first();
+    //     $depcode = $DataQuotesMaster->DepartmentCode;
+    //     // info($depcode);
+    //     $eventno = $DataQuotesMaster->EventNo;
+    //     $TypeSetup = Typesetup::where('TypeCode', $depcode)->first();
+    //     $CustomerCode = $DataQuotesMaster->CustomerCode;
+    //     $Customerdicount = CustomerDiscount::where('CustomerCode', $CustomerCode)->where('DepartmentCode', $depcode)->first();
 
-        $EventData = Events::where('EventNo', $eventno)->where('BranchCode', $BranchCode)->first();
-        $warehouse = GodownSetup::select('GodownCode', 'GodownName')->distinct()->get();
-        // info($depcode);
-        $department = DB::table('QryVendorDepartment')->where(function ($query) {
-            $query->where('ChkInactive', 0)
-                ->orWhereNull('ChkInactive');
-        })
-            ->where('ChkSelect', 1)
-            ->where('TypeCode', $depcode)
-            ->where('BranchCode', $BranchCode)
-            ->select('VenderName', 'VenderCode')
-            ->distinct()
-            ->orderBy('VenderName')
-            ->get();
+    //     $EventData = Events::where('EventNo', $eventno)->where('BranchCode', $BranchCode)->first();
+    //     $warehouse = GodownSetup::select('GodownCode', 'GodownName')->distinct()->get();
+    //     // info($depcode);
+    //     $department = DB::table('QryVendorDepartment')->where(function ($query) {
+    //         $query->where('ChkInactive', 0)
+    //             ->orWhereNull('ChkInactive');
+    //     })
+    //         ->where('ChkSelect', 1)
+    //         ->where('TypeCode', $depcode)
+    //         ->where('BranchCode', $BranchCode)
+    //         ->select('VenderName', 'VenderCode')
+    //         ->distinct()
+    //         ->orderBy('VenderName')
+    //         ->get();
 
+    //     return response()->json([
+    //         'quotesdetails' => $quotesdetails,
+    //         'DataQuotesMaster' => $DataQuotesMaster,
+    //         'TypeSetup' => $TypeSetup,
+    //         'Customerdicount' => $Customerdicount,
+    //         'EventData' => $EventData,
+    //         'vendors' => $department,
+    //         'warehouse' => $warehouse,
+
+    //     ]);
+
+    // }
+    
+    
+public function Orderget(Request $request)
+{
+   $BranchCode = Auth::user()->BranchCode;
+    $QuoteNo = $request->input('Orderno');
+
+    $DataQuotesMaster = DB::table('qryquotemasteropen')
+        ->where('QuoteNo', $QuoteNo)
+        ->where('BranchCode', $BranchCode)
+        ->first();
+
+    if (!$DataQuotesMaster) {
         return response()->json([
-            'quotesdetails' => $quotesdetails,
-            'DataQuotesMaster' => $DataQuotesMaster,
-            'TypeSetup' => $TypeSetup,
-            'Customerdicount' => $Customerdicount,
-            'EventData' => $EventData,
-            'vendors' => $department,
-            'warehouse' => $warehouse,
-
-        ]);
-
+            'message' => 'Attempt to read property "DepartmentCode" on null'
+        ], 500);
     }
+
+    $depcode = $DataQuotesMaster->DepartmentCode;
+    $eventno = $DataQuotesMaster->EventNo;
+    $CustomerCode = $DataQuotesMaster->CustCode;
+
+    $quotesdetails = DB::table('quotedetails')
+        ->where('QuoteNo', $DataQuotesMaster->QuoteNo)
+        ->where('BranchCode', $BranchCode)
+        ->orderBy('SNo')
+        ->get();
+
+    $TypeSetup = DB::table('typesetup')->where('TypeCode', $depcode)->first();
+
+    $Customerdicount = DB::table('customerdiscount')
+        ->where('CustomerCode', $CustomerCode)
+        ->where('DepartmentCode', $depcode)
+        ->first();
+
+    $EventData = DB::table('eventinvoice')
+        ->where('EventNo', $eventno)
+        ->where('BranchCode', $BranchCode)
+        ->first();
+
+    $warehouse = DB::table('qrygodownsetup')->select('GodownCode', 'GodownName')->distinct()->get();
+
+    $vendors = DB::table('qryvendordepartment')
+        ->where(function ($query) {
+            $query->where('ChkInactive', 0)->orWhereNull('ChkInactive');
+        })
+        ->where('ChkSelect', 1)
+        ->where('TypeCode', $depcode)
+        ->where('BranchCode', $BranchCode)
+        ->select('VenderName', 'VenderCode')
+        ->distinct()
+        ->orderBy('VenderName')
+        ->get();
+
+    return response()->json([
+        'quotesdetails' => $quotesdetails,
+        'DataQuotesMaster' => $DataQuotesMaster,
+        'TypeSetup' => $TypeSetup,
+        'Customerdicount' => $Customerdicount,
+        'EventData' => $EventData,
+        'vendors' => $vendors,
+        'warehouse' => $warehouse,
+    ]);
+}
+
 
     public function OrderItemsave(Request $request)
     {

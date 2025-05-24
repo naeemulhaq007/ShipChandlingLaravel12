@@ -42,12 +42,12 @@
                                     <span class="Txtspan">
                                         Computer # </span>
                                 </div>
-                                <div class="inputbox col-sm-4 ml-1">
-                                    <input type="number" class="" id="TxtComputer2" name="TxtComputer2"
-                                        required="required">
-                                    <span class="Txtspan">
-                                        Computer 2 # </span>
-                                </div>
+                                <!--<div class="inputbox col-sm-4 ml-1">-->
+                                <!--    <input type="number" class="" id="TxtComputer2" name="TxtComputer2"-->
+                                <!--        required="required">-->
+                                <!--    <span class="Txtspan">-->
+                                <!--        Computer 2 # </span>-->
+                                <!--</div>-->
                                 <button class="btn btn-info  mx-1" id="Button6" role="button">Fill</button>
                                 <div class="inputbox col-sm-2">
                                     <input type="text" class="" id="TxtWorkUser" readonly name="TxtWorkUser"
@@ -83,21 +83,35 @@
                             <div class="row py-2">
 
                                 <div class="inputbox col-sm-2 ml-2">
-                                    <input type="text" class=" " id="TxtVendorCodeText" required="required">
-                                    <span class="Txtspan">
-                                        Vendor Code
+                                    <!--<input type="text" class=" " id="TxtVendorCodeText" required="required">-->
+                                    <input type="text" id="TxtVendorCodeText" readonly required="required">
+
+                                     <span class="Txtspan position-absolute bg-white px-1" style="top: -10px; left: 12px; font-size: 12px; color: green;">
+                                    Vendor Code
                                     </span>
+                                    <!--<span class="Txtspan">-->
+                                    <!--    Vendor Code-->
+                                    <!--</span>-->
                                 </div>
                                 <div class="inputbox col-sm-6 ml-1">
-                                    <select name="CmbVenderName" id="CmbVenderName">
-                                        <option value="0"></option>
-                                        @foreach ($VenderSetup as $VenderSetupitem)
-                                            <option value="{{ $VenderSetupitem->VenderCode }}">
-                                                {{ $VenderSetupitem->VenderName }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                    <span class="Txtspan">
+                                    <!--<select name="CmbVenderName" id="CmbVenderName">-->
+                                    <!--    <option value="0"></option>-->
+                                    <!--    @foreach ($VenderSetup as $VenderSetupitem)-->
+                                    <!--        <option value="{{ $VenderSetupitem->VenderCode }}">-->
+                                    <!--            {{ $VenderSetupitem->VenderName }}-->
+                                    <!--        </option>-->
+                                    <!--    @endforeach-->
+                                    <!--</select>-->
+                                    <!--<span class="Txtspan">-->
+                                         <select name="CmbVenderName" id="CmbVenderName">
+        <option value="0" data-code="">Select Vendor</option>
+        @foreach ($VenderSetup as $VenderSetupitem)
+            <option value="{{ $VenderSetupitem->VenderCode }}" data-code="{{ $VenderSetupitem->VenderCode }}">
+                {{ $VenderSetupitem->VenderName }}
+            </option>
+        @endforeach
+    </select>
+                                     <span class="Txtspan position-absolute bg-white px-1" style="top: -10px; left: 12px; font-size: 12px; color: green;">
                                         Vendor Name
                                     </span>
                                 </div>
@@ -112,7 +126,7 @@
 
 
                                 <div class="inputbox col-sm-8 ml-2">
-                                    <select name="CmbDepartment" id="CmbDepartment">
+                                    <select  name="CmbDepartment"  style="color: black;" id="CmbDepartment">
                                         <option value="0"></option>
 
                                         @foreach ($Department as $Departmentitem)
@@ -120,9 +134,12 @@
                                             </option>
                                         @endforeach
                                     </select>
-                                    <span class="Txtspan">
-                                        Department
-                                    </span>
+                                     <span class="Txtspan position-absolute bg-white px-1" style="top: -10px; left: 12px; font-size: 12px; color: green;">
+                                       Department
+                                     </span>
+                                    <!--<span class="Txtspan">-->
+                                    <!--    Department-->
+                                    <!--</span>-->
                                 </div>
 
 
@@ -142,7 +159,7 @@
                                             </option>
                                         @endforeach
                                     </select>
-                                    <span class="Txtspan">
+                                    <span class="Txtspan position-absolute bg-white px-1" style="top: -10px; left: 12px; font-size: 12px; color: green;">
                                         Location
                                     </span>
                                 </div>
@@ -221,9 +238,11 @@
                             <div class="row ml-1 py-2">
                                 <button class="btn btn-success  mx-2" id="BtnFill" role="button"> <i
                                         class="fa fa-cloud mr-1" aria-hidden="true"></i>Save</button>
+                                     <button class="btn btn-primary mx-2" id="CmdNew" role="button" onclick="location.reload();">
+    <i class="fa fa-plus mr-1" aria-hidden="true"></i>New
+</button>
 
-                                <button class="btn btn-primary mx-2" id="CmdNew" role="button"> <i
-                                        class="fa fa-plus mr-1" aria-hidden="true"></i>New</button>
+                               
 
                                 <button class="btn btn-dark mx-2" id="CmdExport" role="button"> <i
                                         class="fa fa-file-excel mr-1" aria-hidden="true"></i>Export</button>
@@ -236,9 +255,13 @@
 
                                 <button class="btn btn-warning mx-2" id="CmdDelete" role="button"> <i
                                         class="fa fa-trash mr-1" aria-hidden="true"></i>Delete</button>
+                                        <button class="btn btn-danger mx-2" id="CmdExit" role="button" onclick="window.location.href='{{ route('Vendor_Contract_Provision') }}'">
+    <i class="fa fa-door-open mr-1" aria-hidden="true"></i>Exit
+</button>
 
-                                <button class="btn btn-danger mx-2" id="CmdExit" role="button"> <i
-                                        class="fa fa-door-open mr-1" aria-hidden="true"></i>Exit</button>
+
+                                <!--<button class="btn btn-danger mx-2" id="CmdExit" role="button"> <i-->
+                                <!--        class="fa fa-door-open mr-1" aria-hidden="true"></i>Exit</button>-->
 
                             </div>
 
@@ -257,25 +280,41 @@
 
                                         </tr>
                                     </thead>
-                                    <tbody id="DG2body">
-                                        @foreach ($qrymaster as $qry)
-                                            <tr>
-                                                <td>
-                                                    {{ $qry->ComputerNo }}
-                                                </td>
-                                                <td>
-                                                    {{ $qry->VendorName }}
-                                                </td>
-                                                <td>
-                                                    {{ $qry->ExpiryDate }}
-                                                </td>
-                                                <td>
-                                                    {{ $qry->GodownName }}
-                                                </td>
-                                            </tr>
-                                        @endforeach
+                                    @php
+                                    $unique = [];
+                                     $filtered = [];
+                                 
+                                     foreach ($qrymaster as $qry) {
+                                         $key = $qry->ComputerNo . '_' . $qry->VendorName . '_' . $qry                                 ->ExpiryDate . '_' . $qry->GodownName;
+                                        if (!in_array($key, $unique)) {
+                                             $unique[] = $key;
+                                             $filtered[] = $qry;
+                                         }
+                                     }
+                                    @endphp
+                                      <tbody id="DG2body">
+                                       @foreach ($filtered as $qry)
+                                        <tr data-computerno="{{ $qry->ComputerNo }}" data-branchcode="{{ $qry->BranchCode ?? 8 }}">
 
-                                    </tbody>
+                                               <td>{{ $qry->ComputerNo }}</td>
+                                               <td>{{ $qry->VendorName }}</td>
+                                               <td>{{ $qry->ExpiryDate }}</td>
+                                               <td>{{ $qry->GodownName }}</td>
+                                           </tr>
+                                       @endforeach
+                                   </tbody>
+
+                                   <!-- <tbody id="DG2body">-->
+                                   <!--       @foreach ($filtered as $qry)-->
+                                   <!-- <tr>-->
+                                   <!--    <td>{{ $qry->ComputerNo }}</td>-->
+                                   <!--    <td>{{ $qry->VendorName }}</td>-->
+                                   <!--    <td>{{ $qry->ExpiryDate }}</td>-->
+                                   <!--    <td>{{ $qry->GodownName }}</td>-->
+                                   <!--</tr>-->
+                                   <!--     @endforeach-->
+
+                                   <!-- </tbody>-->
                                 </table>
 
                             </div>
@@ -296,9 +335,9 @@
                         <i class="fas fa-minus"></i>
                     </button>
                 </div>
-<?php echo View::make('partials.vencontractitemsearch'); ?>
+                         <?php echo View::make('partials.vencontractitemsearch'); ?>
 
-                <div class="row">
+                 <div class="row">
                     <div class="inputbox col-sm-3 ml-2">
                         <input name="TxtItemName" id="TxtItemName">
 
@@ -323,21 +362,44 @@
 
 
                     <div class="rounded shadow table-responsive">
-                        <table class="table " id="DG1">
-                            <thead class="">
-                                <tr>
-                                    <th>Item&nbsp;Code</th>
-                                    <th>Product&nbsp;Name</th>
-                                    <th>Product&nbsp;Name&nbsp;Vendor</th>
-                                    <th>UOM</th>
-                                    <th>IMPA&nbsp;Code</th>
-                                    <th>Vendor&nbsp;Price</th>
-                                    <th>Last&nbsp;Date</th>
-                                    <th>User</th>
-                                    <th>V&nbsp;Part&nbsp;Number</th>
-                                    <th>Remarks</th>
-                                </tr>
-                            </thead>
+                        <table class="table table-bordered table-hover" id="DG1" >
+                              <thead class="bg-info text-center">
+                                    <!--<tr>-->
+                                    <!--   <th>Item Code</th>-->
+                                    <!--   <th>Item Name</th>-->
+                                    <!--   <th>Item Name Vendor</th>-->
+                                    <!--   <th>UOM</th>-->
+                                    <!--   <th>IMPA Code</th>-->
+                                    <!--   <th>Vendor Price</th>-->
+                                    <!--   <th>Last Date</th>-->
+                                    <!--   <th>User</th>-->
+                                    <!--   <th>V Part Code</th>-->
+                                    <!--   <th>Remarks</th>-->
+
+                                    <!--</tr>-->
+                                    
+
+        <tr>
+         
+            <th>Item Code</th>
+            <th>Item Name</th>
+            <th>Item Name Vendor</th>
+            <th>UOM</th>
+            <th>IMPA Code</th>
+            <th>Vendor Price</th>
+            <th>Last Date</th>
+            <th>User</th>
+            <th>V Part Code</th>
+            <th>Remarks</th>
+        </tr>
+
+
+</thead>
+
+
+                             
+
+
                             <tbody id="DG1body">
 
                             </tbody>
@@ -354,11 +416,13 @@
 
                 </div>
                 <div class="row py-2">
-                <button class="btn btn-success  mx-2" id="BtnFill" role="button"> <i
+                <button class="btn btn-success  mx-2" id="AddRowBtn" role="button"> <i
                     class="fa fa-plus mr-1" aria-hidden="true"></i>Add Row</button>
 
-            <button class="btn btn-danger mx-2" id="CmdExit" role="button"> <i
-                    class="fa fa-multiply mr-1" aria-hidden="true"></i>Delete Row</button></div>
+<button class="btn btn-danger mx-2" id="DeleteRowBtn" role="button">
+    <i class="fa fa-trash mr-1" aria-hidden="true"></i>Delete Row
+</button>
+
             </div>
         </div>
     </div>
@@ -440,156 +504,119 @@
         src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.print.min.js"></script>
 
     <script>
+     
         function DataGet() {
-            var TxtComputerNo = $('#TxtComputerNo').val();
-            ajaxSetup();
-            $.ajax({
-                    url: '{{ route('GetDataVenContract') }}',
-                    type: 'POST',
-                    data: {
-                        TxtComputerNo
-                    },
-                    beforeSend: function() {
-                        // Show the overlay and spinner before sending the request
-                        $('.overlay').show();
-                    },
-                    success: function(response) {
-                        console.log(response);
-                        var Master = response.Master;
-                        var Details = response.Details;
-                        if (Master) {
-                            $('#TxtWorkUser').val(Master.WorkUser ? Master.WorkUser : '');
-                            var odate = new Date(Master.EntryDate ? Master.EntryDate : '');
-                            const EntryDate = odate.toISOString().substring(0, 10);
-                            $('#TxtDate').val(EntryDate);
-                        }
-                        let table = document.getElementById('DG1body');
-                        if(Details.length > 0){
-                            $('#TxtVenderCode').val(Details[0].VenderCode);
-                            $('#TxtVendorCodeText').val(Details[0].VendorCusCode);
-                            // $('#CmbVenderName').val(Details[0].VenderName);
-                            $('#TxtExpiryDate').val(Details[0].ExpiryDate);
-                            $('#TxtGodownCode').val(Details[0].GodownCode);
-                            // $('#TxtVenderCode').val(Details[0].GodownName);
-                            $('#TxtDepartmentCode').val(Details[0].DepartmentCode);
-                            // $('#TxtVenderCode').val(Details[0].TypeName);
-                            table.innerHTML = ""; // Clear the table
-                            var N = 0; // Clear the table
+    var TxtComputerNo = $('#TxtComputerNo').val();
+    ajaxSetup();
 
-                            Details.forEach(function(item) {
-                                N = N+1;
-                            let row = table.insertRow();
-                            function createCell(content) {
-                            let cell = row.insertCell();
-                            cell.innerHTML = content;
-                            return cell;
-                            }
-                            createCell(item.ItemCode ? item.ItemCode : '');
-                            createCell(item.ItemName ? item.ItemName : '');
-                            createCell('');
-                            createCell(item.UOM ? item.UOM : '');
-                            createCell(item.VendorPrice ? item.VendorPrice : '');
-                            createCell(item.Remarks ? item.Remarks : '');
-                            let MDate1 = item.LastDate ? item.LastDate : ''
-                            var Mdate = new Date(MDate1);
-                            const LastDate = Mdate.toISOString().substring(0, 10);
-                            createCell(LastDate);
-                            createCell(item.IMPAItemCode ? item.IMPAItemCode : '');
-                            createCell(item.WorkUser ? item.WorkUser : '');
-                            createCell(item.VPartCode ? item.VPartCode : '');
-                            createCell(item.ID ? item.ID : '');
+    $.ajax({
+        url: '{{ route('GetDataVenContract') }}',
+        type: 'POST',
+        data: {
+            TxtComputerNo: TxtComputerNo
+        },
+        beforeSend: function () {
+            $('.overlay').show();
+        },
+        success: function (response) {
+            console.log(response);
 
-                            });
-                            $('#LblTotal').val(N);
-                        }else{
-                            table.innerHTML = ""; // Clear the table
-                            $('#CmbDepartment').val(0);
-                        }
+            if (response.error) {
+                alert(response.error);
+                return;
+            }
 
+            var Master = response.Master;
+            var Details = response.Details;
 
-                    },
-                    complete: function() {
-                        // Hide the overlay and spinner after the request is complete
-                        $('.overlay').hide();
-                    }
-                });
+            if (Master) {
+                $('#TxtWorkUser').val(Master.WorkUser || '');
+
+                if (Master.EntryDate) {
+                    var odate = new Date(Master.EntryDate);
+                    const EntryDate = odate.toISOString().substring(0, 10);
+                    $('#TxtDate').val(EntryDate);
+                }
+            }
+             let table = $('#DG1').DataTable();
+table.clear(); // Clear existing DataTable rows
+
+if (Details.length > 0) {
+    const first = Details[0];
+    $('#TxtVenderCode').val(first.VenderCode || '');
+    $('#TxtVendorCodeText').val(first.VendorCusCode || '');
+    $('#TxtExpiryDate').val(first.ExpiryDate || '');
+    $('#TxtGodownCode').val(first.GodownCode || '');
+    $('#TxtDepartmentCode').val(first.DepartmentCode || '');
+
+    Details.forEach(function (item) {
+        let formattedDate = item.LastDate ? new Date(item.LastDate).toISOString().substring(0, 10) : '';
+
+        table.row.add([
+           
+            item.ItemCode || '',
+            item.ItemName || '',
+            '', // Optional blank column (e.g., Item Name Vendor)
+            item.UOM || '',
+            item.IMPAItemCode || '',
+            item.VendorPrice || '',
+            formattedDate,
+            item.WorkUser || '',
+            item.VPartCode || '',
+            item.Remarks || ''
+        ]);
+    });
+
+    table.draw();
+    $('#LblTotal').val(Details.length);
+} else {
+    $('#CmbDepartment').val(0);
+    table.draw();
+}
+
+   
+        },
+        complete: function () {
+            $('.overlay').hide();
+        },
+        error: function (xhr) {
+            alert('Server Error: ' + xhr.responseText);
         }
-        // function Contactfiller() {
-        //     var TxtComputer2 = $('#TxtComputer2').val();
-        //     ajaxSetup();
-        //     $.ajax({
-        //             url: '{{ route('Contactfiller') }}',
-        //             type: 'POST',
-        //             data: {
-        //                 TxtComputer2
-        //             },
-        //             beforeSend: function() {
-        //                 // Show the overlay and spinner before sending the request
-        //                 $('.overlay').show();
-        //             },
-        //             success: function(response) {
-        //                 console.log(response);
-        //                 // var Master = response.Master;
-        //                 var Details = response.Table;
-        //                 // if (Master) {
-        //                 //     $('#TxtWorkUser').val(Master.WorkUser ? Master.WorkUser : '');
-        //                 //     var odate = new Date(Master.EntryDate ? Master.EntryDate : '');
-        //                 //     const EntryDate = odate.toISOString().substring(0, 10);
-        //                 //     $('#TxtDate').val(EntryDate);
-        //                 // }
-        //                 let table = document.getElementById('DG1body');
-        //                 if(Details.length > 0){
-        //                     $('#TxtVenderCode').val(Details[0].VenderCode);
-        //                     $('#TxtVendorCodeText').val(Details[0].VendorCusCode);
-        //                     var odate = new Date(Details[0].ExpiryDate ? Details[0].ExpiryDate : '');
-        //                     const ExpiryDate = odate.toISOString().substring(0, 10);
-        //                     $('#TxtExpiryDate').val(ExpiryDate);
-        //                     var Edate = new Date(Details[0].Date ? Details[0].Date : '');
-        //                     const Date = Edate.toISOString().substring(0, 10);
-        //                     $('#TxtDate').val(Date);
-        //                     $('#TxtGodownCode').val(Details[0].GodownCode);
-        //                     $('#TxtDepartmentCode').val(Details[0].DepartmentCode);
-        //                     table.innerHTML = ""; // Clear the table
-        //                     var N = 0; // Clear the table
+    });
+}
+        function updateDG2Table(data) {
+    const table = document.getElementById('DG2body');
+    table.innerHTML = ''; // Clear old rows
 
-        //                     Details.forEach(function(item) {
-        //                         N = N+1;
-        //                     let row = table.insertRow();
-        //                     function createCell(content) {
-        //                     let cell = row.insertCell();
-        //                     cell.innerHTML = content;
-        //                     return cell;
-        //                     }
-        //                     createCell(item.ItemCode ? item.ItemCode : '');
-        //                     createCell(item.ItemName ? item.ItemName : '');
-        //                     createCell('');
-        //                     createCell(item.UOM ? item.UOM : '');
-        //                     createCell(item.VendorPrice ? item.VendorPrice : '');
-        //                     createCell(item.Remarks ? item.Remarks : '');
-        //                     let MDate1 = item.LastDate ? item.LastDate : ''
-        //                     var Mdate = new Date(MDate1);
-        //                     const LastDate = Mdate.toISOString().substring(0, 10);
-        //                     createCell(LastDate);
-        //                     createCell(item.IMPAItemCode ? item.IMPAItemCode : '');
-        //                     createCell(item.WorkUser ? item.WorkUser : '');
-        //                     createCell(item.VPartCode ? item.VPartCode : '');
-        //                     createCell(item.ID ? item.ID : '');
+    const seen = new Set();
+    const uniqueData = data.filter(item => {
+        const key = `${item.ComputerNo}_${item.VendorCode}_${item.ExpiryDate}_${item.GodownName}`;
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+    });
 
-        //                     });
-        //                     $('#LblTotal').val(N);
-        //                 }else{
-        //                     table.innerHTML = ""; // Clear the table
-        //                     $('#CmbDepartment').val(0);
-        //                 }
+    uniqueData.forEach(item => {
+        const row = table.insertRow();
+        const expDate = new Date(item.ExpiryDate);
+
+        // Highlight expired
+        if (expDate < new Date()) {
+            row.style.backgroundColor = 'red';
+        }
+
+        row.insertCell().innerText = item.ComputerNo || '';
+        row.insertCell().innerText = item.VendorCode || '';
+        row.insertCell().innerText = item.ExpiryDate || '';
+        row.insertCell().innerText = item.GodownName || '';
+    });
+}
+  
 
 
-        //             },
-        //             complete: function() {
-        //                 // Hide the overlay and spinner after the request is complete
-        //                 $('.overlay').hide();
-        //             }
-        //         });
-        // }
+
+         
+      
         function ajaxSetup() {
             $.ajaxSetup({
                 headers: {
@@ -660,7 +687,11 @@
         }
 
         function NewComputer(){
+            
+            
+            
                 ajaxSetup();
+                
 
                 $.ajax({
                     url: '{{ route('GetNewComp') }}',
@@ -674,6 +705,7 @@
                     },
                     success: function(response) {
                         console.log(response);
+                        
                         $('#TxtComputerNo').val(response.MComputerNo);
                     },
                     complete: function() {
@@ -683,44 +715,32 @@
                 });
             };
         $(document).ready(function() {
-            rowcheck();
+                  rowcheck();
+              NewComputer();
+       
             $('#CmdNew').click(function (e) {
                 e.preventDefault();
                 NewComputer();
             });
+            
 
 
+      
             var table1 = $('#DG2').DataTable({
-
-                scrollY: 580,
-                deferRender: true,
-                scroller: true,
-                paging: false,
-                info: false,
-                ordering: false,
-                searching: false,
-                responsive: true,
-
-
-            });
-
-            var table2 = $('#DG1').DataTable({
-
-                scrollY: 600,
-                deferRender: true,
-                scroller: true,
-                paging: false,
-                info: false,
-                ordering: false,
-                searching: false,
-                responsive: true,
+                     scrollY: 580,
+                     deferRender: true,
+                     scroller: {
+                         loadingIndicator: true
+                     },
+                     paging: false,
+                     info: false,
+                     ordering: false,
+                     searching: true,
+                     responsive: true
+                 });
 
 
-            });
-
-            // table1.column.adjust();
-
-
+            
 
             var odate = new Date();
             const today = odate.toISOString().substring(0, 10);
@@ -728,42 +748,562 @@
             $('#TxtExpiryDate').val(today);
 
 
+
+
+const dataTable = $('#DG1').DataTable({
+    paging: true,
+    responsive: true
+});
+
+
+
+
+
+
+
+let rowAdded = false;
+
+$('#AddRowBtn').click(function () {
+        $(this).prop('disabled', true);
+    if (rowAdded) return; 
+
+    let table = $('#DG1').DataTable();
+
+    let newRow = table.row.add([
+        `<input class="form-control" placeholder="Item Code">`,
+        `<input class="form-control" placeholder="Item Name">`,
+        `<input class="form-control" placeholder="Item Name Vendor">`,
+        `<input class="form-control" placeholder="UOM">`,
+        `<input class="form-control" placeholder="IMPA Code">`,
+        `<input class="form-control" placeholder="Vendor Price">`,
+        `<input class="form-control" type="date" placeholder="Last Date">`,
+        `<input class="form-control" placeholder="User">`,
+        `<input class="form-control" placeholder="V Part Code">`,
+        `<input class="form-control" placeholder="Remarks">`
+    ]).draw(false).node();
+
+    $(newRow).find('td:eq(0) input').focus();
+
+    rowAdded = true; // prevent repeat
+});
+
+
+
+
+
+
+
+
+
+$('#BtnFill').click(function (e) {
+    e.preventDefault();
+
+    var TxtDate = $('#TxtDate').val();
+    var TxtExpiryDate = $('#TxtExpiryDate').val();
+    var TxtComputerNo = $('#TxtComputerNo').val();
+    var TxtVenderCode = $('#CmbVenderName').val();
+    var CmbVenderName = $('#CmbVenderName option:selected').text();
+    var TxtGodownCode = $('#CmbGodownName').val();
+    var CmbGodownName = $('#CmbGodownName option:selected').text();
+    var TxtDepartmentCode = $('#CmbDepartment').val();
+    var CmbDepartment = $('#CmbDepartment option:selected').text();
+
+    if (TxtComputerNo === '') {
+        NewComputer();
+        return;
+    }
+    if (TxtVenderCode == 0) {
+        alert('Vendor Not Found. Please select vendor.');
+        $('#CmbVenderName').focus();
+        return;
+    }
+    if (TxtGodownCode == 0) {
+        alert('Warehouse Not Found. Please select location.');
+        $('#CmbGodownName').focus();
+        return;
+    }
+    if (TxtDepartmentCode == 0) {
+        alert('Department Not Found. Please select department.');
+        $('#CmbDepartment').focus();
+        return;
+    }
+
+    const rows = dataTable.rows({ search: 'applied' }).nodes();
+    const dataArray = [];
+    let hasError = false;
+
+    for (let i = 0; i < rows.length; i++) {
+        const cells = rows[i].cells;
+
+        function cellValue(index) {
+            const input = cells[index]?.querySelector('input');
+            return input ? input.value.trim() : (cells[index]?.innerText.trim() || '');
+        }
+
+        const ItemCode = cellValue(0);
+        const ItemName = cellValue(1);
+        const ProductNameVendor = cellValue(2);
+        const UOM = cellValue(3);
+        const IMPACode = cellValue(4);
+        const VendorPrice = cellValue(5);
+        const LastDate = cellValue(6);
+        const User = cellValue(7);
+        const VPartNumber = cellValue(8);
+        const Remarks = cellValue(9);
+
+        const requiredFields = [ItemCode, ItemName];
+        const requiredIndexes = [0, 1];
+
+        for (let k = 0; k < requiredFields.length; k++) {
+            if (!requiredFields[k]) {
+                const colIndex = requiredIndexes[k];
+                const cell = cells[colIndex];
+
+                const pageSize = dataTable.page.info().length;
+                const targetPage = Math.floor(i / pageSize);
+                dataTable.page(targetPage).draw(false);
+
+                setTimeout(() => {
+                    let inputField = cell.querySelector('input');
+                    if (!inputField) {
+                        cell.innerHTML = `<input class="form-control border border-danger shadow-sm" value="">`;
+                        inputField = cell.querySelector('input');
+                    }
+                    inputField.classList.add('border', 'border-danger', 'shadow-sm');
+                    inputField.focus();
+                }, 100);
+
+                alert(`Row ${i + 1} column is missing required data. Please fill it.`);
+                hasError = true;
+                break;
+            }
+        }
+
+        if (hasError) break;
+
+        dataArray.push({
+            ItemCode,
+            ItemName,
+            ProductNameVendor,
+            UOM,
+            IMPACode,
+            VendorPrice,
+            LastDate,
+            User,
+            VPartNumber,
+            Remarks,
+        });
+    }
+
+    if (hasError) return;
+
+    ajaxSetup();
+
+    $.ajax({
+        url: '{{ route('VendorContracSave') }}',
+        type: 'POST',
+        data: {
+            TxtDate,
+            TxtExpiryDate,
+            CmbDepartment,
+            CmbGodownName,
+            CmbVenderName,
+            TxtComputerNo,
+            TxtVenderCode,
+            TxtGodownCode,
+            TxtDepartmentCode,
+            dataArray,
+        },
+        beforeSend: function () {
+            $('.overlay').show();
+        },
+        success: function (response) {
+            console.log(response);
+
+            if (response.Message === 'Deck\\Engine Contract Cannot Save On this Form') {
+                alert(response.Message);
+                return;
+            }
+
+            if (response.Message === 'Saved') {
+                Swal.fire('Saved!', 'Contract saved successfully', 'success');
+
+                // ✅ Update only vendor-level DG2 table
+                if (response.table && response.table.length > 0) {
+                    let seen = new Set();
+                    let filtered = response.table.filter(item => {
+                        const key = `${item.ComputerNo}_${item.VendorName}_${item.ExpiryDate}_${item.GodownName}`;
+                        if (seen.has(key)) return false;
+                        seen.add(key);
+                        return true;
+                    });
+
+                    let table = document.getElementById('DG2body');
+                    table.innerHTML = ''; // Clear old rows
+
+                    filtered.forEach(item => {
+                        let row = table.insertRow();
+                        if (new Date(item.ExpiryDate) < new Date()) {
+                            row.style.backgroundColor = 'red';
+                        }
+                        row.setAttribute('data-computerno', item.ComputerNo);
+                        row.setAttribute('data-branchcode', item.BranchCode || 8);
+
+                        row.insertCell().innerText = item.ComputerNo || '';
+                        row.insertCell().innerText = item.VendorName || '';
+                        row.insertCell().innerText = item.ExpiryDate || '';
+                        row.insertCell().innerText = item.GodownName || '';
+                    });
+                }
+            }
+        },
+        complete: function () {
+            $('.overlay').hide();
+        },
+        error: function (xhr) {
+            alert('Error while saving: ' + xhr.responseText);
+        }
+    });
+});
+
+
+
+
+
+// $('#BtnFill').click(function (e) {
+//     e.preventDefault();
+
+//     var TxtDate = $('#TxtDate').val();
+//     var TxtExpiryDate = $('#TxtExpiryDate').val();
+//     var TxtComputerNo = $('#TxtComputerNo').val();
+//     var TxtVenderCode = $('#CmbVenderName').val();
+//     var CmbVenderName = $('#CmbVenderName option:selected').text();
+//     var TxtGodownCode = $('#CmbGodownName').val();
+//     var CmbGodownName = $('#CmbGodownName option:selected').text();
+//     var TxtDepartmentCode = $('#CmbDepartment').val();
+//     var CmbDepartment = $('#CmbDepartment option:selected').text();
+
+//     if (TxtComputerNo === '') {
+//         NewComputer();
+//         return;
+//     }
+//     if (TxtVenderCode == 0) {
+//         alert('Vendor Not Found. Please select vendor.');
+//         $('#CmbVenderName').focus();
+//         return;
+//     }
+//     if (TxtGodownCode == 0) {
+//         alert('Warehouse Not Found. Please select location.');
+//         $('#CmbGodownName').focus();
+//         return;
+//     }
+//     if (TxtDepartmentCode == 0) {
+//         alert('Department Not Found. Please select department.');
+//         $('#CmbDepartment').focus();
+//         return;
+//     }
+
+//     const rows = dataTable.rows({ search: 'applied' }).nodes();
+//     const dataArray = [];
+//     let hasError = false;
+
+//     for (let i = 0; i < rows.length; i++) {
+//         const cells = rows[i].cells;
+
+//         function cellValue(index) {
+//             const input = cells[index]?.querySelector('input');
+//             return input ? input.value.trim() : (cells[index]?.innerText.trim() || '');
+//         }
+
+//         const ItemCode = cellValue(0);
+//         const ItemName = cellValue(1);
+//         const ProductNameVendor = cellValue(2);
+//         const UOM = cellValue(3);
+//         const IMPACode = cellValue(4);
+//         const VendorPrice = cellValue(5);
+//         const LastDate = cellValue(6);
+//         const User = cellValue(7);
+//         const VPartNumber = cellValue(8);
+//         const Remarks = cellValue(9);
+        
+        
+        
+//         const requiredFields = [ItemCode, ItemName];
+//              const requiredIndexes = [0, 1];
+
+//         // const requiredFields = [ItemCode, ItemName, UOM, VendorPrice, IMPACode];
+//         // const requiredIndexes = [0, 1, 3, 5, 4];
+
+//         for (let k = 0; k < requiredFields.length; k++) {
+//             if (!requiredFields[k]) {
+//                 const colIndex = requiredIndexes[k];
+//                 const cell = cells[colIndex];
+//                 const input = cell.querySelector('input');
+
+//                 // Switch to the correct page if needed
+//                 const pageSize = dataTable.page.info().length;
+//                 const targetPage = Math.floor(i / pageSize);
+//                 dataTable.page(targetPage).draw(false);
+
+//                 setTimeout(() => {
+//                     let inputField = cell.querySelector('input');
+//                     if (!inputField) {
+//                         cell.innerHTML = `<input class="form-control border border-danger shadow-sm" value="">`;
+//                         inputField = cell.querySelector('input');
+//                     }
+//                     inputField.classList.add('border', 'border-danger', 'shadow-sm');
+//                     inputField.focus();
+//                 }, 100);
+
+//                 alert(`Row ${i + 1} column is missing required data. Please fill it.`);
+//                 hasError = true;
+//                 break;
+//             }
+//         }
+
+//         if (hasError) break;
+
+//         dataArray.push({
+            
+//             ItemCode,
+//             ItemName,
+//             ProductNameVendor,
+//             UOM,
+//             IMPACode,
+//             VendorPrice,
+//             LastDate,
+//             User,
+//             VPartNumber,
+//             Remarks,
+//         });
+//     }
+
+//     if (hasError) return;
+
+//     ajaxSetup();
+
+//     $.ajax({
+//         url: '{{ route('VendorContracSave') }}',
+//         type: 'POST',
+//         data: {
+//             TxtDate,
+//             TxtExpiryDate,
+//             CmbDepartment,
+//             CmbGodownName,
+//             CmbVenderName,
+//             TxtComputerNo,
+//             TxtVenderCode,
+//             TxtGodownCode,
+//             TxtDepartmentCode,
+//             dataArray,
+//         },
+//         beforeSend: function () {
+//             $('.overlay').show();
+//         },
+//         success: function (response) {
+//             console.log(response);
+
+//             if (response.Message === 'Deck\\Engine Contract Cannot Save On this Form') {
+//                 alert(response.Message);
+//                 return;
+//             }
+
+//           if (response.Message === 'Saved') {
+//     let computerNo = $('#TxtComputerNo').val();
+
+//     $.ajax({
+//         url: '/GetDataVenContract',
+//         type: 'POST',
+//         data: { TxtComputerNo: computerNo },
+//         success: function (res) {
+//             if (res.Details && res.Details.length > 0) {
+//                 let table = $('#DG2').DataTable();
+//                 table.clear();
+
+//                 res.Details.forEach(function (item) {
+//                     table.row.add([
+//                         item.ItemCode,
+//                         item.ItemName,
+//                         item.UOM,
+//                         item.VendorPrice,
+//                         item.Currency,
+//                         item.LastDate
+//                     ]);
+//                 });
+
+//                 table.draw();
+//             } else {
+//                 console.warn('No details returned for DG2');
+//             }
+//         }
+//     });
+// }
+
+//         //     if (response.Message === 'Saved') {
+//         //         alert('Contract Saved Successfully');
+               
+//         // updateDG2Table(response.table);
+
+//         //         const seen = new Set();
+//         //         const uniqueData = response.table.filter(item => {
+//         //             const key = `${item.ComputerNo}_${item.VendorCode}_${item.ExpiryDate}_${item.GodownName}`;
+//         //             if (seen.has(key)) return false;
+//         //             seen.add(key);
+//         //             return true;
+//         //         });
+
+//         //         let table = document.getElementById('DG2body');
+//         //         table.innerHTML = '';
+
+//         //         uniqueData.forEach(item => {
+//         //             let row = table.insertRow();
+//         //             if (new Date(item.ExpiryDate) < new Date()) {
+//         //                 row.style.backgroundColor = 'red';
+//         //             }
+//         //             row.insertCell().innerText = item.ComputerNo || '';
+//         //             row.insertCell().innerText = item.VendorCode || '';
+//         //             row.insertCell().innerText = item.ExpiryDate || '';
+//         //             row.insertCell().innerText = item.GodownName || '';
+//         //         });
+//         //     }
+//         },
+//         complete: function () {
+//             $('.overlay').hide();
+//         },
+//         error: function (xhr) {
+//             alert('Error while saving: ' + xhr.responseText);
+//         }
+//     });
+// });
+
+  
+  
+  
+  
+  
+     $('#DG1 tbody').on('click', 'tr', function () {
+        $(this).toggleClass('selected');
+    });
+
+
+
+           $('#CmbVenderName').on('change', function() {
+    var selectedCode = $(this).find(':selected').data('code');
+    $('#TxtVendorCodeText').val(selectedCode || '');
+});
+
+
+            $('#TxtComputerNo').blur(function (e) {
+                e.preventDefault();
+                DataGet();
+            });
+
+
+                  $('#CmdReport').click(function (e) {
+                    e.preventDefault();
+                var PortCode = $('#CmbGodownName').val();
+                var VenderCode = $('#CmbVenderName').val();
+
+                window.location ='VendorProductListprint?VenderCode='+VenderCode+'&PortCode='+PortCode+'';
+                });
+
+
             $('#CmdImport').click(function (e) {
                 e.preventDefault();
                 $('#importModal').modal('show');
             });
+ 
+ 
+       
+ 
 
-            $('#importForm').submit(function(e) {
-                e.preventDefault();
+// Ã°Å¸Å¸Â¡ Import Handler: Fill form + DataTable
+$('#importForm').submit(function (e) {
+    e.preventDefault();
+    let formData = new FormData(this);
+    $.ajax({
+        url: '{{ route("importVendorContract") }}',
+        method: 'POST',
+        data: formData,
+        contentType: false,
+        processData: false,
+        success: function (res) {
+            // Fill form fields from first row (optional)
+            let first = res.data[0];
+            $('#TxtComputerNo').val(res.computerNo);
+            $('#TxtDate').val(res.entryDate);
+            $('#TxtExpiryDate').val(res.expiryDate);
+            $('#CmbVenderName').val(res.vendorName);
+            $('#TxtVenderCode').val(res.vendorCode);
+            $('#TxtVendorCodeText').val(res.vendorCodeText);
+            $('#CmbDepartment').val(res.department);
+            $('#TxtDepartmentCode').val(res.departmentCode);
+            $('#CmbGodownName').val(res.godown);
+            $('#TxtGodownCode').val(res.godownCode);
 
-                var formData = new FormData(this);
-                $.ajaxSetup({
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    }
-                });
-                $.ajax({
-                    url: '{{ route('importQuataion') }}',
-                    type: 'POST',
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-
-
-                    beforeSend: function() {
-                        // Show the overlay and spinner before sending the request
-                        $('.overlay').show();
-                    },
-                    success: function(response) {
-                        console.log(response);
-                        displayImportedData(response);
-                    },
-                    complete: function() {
-                        // Hide the overlay and spinner after the request is complete
-                        $('.overlay').hide();
-                    }
-                });
+            // Fill DataTable
+            let table = $('#DG1').DataTable();
+            table.clear();
+            res.data.forEach(row => {
+                table.row.add([
+           
+                    row.ItemCode, row.ItemName, row.UOM, row.VendorPrice,
+                    row.LastDate, row.IMPACode, row.VPartNumber, row.Remarks
+                ]);
             });
+            table.draw();
+        }
+    });
+});
+
+
+$('#vendorContractForm').submit(function (e) {
+    e.preventDefault();
+
+    let dataArray = [];
+    $('#DG1 tbody tr').each(function () {
+        let row = $(this).find('td').map(function () {
+            return $(this).text();
+        }).get();
+
+        dataArray.push({
+            ItemCode: row[0],
+            ItemName: row[1],
+            UOM: row[2],
+            VendorPrice: row[3],
+            LastDate: row[4],
+            IMPACode: row[5],
+            VPartNumber: row[6],
+            Remarks: row[7]
+        });
+    });
+
+    let formData = {
+        _token: '{{ csrf_token() }}',
+        TxtComputerNo: $('#TxtComputerNo').val(),
+        TxtDate: $('#TxtDate').val(),
+        TxtExpiryDate: $('#TxtExpiryDate').val(),
+        CmbVenderName: $('#CmbVenderName').val(),
+        TxtVenderCode: $('#TxtVenderCode').val(),
+        TxtVendorCodeText: $('#TxtVendorCodeText').val(),
+        CmbDepartment: $('#CmbDepartment').val(),
+        TxtDepartmentCode: $('#TxtDepartmentCode').val(),
+        CmbGodownName: $('#CmbGodownName').val(),
+        TxtGodownCode: $('#TxtGodownCode').val(),
+        dataArray: dataArray
+    };
+
+    $.post('{{ route("VendorContracSave") }}', formData, function (res) {
+        if (res.Message === 'Saved') {
+            alert('Contract Saved Successfully');
+        } else {
+            alert(res.Message);
+        }
+    });
+});
+
+
+
 
             function displayImportedData(data) {
                 let table = document.getElementById('importitembody');
@@ -827,290 +1367,227 @@
 
 
             }
-
-            $('#btninsertthis').click(function (e) {
-                e.preventDefault();
-                let table = document.getElementById('importitembody');
-
-                let rows = table.rows;
-
-                let dataarray = [];
-                for (let i = 1; i < rows.length; i++) {
-                    let cells = rows[i].cells;
-                    dataarray.push({
+            
+            
 
 
-                        ItemCode: cells[0] ? cells[0].innerHTML : '',
-                        ItemName: cells[1] ? cells[1].innerHTML : '',
-                        UOM: cells[2] ? cells[2].innerHTML : '',
-                        QTY: cells[3] ? cells[3].innerHTML : '',
-                        Price: cells[4] ? cells[3].innerHTML : '',
-                        Vendor: cells[10] ? cells[10].innerHTML : '',
-                        Vendorcode: cells[11] ? cells[11].innerHTML : '',
+        let itemtable; // Global DataTable reference
 
+$('#btninsertthis').click(function (e) {
+    e.preventDefault();
 
-                    });
+    let table = document.getElementById('importitembody');
+    let rows = table.rows;
+    let dataarray = [];
 
-                }
+    for (let i = 0; i < rows.length; i++) {
+        let cells = rows[i].cells;
 
-                                let table2 = document.getElementById('DG1body');
-                            table2.innerHTML = ""; // Clear the table
-                            let Id = 0;
-                                dataarray.forEach(function(item) {
-                                    Id = Id+1
-                            let row = table2.insertRow();
-                            function createCell(content) {
-                            let cell = row.insertCell();
-                            cell.innerHTML = content;
-                            return cell;
-                            }
-                            createCell(item.ItemCode ? item.ItemCode : '');
-                            createCell(item.ItemName ? item.ItemName : '');
-                            createCell('');
-                            createCell(item.UOM ? item.UOM : '');
-                            createCell(item.IMPACode ? item.IMPACode : '');
-
-                            let VPrice = createCell(item.Price ? item.Price : '');
-                            createCell(item.LastDate ? item.LastDate : '');
-                            createCell(item.WorkUser ? item.WorkUser : '');
-                            createCell(item.Vpart ? item.Vpart : '');
-                            createCell(item.Remarks ? item.Remarks : '');
-
-
-
-                                });
-
-            });
-            $('#BtnFill').click(function(e) {
-                var TxtDate = $('#TxtDate').val();
-                var TxtExpiryDate = $('#TxtExpiryDate').val();
-                var TxtComputerNo = $('#TxtComputerNo').val();
-                var TxtVenderCode = $('#CmbVenderName').val();
-                var CmbVenderName = $('#CmbVenderName option:selected').text();
-                var TxtGodownCode = $('#CmbGodownName').val();
-                var CmbGodownName = $('#CmbGodownName option:selected').text();
-                var TxtDepartmentCode = $('#CmbDepartment').val();
-                var CmbDepartment = $('#CmbDepartment option:selected').text();
-                if (TxtComputerNo == '') {
-                    NewComputer();
-                }
-                if (TxtVenderCode == 0) {
-                    alert('Vendor Not Found Please Select Vendor First');
-                    $('#TxtVenderCode').focus();
-                    return;
-                }
-                if (TxtGodownCode == 0) {
-                    alert('Warehouse Not Found Please Select Warehouse First');
-                    $('#TxtGodownCode').focus();
-                    return;
-                }
-                if (TxtDepartmentCode == 0) {
-                    alert('Department Not Found Please Select Department First');
-                    $('#TxtDepartmentCode').focus();
-                    return;
-                }
-                let table = document.getElementById('DG1body');
-                let rows = table.rows;
-                const dataArray = [];
-                for (let i = 1; i < rows.length; i++) {
-                    let cells = rows[i].cells;
-
-
-                    ItemCode = cells[0] ? cells[0].innerHTML : '';
-                    ItemName = cells[1] ? cells[1].innerHTML : '';
-                    ProductNameVendor = cells[2] ? cells[2].innerHTML : '';
-                    UOM = cells[3] ? cells[3].innerHTML : '';
-                    IMPACode = cells[4] ? cells[4].innerHTML : '';
-                    VendorPrice = cells[5] ? cells[5].innerHTML : '';
-                    LastDate = cells[6] ? cells[6].innerHTML : '';
-                    User = cells[7] ? cells[7].innerHTML : '';
-                    VPartNumber = cells[8] ? cells[8].innerHTML : '';
-                    Remarks = cells[9] ? cells[9].innerHTML : '';
-
-                    if (Number(VendorPrice) > 0 ) {
-                        if (ItemCode == '' || ItemName == '') {
-                            alert('ItemCode Not Found In Grid Please Select Item Name from Item List');
-                            return;
-                        }
-                    }
-
-                    dataArray.push({
-                        ItemCode: cells[0] ? cells[0].innerHTML : '',
-                        ItemName: cells[1] ? cells[1].innerHTML : '',
-                        ProductNameVendor: cells[2] ? cells[2].innerHTML : '',
-                        UOM: cells[3] ? cells[3].innerHTML : '',
-                        IMPACode: cells[4] ? cells[4].innerHTML : '',
-                        VendorPrice: cells[5] ? cells[5].innerHTML : '',
-                        LastDate: cells[6] ? cells[6].innerHTML : '',
-                        User: cells[7] ? cells[7].innerHTML : '',
-                        VPartNumber: cells[8] ? cells[8].innerHTML : '',
-                        Remarks: cells[9] ? cells[9].innerHTML : ''
-                            });
-
-                }
-
-                $.ajax({
-                    url: '{{ route('VendorContracSave') }}',
-                    type: 'POST',
-                    data: {
-                        TxtDate,
-                        TxtExpiryDate,
-                        CmbDepartment,
-                        CmbGodownName,
-                        CmbVenderName,
-                        TxtComputerNo,
-                        TxtVenderCode,
-                        TxtGodownCode,
-                        TxtDepartmentCode,
-                        dataArray,
-                    },
-                    beforeSend: function() {
-                        // Show the overlay and spinner before sending the request
-                        $('.overlay').show();
-                    },
-                    success: function(response) {
-                        console.log(response);
-
-                        if (response.Message == 'Deck\Engine Contract Cannot Save On this Form') {
-                            alert(response.Message);
-                        }
-                        if(response.Message == 'Saved'){
-                            var data = response.table;
-                            let table = document.getElementById('DG2body');
-                            table.innerHTML = ""; // Clear the table
-                            data.forEach(function(item) {
-
-                                let row = table.insertRow();
-                                if (new Date(item.ExpiryDate) < new Date()) {
-                                    row.style.backgroundColor = 'red';
-                                }
-
-                                function createCell(content) {
-                                let cell = row.insertCell();
-                                cell.innerHTML = content;
-                                return cell;
-                                }
-                            createCell(item.ComputerNo ? item.ComputerNo : '');
-                            createCell(item.VendorCode ? item.VendorCode : '');
-                            createCell(item.ExpiryDate ? item.ExpiryDate : '');
-                            createCell(item.GodownName ? item.GodownName : '');
-
-                            });
-                        }
-
-                    },
-                    complete: function() {
-                        // Hide the overlay and spinner after the request is complete
-                        $('.overlay').hide();
-                    }
-                });
-
-
-
-            });
-
-
-            $('#TxtComputerNo').blur(function (e) {
-                e.preventDefault();
-                DataGet();
-            });
-
-            // $('#Button6').click(function (e) {
-            //     e.preventDefault();
-            //     var TxtComputer2 = $('#TxtComputer2').val();
-
-            //     if (TxtComputer2 > 0) {
-            //         NewComputer();
-            //     }else{
-            //         return;
-            //     }
-
-
-
-            // });
-
-                $('#CmdReport').click(function (e) {
-                    e.preventDefault();
-                var PortCode = $('#CmbGodownName').val();
-                var VenderCode = $('#CmbVenderName').val();
-
-                window.location ='VendorProductListprint?VenderCode='+VenderCode+'&PortCode='+PortCode+'';
-                });
-            //     e.preventDefault();
-
-            //     var TxtDateTo = $('#TxtDateTo').val();
-            //     var TxtDateFrom = $('#TxtDateFrom').val();
-
-            //     var Qry = "QuoteMaster.QDate>='" + $('#TxtDateFrom').val() + "' and QuoteMaster.QDate<='" +
-            //         $('#TxtDateTo').val() + "'";
-
-            //     if (!$('#ChkBranchALL').is(':checked')) {
-            //         if (Qry !== "") Qry += " and ";
-            //         Qry += "QuoteMaster.BranchCode=" + parseInt($('#TxtBranchCode').val());
-            //     }
-
-            //     if (!$('#ChkAllETA').is(':checked')) {
-            //         if (Qry !== "") Qry += " and ";
-            //         Qry += "EventInvoice.BidDueDate>='" + $('#TxtDateETAFrom').val() +
-            //             "' and EventInvoice.BidDueDate<='" + $('#TxtDateETATo').val() + "'";
-            //     }
-
-            //     if (!$('#ChkAllDepartment').is(':checked')) {
-            //         if (Qry !== "") Qry += " and ";
-            //         Qry += "QuoteMaster.DepartmentCode=" + parseInt($('#TxtDepartmentCode').val());
-            //     }
-
-            //     if (!$('#ChkAllCustomer').is(':checked')) {
-            //         if (Qry !== "") Qry += " and ";
-            //         Qry += "QuoteMaster.CustomerCode=" + parseInt($('#TxtCustomerCode').val());
-            //     }
-
-            //     if (!$('#AllVessel').is(':checked')) {
-            //         if (Qry !== "") Qry += " and ";
-            //         Qry += "EventInvoice.IMONo='" + $('#TxtVesselCode').val() + "'";
-            //     }
-
-            //     if (!$('#ChkPortALL').is(':checked')) {
-            //         if (Qry !== "") Qry += " and ";
-            //         Qry += "EventInvoice.ShippingPort='" + $('#CmbPort').val() + "'";
-            //     }
-
-            //     if (!$('#ChkEventNoALL').is(':checked')) {
-            //         if (Qry !== "") Qry += " and ";
-            //         Qry += "EventInvoice.EventNo=" + parseInt($('#TxtEventNo').val());
-            //     }
-
-            //     if (!$('#ChkWorkUser').is(':checked')) {
-            //         if (Qry !== "") Qry += " and ";
-            //         Qry += "QuoteMaster.WorkUser='" + $('#CmbWorkUser').val() + "'";
-            //     }
-
-            //     if (!$('#ChkAllOrdered').is(':checked')) {
-            //         if (Qry !== "") Qry += " and ";
-            //         if ($('#cmbOrdered').val() === "Ordered") {
-            //             Qry += "not isnull(QuoteMaster.VSNNo)";
-            //         } else {
-            //             Qry += "isnull(QuoteMaster.VSNNo)";
-            //         }
-            //     }
-
-            //     window.location = 'Daily-Quotation-Report-Report?TxtDateFrom=' + TxtDateFrom +
-            //         '&TxtDateTo=' + TxtDateTo + '&Qry=' + Qry;
-
-            // });
-
-
-
-
-
-
-
-
-
-
-
-
+        dataarray.push({
+            ItemCode: cells[0]?.innerText.trim() || '',
+            ItemName: cells[1]?.innerText.trim() || '',
+            UOM: cells[2]?.innerText.trim() || '',
+            QTY: cells[3]?.innerText.trim() || '',
+            Price: cells[4]?.innerText.trim() || '',
+            percentage: cells[5]?.innerText.trim() || '',
+            ItemCodeFinal: cells[6]?.innerText.trim() || '',
+            ItemNameFinal: cells[7]?.innerText.trim() || '',
+            UOMFinal: cells[8]?.innerText.trim() || '',
+            FinalPrice: cells[9]?.innerText.trim() || '',
+            Vendor: cells[10]?.innerText.trim() || '',
+            Vendorcode: cells[11]?.innerText.trim() || '',
+            LastDate: '',
+            WorkUser: '',
+            Vpart: '',
+            Remarks: ''
         });
+    }
+
+    // ðŸ”„ Ajax call to save
+    $.ajax({
+        url: '{{ route("saveImportedItems") }}',
+        method: 'POST',
+        data: {
+            _token: $('meta[name="csrf-token"]').attr('content'),
+            items: dataarray
+        },
+        success: function (response) {
+            if (response.status === 'success') {
+                alert('Items saved successfully!');
+
+                // âœ… STEP 1: Destroy existing DataTable (if any)
+                if ($.fn.DataTable.isDataTable('#DG1')) {
+                    $('#DG1').DataTable().clear().destroy();
+                }
+
+                // âœ… STEP 2: Set dynamic <thead> using keys from first row
+                let headers = ['Select', ...Object.keys(dataarray[0])];
+
+                      let theadHtml = '<tr>';
+                      headers.forEach(key => {
+                       theadHtml += `<th>${key}</th>`;
+                   });
+                   theadHtml += '</tr>';
+                   $('#DG1 thead').html(theadHtml);
+
+            
+
+                // âœ… STEP 3: Reinitialize DataTable
+                itemtable = $('#DG1').DataTable();
+
+                // âœ… STEP 4: Populate rows
+           dataarray.forEach(item => {
+    let row = [`<input type="checkbox" class="row-select" />`]; // Select column first
+    Object.keys(item).forEach(key => {
+        row.push(item[key] ?? '');
+    });
+    itemtable.row.add(row);
+});
+
+
+                itemtable.draw();
+
+        
+                $('#impmod').hide();
+            } else {
+                alert('Failed to save items.');
+            }
+        },
+        error: function (xhr) {
+            alert('Error: ' + xhr.responseText);
+        }
+    });
+});
+
+         
+        
+
+
+         
+// Delete Row In IMPort
+$('#DeleteRowBtn').click(function () {
+    const table = $('#DG1').DataTable();
+    table.row('.selected').remove().draw(false);
+});
+
+
+     });
+        
+    
+ function populateTable() {
+  $.ajax({
+    url: "{{ route('vendor.product.list') }}", // Laravel route for fetching data
+    method: 'GET',
+    success: function (response) {
+      // 1. DataTable initialize ya reference lo
+      let table = $('#DG1').DataTable();
+
+      // 2. Table ko clear karo
+     table.clear();
+response.data.forEach(function (item) {
+table.row.add([
+    `<input type="checkbox" class="row-select" />`,    // 1: Select
+    item.ItemCode || '',
+    item.ItemName || '',
+    item.UOM || '',
+    item.QTY || '',
+    item.Price || '',
+    item.percentage || '',
+    item.ItemCodeFinal || '',
+    item.ItemNameFinal || '',
+    item.UOMFinal || '',
+    item.FinalPrice || '',
+    item.Vendor || '',
+    item.Vendorcode || '',
+    item.LastDate || '',
+    item.WorkUser || '',
+    item.VPart || '',
+    item.Remarks || ''
+]);
+
+});
+table.draw();
+table.page('first').draw('page'); 
+
+
+     
+      table.draw();
+    },
+    error: function (err) {
+      console.error('AJAX Error:', err);
+      alert('Data load failed!');
+    }
+  });
+}
+$(document).ready(function () {
+    let selectedDG2Row = null;
+
+    // Select row logic
+    $('#DG2body').on('click', 'tr', function () {
+        $('#DG2body tr').removeClass('table-danger');
+        $(this).addClass('table-danger');
+
+        selectedDG2Row = {
+            ComputerNo: $(this).data('computerno'),
+            BranchCode: $(this).data('branchcode')
+        };
+    });
+
+    // From DG2 Delete button click
+    $('#CmdDelete').click(function () {
+        if (!selectedDG2Row) {
+            Swal.fire('Please select a row to delete.', '', 'warning');
+            return;
+        }
+
+        Swal.fire({
+            title: 'Authenticate to Delete',
+            input: 'password',
+            inputLabel: 'Enter Admin Password',
+            inputPlaceholder: '••••••',
+            inputAttributes: {
+                autocapitalize: 'off',
+                autocorrect: 'off'
+            },
+            showCancelButton: true,
+            confirmButtonText: 'Delete',
+            showLoaderOnConfirm: true,
+            preConfirm: (password) => {
+                return $.ajax({
+                    url: '{{ route("vendor.contract.master.delete") }}',
+                    method: 'POST',
+                    data: {
+                        ComputerNo: selectedDG2Row.ComputerNo,
+                        BranchCode: selectedDG2Row.BranchCode,
+                        password: password,
+                        _token: $('meta[name="csrf-token"]').attr('content')
+                    }
+                }).then(response => {
+                    if (response.status === 'success') {
+                        return response;
+                    } else {
+                        throw new Error(response.message || 'Delete failed');
+                    }
+                }).catch(error => {
+                    Swal.showValidationMessage(error.message);
+                });
+            },
+            allowOutsideClick: () => !Swal.isLoading()
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Remove the row from the table
+                $('#DG2body tr.table-danger').remove();
+                selectedDG2Row = null;
+
+                Swal.fire('Deleted!', 'Row deleted from database.', 'success');
+            }
+        });
+    });
+});
+
+
+
+
     </script>
 
 

@@ -121,7 +121,7 @@
                         <a name=""  class="btn btn-primary my-2 col-sm-1 col-1" href="{{route('UOM_Setup')}}" role="button"><i
                             class="fa fa-plus" aria-hidden="true"></i></a>
                         <div class="inputbox col-sm-6 py-2">
-                            <input class="" type="text" name="SalePrice" id="SalePrice" required>
+                            <input class="" type="numeric" name="SalePrice" id="SalePrice" required>
 
 
                             <span class="Txtspan">
@@ -145,7 +145,7 @@
                             </span>
                         </div>
                         <div class="inputbox col-sm-6 py-2">
-                            <input class="" type="text" name="ReorderLevel" id="ReorderLevel" required>
+                            <input class="" type="number" name="ReorderLevel" id="ReorderLevel" required>
 
 
                             <span class="Txtspan">
@@ -238,18 +238,29 @@
                     </div>
 
 
-                    <button name="SaveItem" id="SaveItem" class="btn btn-default col-sm-2 my-2" role="button"><i
-                            class="fa fa-file-archive text-success" aria-hidden="true"></i> Save</button>
-                    <a name="delete" id="delete" class="btn btn-default col-sm-2 my-2" role="button"><i
-                            class="fa fa-file-code text-danger" aria-hidden="true"></i> Delete</a>
-                    <button name="New"
-                     id="NewItem"
-                    {{-- onclick="location.reload();" --}}
-                        class="btn btn-default col-sm-2 my-2" role="button"><i class="fa fa-file-image text-info"
-                            aria-hidden="true"></i> New</button>
-                    <a name="" id="" class="btn btn-default col-sm-2 my-2" href="/" role="button"><i
-                            class="fa fa-arrow-right text-warning" aria-hidden="true"></i> Exit</a>
-                    <button class="btn btn-default  col-sm-2 my-2" id="addRow">Add Ven Row</button>
+                             
+                    
+                    
+                                       <button name="SaveItem" id="SaveItem" class="btn btn-success my-2 mx-2" role="button">
+                                      <i class="fa fa-file-archive mr-1" aria-hidden="true"></i>                  Save
+                                    </button>
+                                    
+
+                         <a name="delete" id="delete" class="btn btn-warning my-2 mx-2" role="button"                     >
+                             <i class="fa fa-file-code mr-1 text-white" aria-hidden="true"></i> Delete
+                         </a>
+
+                         <button name="New" id="NewItem" class="btn btn-primary my-2 mx-2" role="button">
+                         <i class="fa fa-file-image mr-1" aria-hidden="true"></i> New
+                         </button>
+
+                         <a name="" id="" class="btn btn-danger my-2 mx-2" href="{{url('Item-Register-Setup') }}" role="button">
+                         <i class="fa fa-arrow-right mr-1" aria-hidden="true"></i> Exit
+                         </a>
+
+                         <button class="btn btn-secondary my-2 mx-2" id="addRow">
+                             <i class="fa fa-plus-circle mr-1"></i> Add Ven Row
+                         </button>
 
 
 
@@ -282,9 +293,11 @@
                                     </select></td>
                                 <td contenteditable="true"></td>
                                 <td contenteditable="true"></td>
-                                <td><input type="date" name="lastdateven" id="lastdateven"
+                                    <td>{{ $MUserName }}</td>
+                                                                    <td><input type="date" name="lastdateven" id="lastdateven"
                                         class="form-control lastdateven" value=""></td>
-                                <td>{{ $MUserName }}</td>
+                            
+
                             </tr>
                         </tbody>
                     </table>
@@ -464,6 +477,34 @@
             </div>
         </div>
     </div>
+    
+    
+<div class="modal fade" id="ItemSearchGridModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title">Select Item From IMPA Search</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-bordered table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>Item Code</th>
+                            <th>Item Name</th>
+                            <th>UOM</th>
+                            <th>Type</th>
+                        </tr>
+                    </thead>
+                    <tbody id="itembody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
 
     <div class="modal fade" id="excelpreviewmod" tabindex="-1" role="dialog" aria-labelledby="importModalLabel"
         aria-hidden="true">
@@ -550,6 +591,7 @@
 
     <!-- Add the Handsontable JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js"></script>
+<meta name="csrf-token" content="{{ csrf_token() }}">
 
     <script>
         function previewExcelFile(event) {
@@ -753,9 +795,10 @@ var table2 ;
 
                 cell5.contentEditable = true;
                 cell6.contentEditable = true;
-                cell7.innerHTML =
+                 cell7.innerHTML = '{{ $MUserName }}';
+                cell8.innerHTML =
                     '<input type="date" name="lastdateven" id="lastdateven" class="form-control lastdateven" value="" >';
-                cell8.innerHTML = '{{ $MUserName }}';
+               
 
 
             }
@@ -1005,289 +1048,328 @@ var table2 ;
 
         });
 
-        function showSuggestions(item) {
-                var suggestions = $('#suggestions');
-                suggestions.empty();
-                // console.log(item);
-                if (item.length === 0) {
-                    suggestions.hide();
-                    return;
-                }
-
-                var ul = $('<ul>').addClass('suggestions-list list-group').css({
-                    'position': 'absolute',
-                    'z-index': '100',
-                    'width': '1000px'
-                });
-
-                for (var i = 0; i < item.length; i++) {
-                    console.log(item[i]);
-                    var lastdate = new Date(item[i].LastDate);
-                    const lDate = lastdate.toISOString().substring(0, 10);
-                    // item[i].LastDate
-                    var li = $('<li>')
-                        .addClass('list-group-item')
-                        .text('ItemName : ' + item[i].ItemName + ',|  Type : ' + item[i].Type + ',| Last Date : '+ lDate )
-                        .data('ITemCode', item[i].ItemCode)
-                        .data('ItemName', item[i].ItemName)
-                        .data('UOM', item[i].UOM)
-                        .data('Type', item[i].Type)
-                        .data('VendorPrice', item[i].VendorPrice)
-                        .data('VenderCode', item[i].VenderCode)
-                        .data('VenderName', item[i].VenderName)
-                        .data('OurPrice', item[i].OurPrice)
-                        .data('VPartCode', item[i].VPartCode)
-                        .data('lastdate', lDate)
-                    ul.append(li);
-                }
-
-                // adjust the position of the ul element
-                ul.css({
-                    'top': 0 + 'px',
-                    'left': 'auto'
-                });
-
-                suggestions.append(ul).show();
-
-            }
-        function ImpaSearch($value){
-            var DepartmentCode = $('#DepartmentCode').val();
-                    var GodownCode = $('#GodownCode').val();
-                    var ChkDeckEngin = $('#ChkDeckEngin').val();
 
 
-                    $.ajaxSetup({
-                        headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                        }
-                    });
-                    $.ajax({
-                        type: 'post',
-                        url: '{{ URL::to('itemnameserimpa') }}',
-                        data: {
-                            'impa': $value,
 
-                        },
-                        beforeSend: function() {
-                            // Show the overlay and spinner before sending the request
-                            $('.overlay').show();
-                        },
-                        success: function(item) {
-                            console.log(item);
-                            if (item) {
 
-                                if (item.length > 1) {
-                                    // alert('list');
-                                    showSuggestions(item);
-                                } else if (item[0]) {
-                                    $('#Itemcode').val(item[0].ItemCode).blur();
-                                }
-                            }
-                        },
-                        error: function(xhr, status, error) {
-                            // Handle error
-                        },
-                        complete: function() {
-                            // Hide the overlay and spinner after the request is complete
-                            $('.overlay').hide();
-                        }
-                    });
+
+
+
+
+
+
+
+
+
+$(document).on("dblclick", ".impa-grid-row", function () {
+    let itemCode = $(this).data("itemcode");
+    $('#Itemcode').val(itemCode).blur();
+    $('#ItemSearchGridModal').modal('hide');
+    DataLoad(itemCode);
+});
+
+$(document).on("click", "#SaveItem", function() {
+    var Itemcode = $('#Itemcode').val();
+    var Dateq = $('#Dateq').val();
+    var IMPACode = $('#IMPACode').val();
+    var ItemitemName = $('#ItemitemName').val();
+    var Departmentcode = $('#Departmentselect').val();
+    var Departmentname = $('#Departmentselect option:selected').text();
+    var godowncode = $('#godown').val();
+    var godown = $('#godown option:selected').text();
+    var uoms = $('#uoms').val();
+    var SalePrice = $('#SalePrice').val();
+    var Currency = $('#Currency').val();
+    var ReorderLevel = $('#ReorderLevel').val();
+    var CategoryCode = $('#Category').val();
+    var Category = $('#Category option:selected').text();
+    var OrignCode = $('#OrignCode').val();
+    var Orign = $('#Orign option:selected').text();
+    var SubCategoryCode = $('#SubCategory').val();
+    var SubCategory = $('#SubCategory option:selected').text();
+    var ReorderQty = $('#ReorderQty').val();
+
+    if (!Itemcode) return Swal.fire('Required', 'Item Code is required', 'warning');
+    if (!Dateq) return Swal.fire('Required', 'Date is required', 'warning');
+    if (!IMPACode) return Swal.fire('Required', 'IMPA Code is required', 'warning');
+    if (!ItemitemName) return Swal.fire('Required', 'Item Name is required', 'warning');
+    if (!Departmentcode) return Swal.fire('Required', 'Department is required', 'warning');
+    if (!uoms) return Swal.fire('Required', 'UOM is required', 'warning');
+    if (!SalePrice) return Swal.fire('Required', 'Sale Price is required', 'warning');
+    if (!Currency) return Swal.fire('Required', 'Currency is required', 'warning');
+    if (!ReorderLevel) return Swal.fire('Required', 'Reorder Level is required', 'warning');
+    if (!CategoryCode) return Swal.fire('Required', 'Category is required', 'warning');
+    if (!OrignCode) return Swal.fire('Required', 'Origin is required', 'warning');
+    if (!SubCategoryCode) return Swal.fire('Required', 'Sub Category is required', 'warning');
+    if (!ReorderQty) return Swal.fire('Required', 'Reorder Qty is required', 'warning');
+    if (!godowncode) return Swal.fire('Required', 'Warehouse is required', 'warning');
+
+    let table = document.getElementById('verndores');
+    let rows = table.rows;
+    let dataarray = [];
+    for (let i = 0; i < rows.length; i++) {
+        let cells = rows[i].cells;
+        let vendorSelect = cells[1].querySelector('select[name="Vendor"]');
+        let uomSelect = cells[2].querySelector('select[name="venuoms"]');
+        let lastDateInput = cells[5].querySelector('input[name="lastdateven"]');
+
+        if (!vendorSelect || !uomSelect || !lastDateInput) continue;
+
+        dataarray.push({
+            ID: cells[0] ? cells[0].innerHTML : '',
+            Vendercode: vendorSelect.value || '',
+            VenderName: vendorSelect.options[vendorSelect.selectedIndex].text || '',
+            UOM: uomSelect.value || '',
+            Type: cells[3]?.innerHTML || '',
+            OurPrice: cells[4]?.innerHTML || '',
+            LastDate: lastDateInput.value || '',
+            WorkUser: cells[6]?.innerHTML || ''
+        });
+    }
+
+    let formData = new FormData();
+    formData.append('Itemcode', Itemcode);
+    formData.append('Dateq', Dateq);
+    formData.append('IMPACode', IMPACode);
+    formData.append('ItemitemName', ItemitemName);
+    formData.append('Departmentcode', Departmentcode);
+    formData.append('Departmentname', Departmentname);
+    formData.append('uoms', uoms);
+    formData.append('SalePrice', SalePrice);
+    formData.append('Currency', Currency);
+    formData.append('ReorderLevel', ReorderLevel);
+    formData.append('CategoryCode', CategoryCode);
+    formData.append('Category', Category);
+    formData.append('OrignCode', OrignCode);
+    formData.append('Orign', Orign);
+    formData.append('SubCategoryCode', SubCategoryCode);
+    formData.append('SubCategory', SubCategory);
+    formData.append('ReorderQty', ReorderQty);
+    formData.append('godown', godown);
+    formData.append('godowncode', godowncode);
+    formData.append('dataarray', JSON.stringify(dataarray));
+
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
-        $(document).on('dblclick', '.suggestions-list li', function() {
-                var suggestions = $('#suggestions');
+    });
 
-                $('#Itemcode').val($(this).data('ITemCode')).blur();
-
-                suggestions.hide();
-
-        });
-        $(document).on("click", "#SaveItem", function() {
-
-            var Itemcode = $('#Itemcode').val();
-            var Dateq = $('#Dateq').val();
-
-            var IMPACode = $('#IMPACode').val();
-            var ItemitemName = $('#ItemitemName').val();
-            var Departmentcode = $('#Departmentselect').val();
-            var Departmentname = $('#Departmentselect option:selected').text();
-            var godowncode = $('#godown').val();
-            var godown = $('#godown option:selected').text();
-            var uoms = $('#uoms').val();
-            var SalePrice = $('#SalePrice').val();
-            var Currency = $('#Currency').val();
-            var ReorderLevel = $('#ReorderLevel').val();
-            var CategoryCode = $('#Category').val();
-            var Category = $('#Category option:selected').text();
-            var OrignCode = $('#OrignCode').val();
-            var Orign = $('#Orign option:selected').text();
-            var SubCategoryCode = $('#SubCategory').val();
-            var SubCategory = $('#SubCategory option:selected').text();
-            var ReorderQty = $('#ReorderQty').val();
-            let table = document.getElementById('verndores');
-            let rows = table.rows;
-
-            let dataarray = [];
-
-            for (let i = 0; i < rows.length; i++) {
-                let cells = rows[i].cells;
-                let vendorSelect = cells[1].querySelector('select[name="Vendor"]');
-                let uomSelect = cells[2].querySelector('select[name="venuoms"]');
-                let lastDateInput = cells[5].querySelector('input[name="lastdateven"]');
-
-                console.log(uomSelect.value);
-                dataarray.push({
-                    ID: cells[0] ? cells[0].innerHTML : '',
-                    Vendercode: vendorSelect ? vendorSelect.value : '',
-                    VenderName: vendorSelect ? vendorSelect.options[vendorSelect.selectedIndex].text : '',
-                    UOM: uomSelect ? uomSelect.value : '',
-                    Type: cells[3] ? cells[3].innerHTML : '',
-                    OurPrice: cells[4] ? cells[4].innerHTML : '',
-                    LastDate: lastDateInput ? lastDateInput.value : '',
-
-                    WorkUser: cells[6] ? cells[6].innerHTML : ''
-                });
+    $.ajax({
+        url: '{{ URL::to('itemregstore') }}',
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        beforeSend: function () {
+            $('.overlay').show();
+        },
+        success: function (response) {
+            if (response.status === "success") {
+                Swal.fire('Item Saved', 'Item has been saved successfully!', 'success');
+            } else {
+                Swal.fire('Item Not Saved!', 'Your request was unsuccessful.', 'error');
             }
-
-            console.log(dataarray);
-
-            if (Itemcode == '') {
-                if (confirm("Want To Create An Item Code?")) {
-                    @php
-                        $maxItemCode = DB::table('itemsetupnew')->max('ItemCode');
-                        $matches = [];
-                        if (preg_match('/^([A-Za-z]*)(\d+)$/', $maxItemCode, $matches)) {
-                            $alphabetPart = $matches[1];
-                            $numericPart = $matches[2];
-
-                            $newNumericPart = intval($numericPart) + 1;
-
-                            $newItemCode = $alphabetPart . $newNumericPart;
-                        } else {
-                            // Handle the case when the regular expression doesn't match
-    // You can provide a default value or throw an exception depending on your requirements.
-    $newItemCode = '0000001';
-                        }
-                    @endphp
-                    $('#Itemcode').val('{{ $newItemCode }}');
-                    Itemcode = $('#Itemcode').val();
-                    console.log(Itemcode);
-                } else {
-                    alert('Canceled Because No Item Code Found');
-                    return $('#Itemcode').focus();
-
-                }
-            }
-            if (ItemitemName == '') {
-                alert('Please Type An Item Name');
-                return $('#ItemitemName').focus();
-            }
-
-            if (Departmentcode == '') {
-                alert('Please Select An Department');
-                return $('#Departmentselect').focus();
-            }
-            if (uoms == '') {
-                alert('Please Select Unit Of Measurement');
-                return $('#uoms').focus();
-            }
-            if (SalePrice == '') {
-                if (confirm('Sale Price In Not Defined Want to Continue')) {
-                    SalePrice = 0;
-                } else {
-                    return $('#SalePrice').focus();
-                }
-            }
-
-            if (Category == "Select one") {
-                Category = null;
-            }
-            if (Orign == "Select one") {
-                Orign = null;
-            }
-            if (SubCategory == "Select one") {
-                SubCategory = null;
-            }
-
-            let formData = new FormData();
-            formData.append('Itemcode', Itemcode);
-            formData.append('Dateq', Dateq);
-            formData.append('IMPACode', IMPACode);
-            formData.append('ItemitemName', ItemitemName);
-            formData.append('Departmentcode', Departmentcode);
-            formData.append('Departmentname', Departmentname);
-            formData.append('uoms', uoms);
-            formData.append('SalePrice', SalePrice);
-            formData.append('Currency', Currency);
-            formData.append('ReorderLevel', ReorderLevel);
-            formData.append('CategoryCode', CategoryCode);
-            formData.append('Category', Category);
-            formData.append('OrignCode', OrignCode);
-            formData.append('Orign', Orign);
-            formData.append('SubCategoryCode', SubCategoryCode);
-            formData.append('SubCategory', SubCategory);
-            formData.append('ReorderQty', ReorderQty);
-            formData.append('godown', godown);
-            formData.append('godowncode', godowncode);
-            formData.append('dataarray', JSON.stringify(dataarray));
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-            $.ajax({
-                url: '{{ URL::to('itemregstore') }}',
-                type: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-                beforeSend: function() {
-                    // Show the overlay and spinner before sending the request
-                    $('.overlay').show();
-                },
-                success: function(response) {
-                    console.log(response.Alldata);
-                    if (response.status === "success") {
-                        Swaal.fire({
-                                    icon: 'success',
-                                    title: 'Item Saved',
-                                    text: 'Item Has Been Saved SuccessFully!',
-                                    showConfirmButton: true,
-                                    timer: 3500
-                                })
-
-
-                    } else {
-
-                        Swaal.fire({
-                                    icon: 'error',
-                                    title: 'Item Not Saved!',
-                                    text: 'Your request was unsuccessfull!',
-                                    showConfirmButton: true,
-                                    timer: 3500
-                                })
-
-                    }
-                },
-                error: function(xhr, status, error) {
-                    Swaal.fire({
-                                    icon: 'error',
-                                    title: 'Item Not Saved!',
-                                    text: error,
-                                    showConfirmButton: true,
-                                    timer: 3500
-                                })
-
-                },
-                complete: function() {
-                    $('.overlay').hide();
-                }
-            });
-
-
-        });
+        },
+        error: function (xhr, status, error) {
+            Swal.fire('Item Not Saved!', error, 'error');
+        },
+        complete: function () {
+            $('.overlay').hide();
+        }
+    });
+});
 
 
 
+
+    //     $(document).on("click", "#SaveItem", function() {
+
+    //         var Itemcode = $('#Itemcode').val();
+    //         var Dateq = $('#Dateq').val();
+
+    //         var IMPACode = $('#IMPACode').val();
+    //         var ItemitemName = $('#ItemitemName').val();
+    //         var Departmentcode = $('#Departmentselect').val();
+    //         var Departmentname = $('#Departmentselect option:selected').text();
+    //         var godowncode = $('#godown').val();
+    //         var godown = $('#godown option:selected').text();
+    //         var uoms = $('#uoms').val();
+    //         var SalePrice = $('#SalePrice').val();
+    //         var Currency = $('#Currency').val();
+    //         var ReorderLevel = $('#ReorderLevel').val();
+    //         var CategoryCode = $('#Category').val();
+    //         var Category = $('#Category option:selected').text();
+    //         var OrignCode = $('#OrignCode').val();
+    //         var Orign = $('#Orign option:selected').text();
+    //         var SubCategoryCode = $('#SubCategory').val();
+    //         var SubCategory = $('#SubCategory option:selected').text();
+    //         var ReorderQty = $('#ReorderQty').val();
+    //         let table = document.getElementById('verndores');
+    //         let rows = table.rows;
+
+    //         let dataarray = [];
+
+    //         for (let i = 0; i < rows.length; i++) {
+    //             let cells = rows[i].cells;
+    //             let vendorSelect = cells[1].querySelector('select[name="Vendor"]');
+    //             let uomSelect = cells[2].querySelector('select[name="venuoms"]');
+    //             let lastDateInput = cells[5].querySelector('input[name="lastdateven"]');
+
+    //             console.log(uomSelect.value);
+    //             dataarray.push({
+    //                 ID: cells[0] ? cells[0].innerHTML : '',
+    //                 Vendercode: vendorSelect ? vendorSelect.value : '',
+    //                 VenderName: vendorSelect ? vendorSelect.options[vendorSelect.selectedIndex].text : '',
+    //                 UOM: uomSelect ? uomSelect.value : '',
+    //                 Type: cells[3] ? cells[3].innerHTML : '',
+    //                 OurPrice: cells[4] ? cells[4].innerHTML : '',
+    //                 LastDate: lastDateInput ? lastDateInput.value : '',
+
+    //                 WorkUser: cells[6] ? cells[6].innerHTML : ''
+    //             });
+    //         }
+
+    //         console.log(dataarray);
+
+    //         if (Itemcode == '') {
+    //             if (confirm("Want To Create An Item Code?")) {
+    //                 @php
+    //                     $maxItemCode = DB::table('itemsetupnew')->max('ItemCode');
+    //                     $matches = [];
+    //                     if (preg_match('/^([A-Za-z]*)(\d+)$/', $maxItemCode, $matches)) {
+    //                         $alphabetPart = $matches[1];
+    //                         $numericPart = $matches[2];
+
+    //                         $newNumericPart = intval($numericPart) + 1;
+
+    //                         $newItemCode = $alphabetPart . $newNumericPart;
+    //                     } else {
+    //                         // Handle the case when the regular expression doesn't match
+    // // You can provide a default value or throw an exception depending on your requirements.
+    // $newItemCode = '0000001';
+    //                     }
+    //                 @endphp
+    //                 $('#Itemcode').val('{{ $newItemCode }}');
+    //                 Itemcode = $('#Itemcode').val();
+    //                 console.log(Itemcode);
+    //             } else {
+    //                 alert('Canceled Because No Item Code Found');
+    //                 return $('#Itemcode').focus();
+
+    //             }
+    //         }
+    //         if (ItemitemName == '') {
+    //             alert('Please Type An Item Name');
+    //             return $('#ItemitemName').focus();
+    //         }
+
+    //         if (Departmentcode == '') {
+    //             alert('Please Select An Department');
+    //             return $('#Departmentselect').focus();
+    //         }
+    //         if (uoms == '') {
+    //             alert('Please Select Unit Of Measurement');
+    //             return $('#uoms').focus();
+    //         }
+    //         if (SalePrice == '') {
+    //             if (confirm('Sale Price In Not Defined Want to Continue')) {
+    //                 SalePrice = 0;
+    //             } else {
+    //                 return $('#SalePrice').focus();
+    //             }
+    //         }
+
+    //         if (Category == "Select one") {
+    //             Category = null;
+    //         }
+    //         if (Orign == "Select one") {
+    //             Orign = null;
+    //         }
+    //         if (SubCategory == "Select one") {
+    //             SubCategory = null;
+    //         }
+
+    //         let formData = new FormData();
+    //         formData.append('Itemcode', Itemcode);
+    //         formData.append('Dateq', Dateq);
+    //         formData.append('IMPACode', IMPACode);
+    //         formData.append('ItemitemName', ItemitemName);
+    //         formData.append('Departmentcode', Departmentcode);
+    //         formData.append('Departmentname', Departmentname);
+    //         formData.append('uoms', uoms);
+    //         formData.append('SalePrice', SalePrice);
+    //         formData.append('Currency', Currency);
+    //         formData.append('ReorderLevel', ReorderLevel);
+    //         formData.append('CategoryCode', CategoryCode);
+    //         formData.append('Category', Category);
+    //         formData.append('OrignCode', OrignCode);
+    //         formData.append('Orign', Orign);
+    //         formData.append('SubCategoryCode', SubCategoryCode);
+    //         formData.append('SubCategory', SubCategory);
+    //         formData.append('ReorderQty', ReorderQty);
+    //         formData.append('godown', godown);
+    //         formData.append('godowncode', godowncode);
+    //         formData.append('dataarray', JSON.stringify(dataarray));
+    //         $.ajaxSetup({
+    //             headers: {
+    //                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    //             }
+    //         });
+    //         $.ajax({
+    //             url: '{{ URL::to('itemregstore') }}',
+    //             type: 'POST',
+    //             data: formData,
+    //             processData: false,
+    //             contentType: false,
+    //             beforeSend: function() {
+    //                 // Show the overlay and spinner before sending the request
+    //                 $('.overlay').show();
+    //             },
+    //             success: function(response) {
+    //                 console.log(response.Alldata);
+    //                 if (response.status === "success") {
+    //                     Swaal.fire({
+    //                                 icon: 'success',
+    //                                 title: 'Item Saved',
+    //                                 text: 'Item Has Been Saved SuccessFully!',
+    //                                 showConfirmButton: true,
+    //                                 timer: 3500
+    //                             })
+
+
+    //                 } else {
+
+    //                     Swaal.fire({
+    //                                 icon: 'error',
+    //                                 title: 'Item Not Saved!',
+    //                                 text: 'Your request was unsuccessfull!',
+    //                                 showConfirmButton: true,
+    //                                 timer: 3500
+    //                             })
+
+    //                 }
+    //             },
+    //             error: function(xhr, status, error) {
+    //                 Swaal.fire({
+    //                                 icon: 'error',
+    //                                 title: 'Item Not Saved!',
+    //                                 text: error,
+    //                                 showConfirmButton: true,
+    //                                 timer: 3500
+    //                             })
+
+    //             },
+    //             complete: function() {
+    //                 $('.overlay').hide();
+    //             }
+    //         });
+
+
+    //     });
+
+
+    
 
         function ajaxSetup() {
             $.ajaxSetup({
@@ -1703,6 +1785,217 @@ var table2 ;
             });
 
         });
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+// function showSuggestions(items) {
+//     var suggestions = $('#suggestions');
+//     suggestions.empty();
+
+//     if (!items || items.length === 0) {
+//         suggestions.hide();
+//         return;
+//     }
+      
+//     var closeBtn = $('<div class="text-right mb-2">')
+//         .append('<button class="btn btn-sm btn-danger" id="closeSuggestions">Close</button>');
+
+
+//     var table = $('<table class="table table-bordered bg-white shadow-sm">');
+//     var thead = $('<thead><tr><th>IMPA Code</th><th>Item Name</th><th>Type</th><th>Last Date</th></tr></thead>');
+//     var tbody = $('<tbody>');
+
+//     items.forEach(item => {
+//         const impaCode = item.IMPAItemCode || item.IMPACode || 'N/A';
+//         const itemName = (item.ItemName || '').trim() || 'N/A';
+//         const type = item.TypeName || item.Type || 'N/A';
+//         const lastDate = item.LastDate ? item.LastDate.substring(0, 10) : 'N/A';
+
+//         var row = $('<tr class="suggestion-row impa-grid-row" style="cursor:pointer;">')
+//             .attr('data-itemcode', item.ItemCode)
+//             .append(`<td>${impaCode}</td>`)
+//             .append(`<td>${itemName}</td>`)
+//             .append(`<td>${type}</td>`)
+//             .append(`<td>${lastDate}</td>`);
+
+//         tbody.append(row);
+//     });
+
+//     table.append(thead).append(tbody);
+
+//     suggestions
+//         .html(closeBtn)  
+//         .html(table)
+//         .css({
+//             'position': 'relative',
+//             'z-index': 9999,
+//             'background': '#fff',
+//             'border': '1px solid #ccc',
+//             'max-height': '300px',
+//             'overflow-y': 'auto',
+//             'width': '100%',
+//             'box-shadow': '0 2px 10px rgba(0,0,0,0.2)',
+//             'padding': '5px'
+//         })
+//         .show();
+// }
+
+
+function showSuggestions(items) {
+    var suggestions = $('#suggestions');
+    suggestions.empty();
+
+    if (!items || items.length === 0) {
+        suggestions.hide();
+        return;
+    }
+
+    // Close Button
+    var closeBtn = $('<div class="text-right mb-2">')
+        .append('<button class="btn btn-sm btn-danger" id="closeSuggestions">Close</button>');
+
+    // Table
+    var table = $('<table class="table table-bordered bg-white shadow-sm">');
+    var thead = $('<thead><tr><th>IMPA Code</th><th>Item Name</th><th>Type</th><th>Last Date</th></tr></thead>');
+    var tbody = $('<tbody>');
+
+    items.forEach(item => {
+        const impaCode = item.IMPAItemCode || item.IMPACode || 'N/A';
+        const itemName = (item.ItemName || '').trim() || 'N/A';
+        const type = item.TypeName || item.Type || 'N/A';
+        const lastDate = item.LastDate ? item.LastDate.substring(0, 10) : 'N/A';
+
+        var row = $('<tr class="suggestion-row impa-grid-row" style="cursor:pointer;">')
+            .attr('data-itemcode', item.ItemCode)
+            .append(`<td>${impaCode}</td>`)
+            .append(`<td>${itemName}</td>`)
+            .append(`<td>${type}</td>`)
+            .append(`<td>${lastDate}</td>`);
+
+        tbody.append(row);
+    });
+
+    table.append(thead).append(tbody);
+
+    // Combine and show
+    suggestions
+        .empty()
+        .append(closeBtn)
+        .append(table)
+        .css({
+            'position': 'relative',
+            'z-index': 9999,
+            'background': '#fff',
+            'border': '1px solid #ccc',
+            'max-height': '300px',
+            'overflow-y': 'auto',
+            'width': '100%',
+            'box-shadow': '0 2px 10px rgba(0,0,0,0.2)',
+            'padding': '5px'
+        })
+        .show();
+}
+
+function ImpaSearch(impaValue) {
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
+    $.ajax({
+        type: 'POST',
+        url: '/itemnameserimpa',
+        data: { 'impa': impaValue },
+        beforeSend: function () {
+            $('.overlay').show();
+        },
+        success: function (items) {
+            if (items && items.length > 0) {
+                showSuggestions(items); // ✅ Always show grid
+            } else {
+                $('#suggestions').hide();
+                Swal.fire({
+                    icon: 'info',
+                    title: 'No Results',
+                    text: 'No item found with this IMPA code.',
+                    showConfirmButton: true,
+                    timer: 3000
+                });
+            }
+        },
+        error: function (xhr, status, error) {
+            console.error('AJAX error: ', error);
+        },
+        complete: function () {
+            $('.overlay').hide();
+        }
+    });
+}
+
+$(document).on("blur", "#IMPACode", function () {
+    const impaCode = $(this).val();
+    ImpaSearch(impaCode);
+});
+
+$(document).on('click', '#closeSuggestions', function () {
+    $('#suggestions').hide();
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// // Double click to select item from grid
+// $(document).on("dblclick", ".impa-grid-row", function () {
+//     let itemCode = $(this).data("itemcode");
+//     $('#Itemcode').val(itemCode).blur();
+//     $('#suggestions').hide();
+//     DataLoad(itemCode); 
+// });
+
+// Trigger on blur of IMPA code input
+// $(document).on("blur", "#IMPACode", function () {
+//     const impaCode = $(this).val();
+//     if (impaCode.trim() !== '') {
+//         ImpaSearch(impaCode);
+//     }
+// });
+
+
+
+
+// Trigger search when IMPA code field loses focus
+
+
+
+
+
+
     </script>
 
 @stop

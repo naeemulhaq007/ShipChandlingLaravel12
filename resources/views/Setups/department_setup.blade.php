@@ -139,7 +139,7 @@
                                 aria-hidden="true"></i>Save</button>
 
                         <a class="btn btn-danger mx-2 my-2" id="Button3" role="button"> <i class="fa fa-multiply mr-1" aria-hidden="true"></i>Delete</a>
-                        <a class="btn btn-danger mx-2 my-2" id="Button4" href="/" role="button"> <i class="fa fa-door-open mr-1" aria-hidden="true"></i>Exit</a>
+                        <a class="btn btn-danger mx-2 my-2" id="Button4" href="{{url('department-setup') }}" role="button"> <i class="fa fa-door-open mr-1" aria-hidden="true"></i>Exit</a>
                     </div>
 
                 </div>
@@ -197,14 +197,15 @@
 
             var table1 = $('#Gd1').DataTable({
 
-                scrollY: 400,
-                deferRender: true,
-                scroller: true,
-                paging: false,
-                info: false,
-                ordering: false,
-                searching: false,
-                responsive: true,
+               scrollY: 400,
+    deferRender: true,
+    scroller: true,
+    paging: false,
+    info: false,
+    searching: false,
+    responsive: true,
+    ordering: true, // enable it
+    order: [[1, 'asc']]
 
 
             });
@@ -299,79 +300,154 @@
                     beforeSend: function() {
                         $('.overlay').show();
                     },
-                    success: function(resposne) {
-                        console.log(resposne);
-                        if (resposne.Message == 'Saved') {
-                            alert(resposne.Message)
+                  success: function(resposne) {
+    console.log(resposne);
+    if (resposne.Message == 'Saved') {
 
-                        if(resposne.Typesetup.length > 0){
-                            var Ships = resposne.Typesetup;
-                            let table = document.getElementById('Gd1body');
-                            table.innerHTML = ""; // Clear the table
-                            Ships.forEach(function(item) {
-                            let row = table.insertRow();
-                            row.classList.add("js-row");
+       
+        Swal.fire({
+            title: 'Success!',
+            text: 'Department Saved Successfully!',
+            icon: 'success',
+            confirmButtonText: 'OK'
+        });
 
-                            function createCell(content) {
-                                let cell = row.insertCell();
-                                cell.innerHTML = content;
-                                return cell;
-                            }
-                            createCell(item.TypeCode);
-                            createCell(item.TypeName);
-                            createCell(item.ChkIMPA);
-                            createCell(item.ChkShowKG);
-                            createCell(item.ChkDeckEngin);
-                            createCell(item.ChkProvBond);
+        if (resposne.Typesetup.length > 0) {
+            var Ships = resposne.Typesetup;
 
+  
+            Ships.sort(function(a, b) {
+                var nameA = (a.TypeName || '').toLowerCase();
+                var nameB = (b.TypeName || '').toLowerCase();
+                if (nameA < nameB) return -1;
+                if (nameA > nameB) return 1;
+                return 0;
+            });
 
+            let table = document.getElementById('Gd1body');
+            table.innerHTML = ""; 
 
-                            });
+            Ships.forEach(function(item) {
+                let row = table.insertRow(); 
 
-                        }
-                         $('#TxtCode').val(resposne.Maxcode);
-                 $('#TxtTypeName').val('');
+                row.classList.add("js-row");
 
-                 $('#ChkIMPA').prop('checked',false);
-                 $('#ChkDeckEngin').prop('checked',false);
-                 $('#ChkKGS').prop('checked',false);
-                 $('#ChkProvBond').prop('checked',false);
+                function createCell(content) {
+                    let cell = row.insertCell();
+                    cell.innerHTML = content;
+                    return cell;
+                }
 
-                        }
-                        $('.js-row').dblclick(function (e) {
-                            e.preventDefault();
-                            var row = $(this);
-                        var Typecode = row.find('td:eq(0)').text();
-                        var TypeName = row.find('td:eq(1)').text();
-                        var ChkIMPA = row.find('td:eq(2)').text();
-                        var ChkShowKG = row.find('td:eq(3)').text();
-                        var ChkDeckEngin = row.find('td:eq(4)').text();
-                        var ChkProvBond = row.find('td:eq(5)').text();
+                createCell(item.TypeCode);
+                createCell(item.TypeName);
+                createCell(item.ChkIMPA);
+                createCell(item.ChkShowKG);
+                createCell(item.ChkDeckEngin);
+                createCell(item.ChkProvBond);
+            });
+        }
 
-                        $('#TxtCode').val(Typecode);
-                        $('#TxtTypeName').val(TypeName);
-                        if (ChkIMPA == 1) {
-                            $('#ChkIMPA').prop('checked',true);
-                        }else{
-                            $('#ChkIMPA').prop('checked',false);
-                        }
-                        if (ChkShowKG == 1) {
-                            $('#ChkShowKG').prop('checked',true);
-                        }else{
-                            $('#ChkShowKG').prop('checked',false);
-                        }
-                        if (ChkDeckEngin == 1) {
-                            $('#ChkDeckEngin').prop('checked',true);
-                        }else{
-                            $('#ChkDeckEngin').prop('checked',false);
-                        }
-                        if (ChkProvBond == 1) {
-                            $('#ChkProvBond').prop('checked',true);
-                        }else{
-                            $('#ChkProvBond').prop('checked',false);
-                        }
-                        });
-                    },
+        // ✅ Clear input fields after saving
+        $('#TxtCode').val(resposne.Maxcode);
+        $('#TxtTypeName').val('');
+        $('#ChkIMPA').prop('checked', false);
+        $('#ChkDeckEngin').prop('checked', false);
+        $('#ChkKGS').prop('checked', false);
+        $('#ChkProvBond').prop('checked', false);
+    }
+
+    
+    $('.js-row').dblclick(function (e) {
+        e.preventDefault();
+        var row = $(this);
+        var Typecode = row.find('td:eq(0)').text();
+        var TypeName = row.find('td:eq(1)').text();
+        var ChkIMPA = row.find('td:eq(2)').text();
+        var ChkShowKG = row.find('td:eq(3)').text();
+        var ChkDeckEngin = row.find('td:eq(4)').text();
+        var ChkProvBond = row.find('td:eq(5)').text();
+
+        $('#TxtCode').val(Typecode);
+        $('#TxtTypeName').val(TypeName);
+        $('#ChkIMPA').prop('checked', ChkIMPA == 1);
+        $('#ChkShowKG').prop('checked', ChkShowKG == 1);
+        $('#ChkDeckEngin').prop('checked', ChkDeckEngin == 1);
+        $('#ChkProvBond').prop('checked', ChkProvBond == 1);
+    });
+},
+
+//                     success: function(resposne) {
+//               console.log(resposne);
+//               if (resposne.Message == 'Saved') {
+//                   Swal.fire({
+//                                   title: 'Success!',
+//                       text: 'Department Saved Successfully',
+//                       icon: 'success',
+//                       confirmButtonText: 'OK'
+//                   });
+           
+//         if (resposne.Typesetup.length > 0) {
+//             var Ships = resposne.Typesetup;
+
+           
+//             Ships.sort(function(a, b) {
+//                 var nameA = (a.TypeName || '').toLowerCase();
+//                 var nameB = (b.TypeName || '').toLowerCase();
+//                 if (nameA < nameB) return -1;
+//                 if (nameA > nameB) return 1;
+//                 return 0;
+//             });
+
+//             let table = document.getElementById('Gd1body');
+//             table.innerHTML = ""; 
+
+//             Ships.forEach(function(item) {
+//                 let row = table.insertRow(0);
+//                 row.classList.add("js-row");
+
+//                 function createCell(content) {
+//                     let cell = row.insertCell();
+//                     cell.innerHTML = content;
+//                     return cell;
+//                 }
+
+//                 createCell(item.TypeCode);
+//                 createCell(item.TypeName);
+//                 createCell(item.ChkIMPA);
+//                 createCell(item.ChkShowKG);
+//                 createCell(item.ChkDeckEngin);
+//                 createCell(item.ChkProvBond);
+//             });
+//         }
+
+//         $('#TxtCode').val(resposne.Maxcode);
+//         $('#TxtTypeName').val('');
+//         $('#ChkIMPA').prop('checked', false);
+//         $('#ChkDeckEngin').prop('checked', false);
+//         $('#ChkKGS').prop('checked', false);
+//         $('#ChkProvBond').prop('checked', false);
+//     }
+
+//     $('.js-row').dblclick(function(e) {
+//         e.preventDefault();
+//         var row = $(this);
+//         var Typecode = row.find('td:eq(0)').text();
+//         var TypeName = row.find('td:eq(1)').text();
+//         var ChkIMPA = row.find('td:eq(2)').text();
+//         var ChkShowKG = row.find('td:eq(3)').text();
+//         var ChkDeckEngin = row.find('td:eq(4)').text();
+//         var ChkProvBond = row.find('td:eq(5)').text();
+
+//         $('#TxtCode').val(Typecode);
+//         $('#TxtTypeName').val(TypeName);
+//         $('#ChkIMPA').prop('checked', ChkIMPA == 1);
+//         $('#ChkShowKG').prop('checked', ChkShowKG == 1);
+//         $('#ChkDeckEngin').prop('checked', ChkDeckEngin == 1);
+//         $('#ChkProvBond').prop('checked', ChkProvBond == 1);
+//     });
+// },
+
+ 
                     error: function(data) {
                         console.log(data);
                         $('.overlay').hide();

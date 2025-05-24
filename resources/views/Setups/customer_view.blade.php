@@ -5,6 +5,7 @@
 
 
 @section('content')
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
     <?php echo View::make('partials.search'); ?>
     <?php echo View::make('partials.Customerlistimport'); ?>
     @if (\Session::has('success'))
@@ -35,14 +36,14 @@
         </div>
     @endif
 
-    <div class="container-fluid ">
+    <div class="container-fluid "overlay"" >
         <form id="CustomerForm" enctype="multipart/form-data" >
             {{-- @csrf --}}
 
             <div class="card">
                 <div class="card-header fixed-header">
                     <div class="card-tools">
-                        <button type="button" class="btn btn-primary mx-2 my-1" id="BtnNew" role="button">
+                        <button type="button" class="btn btn-primary mx-2 my-1" id="BtnNew" onclick="location.reload();" role="button">
                             <i class="fa fa-plus mr-1" aria-hidden="true"></i>New</button>
 
                         <button class="btn btn-success  mx-2 my-1" type="submit" id="BtnFill" role="button">
@@ -51,10 +52,11 @@
                         <button type="button" class="btn btn-warning mx-2 my-1" id="CmdDelete" role="button">
                             <i class="fa fa-trash" aria-hidden="true"></i> Delete</button>
 
-                        <a href="/" class="btn btn-danger mx-2 my-1" role="button"> <i
-                                class="fa fa-door-open mr-1" aria-hidden="true"></i>Exit</a>
-                        <a name="impcuslist" id="impcuslist" class="btn btn-default text-success  my-1"
-                            role="button">IMPORT Customer List</a>
+<a href="{{url('customer-setup') }}" class="btn btn-danger mx-2 my-1" role="button">
+    <i class="fa fa-door-open mr-1" aria-hidden="true"></i> Exit
+</a>
+
+                      
                         <button type="button" class="btn btn-tool" data-card-widget="collapse">
                             <i class="fas fa-minus"></i>
                         </button>
@@ -574,163 +576,77 @@
                             <i class="fas fa-minus"></i>
                         </button>
                     </div>
-                    <h2 class="text-center text-info">Customer Contact</h2>
+                    <h2 class="text-center text-info">Customer Contacts</h2>
 
 
 
                 </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <form id="customercontactform" enctype="multipart/form-data">
-                                {{-- @csrf --}}
-                                <div class="row ">
+                
+                 <div class="card-body">
+    <div class="row">
+        <div class="col-lg-12 table-responsive">
+         <table class="table table-bordered table-striped" id="customercontacts" style="width: 100%">
 
-                                    <div class="inputbox py-2 col-sm-5">
-                                        <input type="text" required name="coTITLE" id="coTITLE" placeholder=""
-                                            list="titlr">
-                                        <datalist id="titlr">
-                                            <option value="MR.">
-                                            <option value="MRs.">
-                                            <option value="Miss">
-                                        </datalist>
+                <thead class="bg-info text-white">
+                    <tr>
+                        <!--<th>ID</th>-->
+                        <th>Customer Code</th>
+                        <th>Customer Name</th>
+                        <th>Address</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Contact Person</th>
+                    </tr>
+                </thead>
+                <tbody class="customercontact">
+                    
+                    
+                    
+                    
+                    
+                    @foreach($CustomerSetup as $customer)
+<tr class="customer-row"
+    data-customer-code="{{ $customer->CustomerCode }}"
+    data-customer-name="{{ $customer->CustomerName }}"
+    data-address="{{ $customer->Address }}"
+    data-email="{{ $customer->EmailAddress }}"
+    data-phone="{{ $customer->PhoneNo }}"
+    data-contact="{{ $customer->ContactPerson }}"
+>
+    <td>{{ $customer->CustomerCode }}</td>
+    <td>{{ $customer->CustomerName }}</td>
+    <td>{{ $customer->Address }}</td>
+    <td>{{ $customer->EmailAddress }}</td>   
+    <td>{{ $customer->PhoneNo }}</td> 
+    <td>{{ $customer->ContactPerson }}</td>
+</tr>
+@endforeach
 
-                                        <span class="Txtspan" id="">Title</span>
+                    <!--@foreach($CustomerSetup as $customer)-->
+                    <!--<tr>-->
+                        <!--<td>{{ $customer->id }}</td>-->
+                    <!--    <td>{{ $customer->CustomerCode }}</td>-->
+                    <!--    <td>{{ $customer->CustomerName }}</td>-->
+                    <!--    <td>{{ $customer->Address }}</td>-->
+                    <!--    <td>{{ $customer->EmailAddress }}</td>   -->
+                    <!--     <td>{{ $customer->PhoneNo }}</td> -->
+                    <!--    <td>{{ $customer->ContactPerson }}</td>-->
+                    <!--</tr>-->
+                    <!--@endforeach-->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 
-                                    </div>
-                                    <div class="inputbox py-2 col-sm-5">
-                                        <input readonly type="number" value="{{ $lastidcontact }}" name="coID"
-                                            id="coID" placeholder="">
-                                        <span class="Txtspan">ID</span>
-                                    </div>
-                                </div>
-                                <div class="row py-2">
-                                    <div class="inputbox col-sm-10">
-                                        <input type="text" id="coNAME" name="coNAME" required>
-                                        <span class="Txtspan">
-                                            Name
-                                        </span>
-
-
-                                    </div>
-                                </div>
-                                <div class="row py-2">
-                                    <div class="inputbox col-sm-10">
-                                        <input type="text" id="coDEPARTMENT" name="coDEPARTMENT" required>
-                                        <span class="Txtspan">
-                                            Department
-                                        </span>
-
-
-                                    </div>
-                                </div>
-                                <div class="row py-2">
-                                    <div class="inputbox col-sm-10">
-                                        <input type="tel" id="coPHONE" name="coPHONE" required>
-                                        <span class="Txtspan">
-                                            Phone
-                                        </span>
-
-
-                                    </div>
-                                </div>
-
-                                <div class="row py-2">
-                                    <div class="inputbox col-sm-10">
-                                        <input type="tel" id="coCELL" name="coCELL" required>
-                                        <span class="Txtspan">
-                                            Cell
-                                        </span>
-
-
-                                    </div>
-                                </div>
-
-                                <div class="row py-2">
-                                    <div class="inputbox col-sm-10">
-                                        <input type="tel" id="coFAX" name="coFAX" required>
-                                        <span class="Txtspan">
-                                            Fax
-                                        </span>
-
-
-                                    </div>
-                                </div>
-
-                                <div class="row py-2">
-                                    <div class="inputbox col-sm-10">
-                                        <input type="email" id="coEMAIL" name="coEMAIL" required>
-                                        <span class="Txtspan">
-                                            Email
-                                        </span>
-
-
-                                    </div>
-                                </div>
-
-                                <div class="row py-2">
-
-                                    <div class="inputbox col-sm-10">
-                                        <textarea class="" name="coNOTES" id="coNOTES" rows="1"></textarea> <span class="Txtspan">
-                                            Notes </span>
-
-                                    </div>
-
-                                </div>
-
-                                <div class="row py-2">
-                                    <div class="inputbox col-sm-10">
-                                        <input type="tel" id="coIMONO" name="coIMONO" required>
-                                        <span class="Txtspan">
-                                            IMO No
-                                        </span>
-
-
-                                    </div>
-                                </div>
-                                <div class="col-sm-1" hidden>
-                                    <a name="" id="" class="form-control btn btn-default"
-                                        role="button"><i class="fa fa-search" aria-hidden="true"></i></a>
-                                </div>
-
-                                <div class="row py-1">
-                                    <div class="col-sm-12">
-                                        <input class="form-control" type="hidden" name="coVESSEL" id="coVESSEL"
-                                            placeholder="">
-                                        <input class="form-control" type="hidden" name="coCustomerCode"
-                                            id="coCustomerCode" placeholder="">
-                                    </div>
-                                </div>
-                                <div class="row py-1">
-                                    <button type="button" class="btn btn-primary mx-2" id="conBtnNew" role="button">
-                                        <i class="fa fa-plus mr-1" aria-hidden="true"></i>New</button>
-
-                                    <button type="submit" class="btn btn-success mx-2" id="CmdSave" role="button">
-                                        <i class="fa fa-cloud mr-1" aria-hidden="true"></i>Save</button>
-
-                                    <button class="btn btn-danger mx-2" id="CmdPrint" role="button"> <i
-                                            class="fa fa-multiply mr-1" aria-hidden="true"></i>Delete</button>
-
-                                </div>
-                            </form>
-                        </div>
-                        <div class="col-lg-6 table-responsive">
-                            <table class="table table-responsive" id="customercontacts" style="width: 100%">
-                                <thead class="bg-info">
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Name</th>
-                                        <th>Department</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="customercontact">
-
-                                </tbody>
-
-                            </table>
-                        </div>
-                    </div>
-                </div>
+                
+                
+                
+                
+                
+                
+                
+ 
 
             </div>
         </div>
@@ -770,7 +686,135 @@
 
 @section('js')
 
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+
+
+
+
+<script>
+    $(document).ready(function () {
+     
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        $('#CustomerForm').submit(function (event) {
+            event.preventDefault();
+
+            var formData = $(this).serialize();
+
+            $.ajax({
+                type: 'POST',
+                url: "{{ route('SaveCustomer') }}",
+                data: formData,
+                beforeSend: function () {
+                    $('.overlay').show();
+                },
+                success: function (response) {
+                    if (response.message === 'Error') {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: response.Message,
+                            footer: '<a href="https://wa.link/d2jy7g">Why do I have this issue?</a>'
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Process Success',
+                            text: 'Customer ' + response.message + ' saved successfully!',
+                            showConfirmButton: false,
+                            timer: 2000
+                        });
+
+                        // Reset form after success
+                        $('#CustomerForm')[0].reset();
+                    }
+                },
+                error: function (xhr) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: xhr.responseJSON?.message || 'Something went wrong!',
+                        footer: '<a href="https://wa.link/d2jy7g">Why do I have this issue?</a>'
+                    });
+                },
+                complete: function () {
+                    $('.overlay').hide();
+                }
+            });
+        });
+    });
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    $(document).on('click', '.customer-row', function () {
+    let row = $(this);
+
+    // Extract data attributes
+    let customerCode = row.data('customer-code');
+    let customerName = row.data('customer-name');
+    let address = row.data('address');
+    let email = row.data('email');
+    let phone = row.data('phone');
+    let contact = row.data('contact');
+
+    // Fill form fields
+    $('#CustomerCode').val(customerCode);
+    $('#CustomerCodeshow').val(customerCode);
+    $('#customername').val(customerName);
+    $('#Address').val(address);
+    $('#Email').val(email);
+    $('#PhoneNo').val(phone);
+    $('#ContactPerson').val(contact);
+
+    // Optional: scroll to form
+    $('html, body').animate({
+        scrollTop: $('#CustomerForm').offset().top
+    }, 500);
+});
+
+    
+    
+    
+    
+    
+</script>
+
+
+
+
     <script>
+    
+    
+    
+    
+    
+
+
         $(document).ready(function() {
             var header = $(".fixed-header");
   var cardBody = $(".card-body");
@@ -786,60 +830,10 @@
     }
   });
 
-            $('#CustomerForm').submit(function (event) {
-            // Prevent the default form submission
-            event.preventDefault();
-
-            // Get form data
-            var formData = $(this).serialize();
-            ajaxSetup();
-            // Make an AJAX POST request
-            $.ajax({
-                type: 'POST',
-                url: "{{route('SaveCustomer')}}", // Replace with your server endpoint
-                data: formData,
-                beforeSend: function() {
-                        // Show the overlay and spinner before sending the request
-                        $('.overlay').show();
-                    },
-                success: function (response) {
-                    // Handle the successful response here
-                    // $('#result').html(response);
-                    if (response.message == 'Error') {
-                        Swaal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: response.Message,
-                        footer: '<a href="https://wa.link/d2jy7g">Why do I have this issue?</a>'
-                        })
-                    }else{
-
-                        Swaal.fire({
-                            icon: 'success',
-                            title: 'Process Success',
-                            text: 'Customer '+ response.message +' Success',
-                            showConfirmButton: true,
-                            timer: 1500
-                        })
-                    }
-                    console.log(response);
-                },
-                error: function () {
-                    // Handle errors here
-                    // $('#result').html('An error occurred.');
-                    Swaal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: 'Something went wrong!',
-                        footer: '<a href="https://wa.link/d2jy7g">Why do I have this issue?</a>'
-                })
-                }
-               ,complete: function() {
-                        // Hide the overlay and spinner after the request is complete
-                        $('.overlay').hide();
-                    }
-            });
-        });
+      
+        
+        
+        
             $('#customercontactform').submit(function (event) {
             // Prevent the default form submission
             event.preventDefault();
@@ -901,7 +895,7 @@
 
             } else if (result.dismiss === Swal.DismissReason.cancel) {
                 // Code to execute when "Cancel" button is clicked or overlay is clicked outside the modal
-                Swal.fire(
+               Swaal.fire(
                     'Cancelled',
                     'Not Cleared.',
                     'error'
@@ -909,84 +903,21 @@
             }
         });
         });
-        $('#CmdDelete').click(function (e) {
-            e.preventDefault();
-            var CustomerCode = $('#CustomerCodeshow').val();
-            Swaal.fire({
-            title: 'Deleteing Customer',
-            text: 'Are You Sure You Want To Delete.',
-            icon: 'question',
-            input: 'password', // Adding an input field for password
-            inputPlaceholder: 'Enter your password', // Placeholder for the input field
-            showCancelButton: true,
-            confirmButtonText: 'Delete',
-            cancelButtonText: 'Cancel',
-            showLoaderOnConfirm: true, // You can display a loader animation while confirming
-                    preConfirm: (password) => {
-                        // Here you can validate the password and perform your delete action
-                        // You can also return a Promise if you need to perform an asynchronous action
-                        return new Promise((resolve, reject) => {
-                            // Example password validation
-                            if (password === '332211') {
-                                resolve();
-                            } else {
-                                reject('Incorrect password');
-                            }
-                        }).catch(error => {
-                            Swal.showValidationMessage(`Error: ${error}`);
-                            return;
-                        });
-                    },
-        }).then((result) => {
-            if (result.isConfirmed) {
-            ajaxSetup();
-            // Make an AJAX POST request
-            $.ajax({
-                type: 'POST',
-                url: "{{route('DeleteCustomer')}}", // Replace with your server endpoint
-                data: {
-                    CustomerCode
-                },
-                beforeSend: function() {
-                        // Show the overlay and spinner before sending the request
-                        $('.overlay').show();
-                    },
-                success: function (response) {
-                    console.log(response);
-                    Swaal.fire({
-                        icon: 'success',
-                        title: 'Process Success',
-                        text: 'Customer '+ response.message +' Success',
-                        showConfirmButton: true,
-                        timer: 1500
-                    })
-                location.reload();
+        
+  ///delete method//      
 
-                },
-                error: function () {
-                    // Handle errors here
-                    Swaal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: 'Something went wrong!',
-                        footer: '<a href="https://wa.link/d2jy7g">Why do I have this issue?</a>'
-                })
-                }
-               ,complete: function() {
-                        // Hide the overlay and spinner after the request is complete
-                        $('.overlay').hide();
-                    }
-            });
-        } else if (result.dismiss === Swal.DismissReason.cancel) {
-                // Code to execute when "Cancel" button is clicked or overlay is clicked outside the modal
-                Swal.fire(
-                    'Cancelled',
-                    'Not Deleted.',
-                    'error'
-                );
-            }
-        });
-        });
+
+
+
+
+
+
+
+
+
+
+
+  
 
             $(document).on("dblclick", ".js-click", function() {
                 $targetcustcode = $(this).attr('data-custcode');
@@ -1111,51 +1042,20 @@
 
                 }
 
-                // $(document).ready(function() { $('#searchrmod').hide(); });
+                $(document).ready(function() { $('#searchrmod').hide(); });
             })
 
-            // $('#Countrys').on('change', function() {
-            //     var country_id = this.value;
-            //     $("#StateName").html('');
-            //     $.ajax({
-            //         url: "{{ url('get-states-by-country') }}",
-            //         type: "POST",
-            //         data: {
-            //             country_id: country_id,
-            //             _token: '{{ csrf_token() }}'
-            //         },
-            //         dataType: 'json',
-            //         success: function(result) {
-            //             $('#StateName').html('<option value="">Select State</option>');
-            //             $.each(result.states, function(key, value) {
-            //                 $("#StateName").append('<option value="' + value.id + '">' +
-            //                     value.name + '</option>');
-            //             });
-            //             $('#Citys').html('<option value="">Select State First</option>');
-            //         }
-            //     });
-            // });
-            // $('#StateName').on('change', function() {
-            //     var state_id = this.value;
-            //     $("#Citys").html('');
-            //     $.ajax({
-            //         url: "{{ url('get-cities-by-state') }}",
-            //         type: "POST",
-            //         data: {
-            //             state_id: state_id,
-            //             _token: '{{ csrf_token() }}'
-            //         },
-            //         dataType: 'json',
-            //         success: function(result) {
-            //             $('#Citys').html('<option value="">Select City</option>');
-            //             $.each(result.cities, function(key, value) {
-            //                 $("#Citys").append('<option value="' + value.id + '">' +
-            //                     value.name + '</option>');
-            //             });
-            //         }
-            //     });
-            // });
+    
         });
+        
+        
+        
+
+        
+        
+
+
+
 
         function ajaxSetup() {
             $.ajaxSetup({
@@ -1223,17 +1123,17 @@
                 e.preventDefault();
                 location.reload();
             });
-            var table4 = $('#customercontacts').DataTable({
-                scrollY: 400,
-                deferRender: true,
-                scroller: true,
-                paging: false,
-                info: false,
-                ordering: false,
-                searching: false,
-                responsive: true,
+            // var table4 = $('#customercontacts').DataTable({
+            //     scrollY: 400,
+            //     deferRender: true,
+            //     scroller: true,
+            //     paging: false,
+            //     info: false,
+            //     ordering: false,
+            //     searching: false,
+            //     responsive: true,
 
-            });
+            // });
             // $(document).ready(function () {
             $('#btnsearchcus').click(function(e) {
                 e.preventDefault();
@@ -1257,29 +1157,36 @@
                         // Show the overlay and spinner before sending the request
                         $('.overlay').show();
                     },
+              
                     success: function($response) {
+    var table4 = $('#customercontacts').DataTable();
+    table4.clear().destroy(); 
 
-                        $('.percentage').html($response.output);
-                        if ($response.datacontact) {
-                            $('.customercontact').html($response.datacontact);
-                            table4.columns.adjust();
+    if ($response.datacontact) {
+        $('.customercontact').html($response.datacontact);
 
-                        }
-                        document.getElementById("salesman").innerHTML = $response.SalesMandata;
+        // Dobara initialize karo
+        $('#customercontacts').DataTable({
+            scrollY: 400,
+            deferRender: true,
+            scroller: true,
+            paging: false,
+            info: false,
+            ordering: false,
+            searching: false,
+            responsive: true,
+        });
+        
+    }
+
+    $('.percentage').html($response.output);
+    document.getElementById("salesman").innerHTML = $response.SalesMandata;
+},
+
+                   
 
 
-                    },
-                    failed: function(output) {
-                        var errors = output.responseJSON;
-                        Swaal.fire({
-                        icon: 'error',
-                        title: 'Oops...Something went wrong!',
-                        text: errors.message,
-                        footer: '<a href="https://wa.link/d2jy7g">Why do I have this issue?</a>'
-                })
-                        // alert(errors.message);
-                        //Swal.close();
-                    },
+                   error: function(xhr, status, error) {
                     complete: function() {
                         // Hide the overlay and spinner after the request is complete
                         $('.overlay').hide();
@@ -1523,11 +1430,11 @@
                 scrollY: 350,
                 deferRender: true,
                 scroller: true,
-                paging: false,
+                paging: true,
                 info: false,
                 ordering: false,
                 responsive: true,
-                searching: false,
+                searching: true,
 
 
             });
@@ -1559,9 +1466,11 @@
 
             function displayImportedData(data) {
                 let table = document.getElementById('customerlisttablebody');
-                table.innerHTML = ""; // Clear the table
+                 table.innerHTML = "";
+                // table.clear();
                 data.forEach(function(item) {
-                    let row = table.insertRow();
+                    table.row.add([
+                    // let row = table.insertRow();
 
                     function createCell(content) {
                         let cell = row.insertCell();
@@ -1684,90 +1593,7 @@
             // })
 
 
-            // function showSuggestions(input, customers) {
-            //     var suggestions = $('#suggestions');
-            //     suggestions.empty();
-
-            //     if (customers.length === 0) {
-            //         suggestions.hide();
-            //         return;
-            //     }
-
-            //     var ul = $('<ul>').addClass('suggestions-list list-group').css({
-            //         'position': 'absolute',
-            //         'z-index': '100',
-            //         'width': input.outerWidth() + 'px'
-            //     });
-
-            //     for (var i = 0; i < customers.length; i++) {
-            //         var customer = customers[i];
-            //         var li = $('<li>')
-            //             .addClass('list-group-item')
-            //             .text(customer.CustomerName)
-            //             .data('cusname', customer.CustomerName)
-            //             .data('customerId', customer.CustomerCode)
-            //             .data('act', customer.ActCode)
-            //             .data('cuscode', customer.CusCode)
-            //             .data('Address', customer.Address)
-            //             .data('CallSign', customer.CallSign)
-            //             .data('PhoneNo', customer.PhoneNo)
-            //             .data('FaxNo', customer.FaxNo)
-            //             .data('EmailAddress', customer.EmailAddress)
-            //             .data('WebAddress', customer.WebAddress)
-            //             .data('BContactPerson', customer.BContactPerson)
-            //             .data('BillingAddress', customer.BillingAddress)
-            //             .data('BTelephoneNo', customer.BTelephoneNo)
-            //             .data('BFaxNo', customer.BFaxNo)
-            //             .data('BEmailAddress', customer.BEmailAddress)
-            //             .data('BWeb', customer.BWeb)
-            //             .data('Status', customer.Status)
-            //             .data('ChkInactive', customer.ChkInactive)
-            //             .data('CreditLimit', customer.CreditLimit)
-            //             .data('Country', customer.Country)
-            //             .data('BranchCode', customer.BranchCode)
-            //             .data('Terms', customer.Terms)
-            //             .data('EventQuateCharges', customer.EventQuateCharges)
-            //             .data('City', customer.City)
-            //             .data('CustomerDiscPer', customer.CustomerDiscPer)
-            //             .data('InvoiceDiscPer', customer.InvoiceDiscPer)
-            //             .data('SalesManCommPer', customer.SalesManCommPer)
-            //             .data('CreditNotePer', customer.CreditNotePer)
-            //             .data('AgentCommPer', customer.AgentCommPer)
-            //             .data('BankDetail', customer.BankDetail)
-            //             .data('Priority', customer.Priority)
-            //             .data('EnterCustomer', customer.EnterCustomer)
-            //             .data('ContactPerson', customer.ContactPerson)
-            //             .data('StateName', customer.StateName)
-            //             .data('CashDiscPer', customer.CashDiscPer)
-            //             .data('MobileNo', customer.MobileNo)
-            //             .data('smancode', customer.smancode)
-            //             .data('SManActCode', customer.SManActCode)
-            //             .data('WorkUser', customer.WorkUser)
-            //             .data('AgentCode', customer.AgentCode)
-            //             .data('AgentActCode', customer.AgentActCode)
-            //             .data('AssignUser', customer.AssignUser)
-            //             .data('LastEditDateTime', customer.LastEditDateTime)
-            //             .data('CType', customer.CType)
-            //             .data('Vtype', customer.Vtype)
-            //             .data('CustCategory', customer.CustCategory)
-            //             .data('AreaofBusiness', customer.AreaofBusiness)
-            //             .data('AreaCode', customer.AreaCode)
-            //         ul.append(li);
-            //     }
-
-            //     // adjust the position of the ul element
-            //     var inputOffset = input.offset();
-            //     ul.css({
-            //         'top': 90 + 'px',
-            //         'left': 132 + 'px'
-            //     });
-
-            //     suggestions.append(ul).show();
-            // }
-
-
-
-            // add an event listener to the document object
+          
             $(document).on('blur', '#customername', function(event) {
                 var suggestions = $('#suggestions');
                 suggestions.hide();
@@ -1920,34 +1746,34 @@
                 var customercode = $targetcustcode;
                 console.log(customercode);
                 discountsearc();
-                // $.ajax({
-                //     type: "POST",
-                //     url: "/dislist/" + customercode,
-                //     beforeSend: function() {
-                //         // Show the overlay and spinner before sending the request
-                //         $('.overlay').show();
-                //     },
-                //     success: function($response) {
+                $.ajax({
+                    type: "POST",
+                    url: "/dislist/" + customercode,
+                    beforeSend: function() {
+                        // Show the overlay and spinner before sending the request
+                        $('.overlay').show();
+                    },
+                    success: function($response) {
 
-                //         $('.percentage').html($response.output);
-                //         $('.customercontact').html($response.datacontact);
-                //         document.getElementById("salesman").innerHTML = $response.SalesMandata;
-
-
-                //     },
-                //     failed: function(output) {
-                //         var errors = output.responseJSON;
-                //         alert(errors.message);
-                //         //Swal.close();
-                //     },
-                //     complete: function() {
-                //         // Hide the overlay and spinner after the request is complete
-                //         $('.overlay').hide();
-                //     }
+                        $('.percentage').html($response.output);
+                        $('.customercontact').html($response.datacontact);
+                        document.getElementById("salesman").innerHTML = $response.SalesMandata;
 
 
+                    },
+                    failed: function(output) {
+                        var errors = output.responseJSON;
+                        alert(errors.message);
+                        //Swal.close();
+                    },
+                    complete: function() {
+                        // Hide the overlay and spinner after the request is complete
+                        $('.overlay').hide();
+                    }
 
-                // });
+
+
+                });
 
 
 
@@ -2014,6 +1840,9 @@
                 });
             });
         });
+        
+        
+        
 
         function discountsearc() {
             ajaxSetup();
@@ -2062,6 +1891,90 @@
             });
 
         }
+        
+        
+        
+        
+        
+        
+        
+        
+        $(document).on('click', '#CmdDelete', function (e) {
+    e.preventDefault();
+
+    var CustomerCode = $('#CustomerCode').val();
+    if (!CustomerCode) {
+        Swal.fire('Error', 'Please select a customer to delete.', 'error');
+        return;
+    }
+
+    Swal.fire({
+        title: 'Deleting Customer',
+        text: 'Are you sure you want to delete this customer?',
+        icon: 'question',
+        input: 'password',
+        inputPlaceholder: 'Enter your password',
+        showCancelButton: true,
+        confirmButtonText: 'Delete',
+        cancelButtonText: 'Cancel',
+        showLoaderOnConfirm: true,
+        preConfirm: (password) => {
+            return new Promise((resolve, reject) => {
+                if (password === '332211') {
+                    resolve();
+                } else {
+                    reject('Incorrect password');
+                }
+            }).catch(error => {
+                Swal.showValidationMessage(`Error: ${error}`);
+            });
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+         $.ajax({
+    type: 'POST',
+    url: "{{ route('DeleteCustomer') }}",
+    data: {
+        CustomerCode: CustomerCode
+    },
+    beforeSend: function () {
+        $('.overlay').show();
+    },
+    success: function (response) {
+        if (response.message === 'Deleted') {
+            Swal.fire({
+                icon: 'success',
+                title: 'Deleted',
+                text: 'Customer ' + response.CustomerCode + ' deleted successfully!',
+                timer: 1500,
+                showConfirmButton: false
+            }).then(() => {
+                location.reload();
+            });
+        } else {
+            Swal.fire('Error', 'Customer not found or could not be deleted.', 'error');
+        }
+    },
+    **error: function(xhr, status, error) {
+        var errors = xhr.responseJSON;
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...Something went wrong!',
+            text: errors?.message || 'Unknown error occurred',
+            footer: '<a href="https://wa.link/d2jy7g">Why do I have this issue?</a>'
+        });
+    },**
+    complete: function () {
+        $('.overlay').hide();
+    }
+});
+
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+            Swal.fire('Cancelled', 'Customer was not deleted.', 'info');
+        }
+    });
+});
+
     </script>
 
 @stop

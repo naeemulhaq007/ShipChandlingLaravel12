@@ -102,15 +102,18 @@
                         </div>
                         <div class="row ml-1">
                             <a class="btn btn-info my-2 mx-2" id="CmdAdd" onclick="location.reload();" role="button"> <i
-                                    class="fa fa-file-text mr-1" aria-hidden="true"></i>Add</a>
+                                    class="fa fa-file-text mr-1" aria-hidden="true"></i>New</a>
 
                             <button class="btn btn-success my-2 mx-2" id="CmdSave" role="button"> <i
                                     class="fa fa-file mr-1" aria-hidden="true"></i>Save</button>
 
                                     <a class="btn btn-danger my-2 mx-2" id="Button3" role="button"> <i
                                         class="fa fa-multiply mr-1" aria-hidden="true"></i>Delete</a>
-                                        <a href="/" class="btn btn-danger my-2 mx-2" id="Button4" role="button"> <i
-                                            class="fa fa-door-open mr-1" aria-hidden="true"></i>Exit</a>
+                                 
+                                            
+                                            <a href="{{url('shipingport-setup') }}" class="btn btn-danger my-2 mx-2" role="Button4">
+    <i class="fa fa-door-open mr-1" aria-hidden="true"></i> Exit
+</a>
                         </div>
 
                     </div>
@@ -174,7 +177,7 @@
                 paging: false,
                 info: false,
                 ordering: false,
-                searching: false,
+                searching: true,
                 responsive: true,
 
 
@@ -188,33 +191,196 @@
         });
 
 
-        $(document).ready(function() {
+//         $(document).ready(function() {
 
-            $('#CmdSave').click(function (e) {
-                e.preventDefault();
-                var TxtCode = $('#TxtCode').val();
-                var TxtPortName = $('#TxtPortName').val();
-                ajaxSetup();
-                $.ajax({
-                    url: '/ShipingPortSave',
-                    type: 'POST',
-                    data: {
-                        TxtCode,
-                        TxtPortName,
-                    },
-                    beforeSend: function() {
-                        $('.overlay').show();
-                    },
-                    success: function(resposne) {
-                        console.log(resposne);
-                        if (resposne.Message) {
-                            alert(resposne.Message)
+//             $('#CmdSave').click(function (e) {
+//                 e.preventDefault();
+//                 var TxtCode = $('#TxtCode').val();
+//                 var TxtPortName = $('#TxtPortName').val();
+//                 ajaxSetup();
+//                 $.ajax({
+//                     url: '/ShipingPortSave',
+//                     type: 'POST',
+//                     data: {
+//                         TxtCode,
+//                         TxtPortName,
+//                     },
+//                     beforeSend: function() {
+//                         $('.overlay').show();
+//                     },
+//                     success: function(resposne) {
+//                         console.log(resposne);
+//                         if (resposne.Message) {
+//                             Swal.fire({
+//     icon: 'success',
+//     title: 'ShippingPort Saved',
+//     text: resposne.Message,
+//     timer: 2000,
+//     showConfirmButton: false
+// });
 
-                        if(resposne.ShipingPortSetup.length > 0){
-                            var Ships = resposne.ShipingPortSetup;
-                            let table = document.getElementById('Gd1body');
-                            table.innerHTML = ""; // Clear the table
-                            Ships.forEach(function(item) {
+//                             // alert(resposne.Message)
+
+//                         if(resposne.ShipingPortSetup.length > 0){
+//                             var Ships = resposne.ShipingPortSetup;
+//                             let table = document.getElementById('Gd1body');
+//                             table.innerHTML = ""; // Clear the table
+//                             Ships.forEach(function(item) {
+//                             let row = table.insertRow();
+//                             row.classList.add("js-row");
+
+//                             function createCell(content) {
+//                                 let cell = row.insertCell();
+//                                 cell.innerHTML = content;
+//                                 return cell;
+//                             }
+//                             createCell(item.PortCode);
+//                             createCell(item.PortName);
+
+//                             });
+
+//                         }
+//                         }
+
+//                     },
+//                     error: function(data) {
+//                         console.log(data);
+//                         $('.overlay').hide();
+//                     },
+//                     complete: function() {
+//                         $('.overlay').hide();
+//                     }
+
+
+//                 });
+//             });
+//             $('.js-row').dblclick(function (e) {
+//                 e.preventDefault();
+//                 var row = $(this);
+//                 var Code = row.find('td:eq(0)').text();
+//                 var PortName = row.find('td:eq(1)').text();
+
+//                 $('#TxtCode').val(Code);
+//                 $('#TxtPortName').val(PortName);
+
+//             });
+//             $('#Button3').click(function (e) {
+//                 e.preventDefault();
+//                 var TxtCode = $('#TxtCode').val();
+//                 var password = prompt("Please enter Admin Authentication:");
+//                 if (password === "332211") {
+//                 if (confirm("Are you sure you want to proceed?")) {
+//                     // proceed with action
+//                     ajaxSetup();
+//                 $.ajax({
+//                     url: '/ShipingPortDelete',
+//                     type: 'POST',
+//                     data: {
+//                         TxtCode,
+//                     },
+//                     beforeSend: function() {
+//                         $('.overlay').show();
+//                     },
+//                     success: function(resposne) {
+//                         console.log(resposne);
+//                         if (resposne.Message == 'Deleted') {
+//                             alert(resposne.Message)
+
+//                         if(resposne.ShipingPortSetup.length > 0){
+//                             var Ships = resposne.ShipingPortSetup;
+//                             let table = document.getElementById('Gd1body');
+//                             table.innerHTML = ""; // Clear the table
+//                             Ships.forEach(function(item) {
+//                             let row = table.insertRow();
+//                             row.classList.add("js-row");
+
+//                             function createCell(content) {
+//                                 let cell = row.insertCell();
+//                                 cell.innerHTML = content;
+//                                 return cell;
+//                             }
+//                             createCell(item.PortCode);
+//                             createCell(item.PortName);
+
+//                             });
+
+//                         }
+//                         }
+
+//                     },
+//                     error: function(data) {
+//                         console.log(data);
+//                         $('.overlay').hide();
+//                     },
+//                     complete: function() {
+//                         $('.overlay').hide();
+//                     }
+
+
+//                 });
+//             } else {
+//                 alert("Access denied.");
+//             }
+//             } else {
+//                 alert("Incorrect password.");
+//             }
+
+//             });
+
+
+
+
+//         });
+
+
+
+$(document).ready(function () {
+
+    // ✅ Delegate dblclick
+    $('#Gd1body').on('dblclick', '.js-row', function (e) {
+        e.preventDefault();
+        var row = $(this);
+        var Code = row.find('td:eq(0)').text();
+        var PortName = row.find('td:eq(1)').text();
+
+        $('#TxtCode').val(Code);
+        $('#TxtPortName').val(PortName);
+    });
+
+    $('#CmdSave').click(function (e) {
+        e.preventDefault();
+        var TxtCode = $('#TxtCode').val();
+        var TxtPortName = $('#TxtPortName').val();
+        ajaxSetup();
+
+        $.ajax({
+            url: '/ShipingPortSave',
+            type: 'POST',
+            data: {
+                TxtCode,
+                TxtPortName,
+            },
+            beforeSend: function () {
+                $('.overlay').show();
+            },
+            success: function (resposne) {
+                console.log(resposne);
+
+                if (resposne.Message) {
+                    // ✅ Different message for update vs save
+                    const msgText = resposne.Message === 'Updated' ? 'ShippingPort Updated Successfully' : 'ShippingPort Saved Successfully';
+                    Swal.fire({
+                        icon: 'success',
+                        title: msgText,
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+
+                    if (resposne.ShipingPortSetup.length > 0) {
+                        let table = document.getElementById('Gd1body');
+                        table.innerHTML = ""; // Clear
+
+                        resposne.ShipingPortSetup.forEach(function (item) {
                             let row = table.insertRow();
                             row.classList.add("js-row");
 
@@ -223,37 +389,24 @@
                                 cell.innerHTML = content;
                                 return cell;
                             }
+
                             createCell(item.PortCode);
                             createCell(item.PortName);
-
-                            });
-
-                        }
-                        }
-
-                    },
-                    error: function(data) {
-                        console.log(data);
-                        $('.overlay').hide();
-                    },
-                    complete: function() {
-                        $('.overlay').hide();
+                        });
                     }
-
-
-                });
-            });
-            $('.js-row').dblclick(function (e) {
-                e.preventDefault();
-                var row = $(this);
-                var Code = row.find('td:eq(0)').text();
-                var PortName = row.find('td:eq(1)').text();
-
-                $('#TxtCode').val(Code);
-                $('#TxtPortName').val(PortName);
-
-            });
-            $('#Button3').click(function (e) {
+                }
+            },
+            error: function (data) {
+                console.log(data);
+                $('.overlay').hide();
+            },
+            complete: function () {
+                $('.overlay').hide();
+            }
+        });
+    });
+    
+      $('#Button3').click(function (e) {
                 e.preventDefault();
                 var TxtCode = $('#TxtCode').val();
                 var password = prompt("Please enter Admin Authentication:");
@@ -315,11 +468,8 @@
             }
 
             });
+});
 
-
-
-
-        });
     </script>
 
 

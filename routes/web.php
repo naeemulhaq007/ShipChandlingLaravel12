@@ -5,6 +5,9 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\VSN;
 use App\Http\Controllers\Order;
 use App\Http\Controllers\Branch;
+
+
+
 use App\Http\Controllers\Events;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\Quotes;
@@ -55,6 +58,51 @@ use Illuminate\Support\Facades\Auth;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+
+
+
+
+
+
+
+
+
+// Route::get('/clear-log', function () {
+//     $logFile = storage_path('logs/laravel.log');
+//     if (file_exists($logFile)) {
+//         file_put_contents($logFile, '');
+//         return 'Log file cleared successfully!';
+//     } else {
+//         return 'Log file not found.';
+//     }
+// })->name('clear.log');
+
+
+
+
+Route::get('/clear-cache', function () {
+    Artisan::call('cache:clear');
+    Artisan::call('view:clear');
+    Artisan::call('config:clear');
+    Artisan::call('route:clear');
+    return '✅ Cache, view, config, and route cleared successfully.';
+});
+
+// Route::match(['get', 'post'], '/something', function () {
+//     $data = \App\Models\Quote::limit(5)->get();
+//     return response()->json($data);
+// });
+
+
+// For Delete after Authentication
+// Route::post('/verify-password', function (Request $request) {
+//     if (!Hash::check($request->password, auth()->user()->password)) {
+//         return response()->json(['status' => 'error']);
+//     }
+//     return response()->json(['status' => 'success']);
+// });
+
 
 
 
@@ -153,7 +201,8 @@ Route::middleware(['auth'])->group(function () {
 
 // // / / / / / / / / // / / / / / / ///
 // Branch Setup
-Route::match(['get', 'post'], 'branch-setup', [Branch::class, 'branch_setup']);
+
+Route::match(['get', 'post'], 'branch-setup', [Branch::class, 'branch_setup'])->name('branch.setup');
 // Route::match(['get','post'],'branch-setup/{operation}', [Branch::class, 'branch_setup']);
 // Route::match(['get','post'],'branch-setup/{operation}/{id}', [Branch::class, 'branch_setup']);
 // Route::match(['get','post'],'branch-setup', [Branch::class, 'branch_setup']);
@@ -164,12 +213,17 @@ Route::match(['get', 'post'], 'BranchDelete', [Branch::class, 'BranchDelete'])->
 
 //Terms Setups
 Route::match(['get', 'post'], 'terms-setup', [HomeController::class, 'Terms_setup']);
+Route::post('TermsSave', [HomeController::class, 'TermsSave'])->name('TermsSave');
+
+Route::post('/terms-delete', [HomeController::class, 'TermsDelete'])->name('TermsDelete');
+
 // Route::match(['get','post'],'terms-setup/{operation}', [HomeController::class, 'Terms_setup']);
 // Route::match(['get','post'],'terms-setup/{operation}/{id}', [HomeController::class, 'Terms_setup']);
 // Route::match(['get','post'],'terms-setup', [HomeController::class, 'Terms_setup']);
 // Route::match(['get','post'],'terms-setup/{operation}', [HomeController::class, 'Terms_setup']);
 // Route::match(['get','post'],'terms-setup/{operation}/{id}', [HomeController::class, 'Terms_setup']);
-Route::match(['get', 'post'], 'TermsSave', [HomeController::class, 'TermsSave'])->name('TermsSave');
+// Route::match(['get', 'post'], 'TermsSave', [HomeController::class, 'TermsSave'])->name('TermsSave');
+
 
 //ShipingPort Setups
 Route::match(['get', 'post'], 'shipingport-setup', [HomeController::class, 'ShipingPort_Setup'])->name('shipingport-setup');
@@ -197,6 +251,7 @@ Route::match(['get', 'post'], 'WarehouseDelete', [HomeController::class, 'Wareho
 Route::match(['get', 'post'], 'agent-setup', [AgentSetup::class, 'agent_setup']);
 Route::match(['get', 'post'], 'agent/store', [AgentSetup::class, 'store'])->name('Agentstore');
 Route::match(['get', 'post'], 'Deleteagent', [AgentSetup::class, 'Deleteagent'])->name('Deleteagent');
+Route::post('/agent-setup/fetch', [AgentSetup::class, 'fetch'])->name('agent.fetch');
 
 
 
@@ -230,16 +285,27 @@ Route::match(['get', 'post'], '/follow', [EventController::class, 'follow']);
 Route::match(['get', 'post'], '/cussearch', [SearchController::class, 'cussearch']);
 Route::match(['get', 'post'], '/ordersearch', [Order::class, 'ordersearch']);
 Route::match(['get', 'post'], '/itemnameser', [SearchController::class, 'itemnameser']);
+
 Route::match(['get', 'post'], '/indexitem', [SearchController::class, 'indexitem'])->name('indexitem');
 Route::match(['get', 'post'], '/indexitema', [SearchController::class, 'indexitema'])->name('indexitema');
 Route::match(['get', 'post'], '/searchvendor', [SearchController::class, 'searchvendor']);
-Route::match(['get', 'post'], '/itemnameserimpa', [SearchController::class, 'itemnameserimpa']);
+
+
+// Route::match(['get', 'post'], '/itemnameserimpa', [SearchController::class, 'itemnameserimpa']);
 Route::match(['get', 'post'], '/Vendersearchmod', [SearchController::class, 'Vendersearchmod']);
 Route::match(['get', 'post'], '/vendorselect', [VendorController::class, 'vendorselect']);
 Route::match(['get', 'post'], '/itemselect', [VendorController::class, 'itemselect']);
+// web.php
+Route::get('/vendor-product-list', [VendorController::class, 'getVendorProductList'])->name('vendor.product.list');
+
+
+
 Route::match(['get', 'post'], '/eventserch', [Quotes::class, 'eventserch']);
 Route::match(['get', 'post'], '/calcList/{id}', [Quotes::class, 'calcList']);
 Route::match(['get', 'post'], '/dislist', [CustomerController::class, 'dislist']);
+Route::post('/contacts-only', [CustomerController::class, 'fetchContactsOnly'])->name('contacts.only');
+
+
 Route::match(['get', 'post'], '/biddate', [Quotes::class, 'biddate'])->name('biddate');
 Route::match(['get', 'post'], '/eventno', [Quotes::class, 'eventno']);
 Route::match(['get', 'post'], 'autocomplete', [EventController::class, 'autocomplete'])->name('autocomplete');
@@ -265,7 +331,9 @@ Route::match(['get', 'post'], 'customercodecheck', [CustomerController::class, '
 Route::match(['get', 'post'], '/import-Customerlist', [CustomerController::class, 'importCustomerlist'])->name('import-Customerlist');
 Route::match(['get', 'post'], '/Customerlist_save', [CustomerController::class, 'Customerlist_save'])->name('Customerlist_save');
 Route::match(['get', 'post'], 'SaveCustomer', [CustomerController::class, 'SaveCustomer'])->name('SaveCustomer');
-Route::match(['get', 'post'], 'DeleteCustomer', [CustomerController::class, 'DeleteCustomer'])->name('DeleteCustomer');
+Route::post('/delete-customer', [CustomerController::class, 'DeleteCustomer'])->name('DeleteCustomer');
+
+
 Route::match(['get', 'post'], '/cuscontactsave', [CustomerController::class, 'cuscontactsave'])->name('cuscontactsave');
 Route::match(['get', 'post'], '/Newcutcontact', [CustomerController::class, 'Newcutcontact'])->name('Newcutcontact');
 
@@ -273,6 +341,16 @@ Route::match(['get', 'post'], '/Newcutcontact', [CustomerController::class, 'New
 
 //Event
 Route::match(['get', 'post'], 'events-setup', [EventController::class, 'Event_setup'])->name('events-setup');
+// Event Setup Page (GET + POST for form submission)
+Route::match(['get', 'post'], 'events-setup', [App\Http\Controllers\EventController::class, 'Event_setup'])->name('events-setup');
+
+
+Route::post('getEventMasterData', [EventController::class, 'getEventMasterData'])->name('getEventMasterData');
+
+// Update Event Data 
+// Route::post('updateEventMasterData', [App\Http\Controllers\EventController::class, 'updateEventMasterData'])->name('updateEventMasterData');
+
+
 Route::match(['get', 'post'], 'getshiptoevent', [EventController::class, 'getshiptoevent'])->name('getshiptoevent');
 Route::match(['get', 'post'], 'Event_setup_godownsetup', [EventController::class, 'Event_setup_godownsetup'])->name('Es_godownsetup');
 Route::match(['get', 'post'], 'Es_portsetup', [EventController::class, 'Es_portsetup'])->name('Es_portsetup');
@@ -290,6 +368,11 @@ Route::match(['get', 'post'], 'event/update', [EventController::class, 'update_e
 
 //Origin Setups
 Route::match(['get', 'post'], 'origin-setup', [HomeController::class, 'Origin_Setup'])->name('origin-setup');
+Route::post('origin-save', [HomeController::class, 'origin_save'])->name('origin.save');
+Route::post('/origin-delete', [HomeController::class, 'Origin_Delete'])
+->name('origin.delete');
+
+
 
 //Quates
 Route::match(['get', 'post'], 'quote-setup', [HomeController::class, 'quote_setup']);
@@ -304,6 +387,14 @@ Route::match(['get', 'post'], 'quote-setup/{operation}/{id}', [HomeController::c
 Route::match(['get', 'post'], 'quotation', [Quotation::class, 'index'])->name('route_quotation');
 Route::match(['get', 'post'], 'itemgetfromship', [Quotation::class, 'itemgetfromship'])->name('itemgetfromship');
 Route::match(['get', 'post'], 'QuotationItemsave', [Quotation::class, 'QuotationItemsave'])->name('QuotationItemsave');
+// web.php
+
+
+Route::delete('/delete-vendor-item/{id}', [VendorController::class, 'QuatationDeleteItem'])->name('delete-vendor-item');
+
+Route::post('/save-imported-vendor-items', [YourController::class, 'saveImportedItems'])->name('saveImportedItems');
+
+
 Route::match(['get', 'post'], 'OrderItemsave', [Order::class, 'OrderItemsave'])->name('OrderItemsave');
 Route::match(['get', 'post'], '/importQuataion', [ExcelController::class, 'importQuataion'])->name('importQuataion');
 Route::match(['get', 'post'], '/importQuataionShow', [ExcelController::class, 'importQuataionShow'])->name('importQuataionShow');
@@ -315,6 +406,8 @@ Route::match(['get', 'post'], '/IMPAItem', [Quotation::class, 'SPIMPAItem'])->na
 Route::match(['get', 'post'], '/Quotationget', [Quotation::class, 'Quotationget'])->name('Quotationget');
 Route::match(['get', 'post'], '/get-token', [Quotation::class, 'getToken'])->name('get-token');
 Route::match(['get', 'post'], '/get-quote-shipserve/{quoteId}', [Quotation::class, 'GetQuotesShipServe'])->name('GetQuotesShipServe');
+
+Route::get('/get-data',[Quotation::class, 'getData'])->name('getData');
 
 
 
@@ -372,10 +465,13 @@ Route::match(['get', 'post'], 'shipdr_OrderMaster', [VSN::class, 'shipdr_OrderMa
 
 
 //Venodr-Setup
-
 Route::match(['get', 'post'], 'Vendor-Item-Setup', [VendorController::class, 'VendorItemSetup'])->name('Vendor-Item-Setup');
 Route::match(['get', 'post'], '/populate-itemf', [VendorController::class, 'populateitemf']);
 Route::match(['get', 'post'], '/venderitem/store', [VendorController::class, 'venderitem_store']);
+Route::post('/vendor-delete', [VendorController::class, 'delete'])->name('VendorDelete');
+
+
+
 
 // //Stock-Item
 // Route::match(['get','post'], '/stockitem/store', [VendorController::class, 'stockitem_store']);
@@ -406,6 +502,11 @@ Route::match(['get', 'post'], '/itemregselect', [ItemSetup::class, 'itemregselec
 
 Route::match(['get', 'post'], '/itemregsearch', [ItemSetup::class, 'itemregsearch'])->name('itemregsearch');
 Route::match(['get', 'post'], '/itemdelete', [ItemSetup::class, 'itemdelete'])->name('itemdelete');
+
+
+
+Route::match(['get', 'post'], '/itemnameserimpa', [ItemSetup::class, 'itemnameserimpa']);
+
 //purchase-order
 Route::match(['get', 'post'], '/purchase-order', [Order::class, 'purchaseorder'])->name('purchase-order');
 Route::match(['get', 'post'], '/purchaseorder', [Order::class, 'purchaseorderco'])->name('purchaseorderco');
@@ -711,6 +812,8 @@ Route::match(['get', 'post'], '/Balancesheet-Comparision-Print', [Printer::class
 Route::match(['get', 'post'], '/Accounts_Balancesheet_print', [Printer::class, 'AccountsBalancesheetprint'])->name('AccountsBalancesheetprint');
 //vendor Contract Provision
 Route::match(['get', 'post'], '/Vendor-Contract-Provision', [VendorController::class, 'Vendor_Contract_Provision'])->name('Vendor_Contract_Provision');
+Route::post('/vendor-contract-master-delete', [VendorController::class, 'deleteContractMaster'])->name('vendor.contract.master.delete');
+
 Route::match(['get', 'post'], '/importVendorContract', [VendorController::class, 'importVendorContract'])->name('importVendorContract');
 Route::match(['get', 'post'], '/GetNewComp', [VendorController::class, 'GetNewComp'])->name('GetNewComp');
 Route::match(['get', 'post'], '/VendorContracSave', [VendorController::class, 'VendorContracSave'])->name('VendorContracSave');

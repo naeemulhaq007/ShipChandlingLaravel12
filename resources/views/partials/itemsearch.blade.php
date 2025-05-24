@@ -3,7 +3,13 @@
 
           <div class="col-sm-12">
 
+    <button type="button" id="closeCusmod"
+      style="position: absolute; top: 5px; right: 10px; z-index: 200;"
+      class="btn btn-sm btn-danger rounded-circle" title="Close">
+      &times;
+    </button>
             <div class="table-responsive" style="max-height: 200px; overflow-x:auto;">
+
                   <table id="producers-table" class="tabless">
                       <thead class="bg-info">
                             <tr>
@@ -61,8 +67,11 @@
 </style>
 <script>
 
+
+
 $(document).ready(function() {
 
+let allowImpaUpdate = true;
 
 document.addEventListener("keydown", function (event) {
   if (event.key === "Escape") {
@@ -164,8 +173,32 @@ document.addEventListener("keydown", function (event) {
 
 var tableData = []; // Array to store the table data
 
+// function fetchData() {
+//   var itemNameq =  $('#item_desc').val();
+//   var DepartmentCode = $('#DepartmentCode').val();
+//   var GodownCode = $('#GodownCode').val();
+//   var ChkDeckEngin = $('#ChkDeckEngin').val();
+
+//   $.ajax({
+//     url: "/indexitem",
+//     method: "GET",
+//     data: {
+//       ItemNameq: itemNameq,
+//       DepartmentCode: DepartmentCode,
+//       GodownCode: GodownCode,
+//       ChkDeckEngin: ChkDeckEngin
+//     },
+//     success: function(response) {
+//       tableData = response; // Assuming the response is an array of objects
+//       renderTable();
+//     },
+//     error: function(error) {
+//       console.log(error);
+//     }
+//   });
+// }
 function fetchData() {
-  var itemNameq =  $('#item_desc').val();
+  var itemNameq = $('#item_desc').val().trim(); 
   var DepartmentCode = $('#DepartmentCode').val();
   var GodownCode = $('#GodownCode').val();
   var ChkDeckEngin = $('#ChkDeckEngin').val();
@@ -180,7 +213,7 @@ function fetchData() {
       ChkDeckEngin: ChkDeckEngin
     },
     success: function(response) {
-      tableData = response; // Assuming the response is an array of objects
+      tableData = response;
       renderTable();
     },
     error: function(error) {
@@ -188,6 +221,7 @@ function fetchData() {
     }
   });
 }
+
 
 function renderTable() {
   var ChkOnlyStock = $('#ChkOnlyStock').prop('checked');
@@ -244,11 +278,14 @@ function renderTable() {
     $('#cusmod').hide();
   }
   $('#producers-table tbody').on('dblclick', 'tr', function() {
+          $('#impa').prop('disabled', false); // 👈 Add this
+    $('#impa').val($(this).find('td:eq(3)').text());
+    $('#impa').prop('disabled', true);  
 
           $('#item_code').val($(this).find('td:eq(0)').text());
           $('#item_desc').val($(this).find('td:eq(1)').text());
           $('#uom').val($(this).find('td:eq(2)').text());
-          $('#impa').val($(this).find('td:eq(3)').text());
+        //   $('#impa').val($(this).find('td:eq(3)').text());
           $('#vpart_no').val($(this).find('td:eq(10)').text());
           $('#vendor_price').val(parseFloat($(this).find('td:eq(5)').text()).toFixed(2));
           $('#sell_price').val(parseFloat($(this).find('td:eq(6)').text()).toFixed(2));
@@ -265,6 +302,7 @@ function renderTable() {
       });
       $('#producers-table').on('keypress', 'tr', function(event) {
         if (event.which === 13) { // 13 is the code for the enter key
+          e.preventDefault();
             // var rowData = $(this).data();
             $('#item_code').val($(this).find('td:eq(0)').text());
           $('#item_desc').val($(this).find('td:eq(1)').text());
@@ -288,15 +326,43 @@ function renderTable() {
 
 
 $("#item_desc").on("keyup", function() {
-  var keywordss = $('#item_desc').val();
-  if (keywordss.length == 3) {
-    console.log(keywordss);
-    fetchData();
-  }
-  if (keywordss.length < 3) {
+  const keyword = $('#item_desc').val();
+  if (keyword.length >= 2) {
+    fetchData(); 
+    $('#cusmod').show();
+  } else {
     $('#cusmod').hide();
   }
 });
+
+$('#closeCusmod').on('click', function () {
+  $('#cusmod').hide();
+});
+
+
+// $("#item_desc").on("keyup", function() {
+//   var keywordss = $('#item_desc').val();
+
+//   if (keywordss.length >= 1) {
+//     console.log(keywordss);
+//     fetchData(); // Call fetch function
+//     $('#cusmod').show(); // Show modal if needed
+//   } else {
+//     $('#cusmod').hide(); // Hide modal if input is empty
+//   }
+// });
+
+
+// $("#item_desc").on("keyup", function() {
+//   var keywordss = $('#item_desc').val();
+//   if (keywordss.length == 3) {
+//     console.log(keywordss);
+//     fetchData();
+//   }
+//   if (keywordss.length < 3) {
+//     $('#cusmod').hide();
+//   }
+// });
 
 
 /////////////////////////////////////

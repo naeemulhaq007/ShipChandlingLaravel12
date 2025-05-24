@@ -264,16 +264,19 @@ function renderTable2() {
 }
 
 
+
 $("#itemnameser2").on("keyup", function() {
   var keywordss = $('#itemnameser2').val();
-  if (keywordss.length == 3) {
+
+  if (keywordss.length >= 2) {
     console.log(keywordss);
     fetchData2();
-  }
-  if (keywordss.length < 3) {
+  
+  } else {
     $('#searchrmodfull').hide();
   }
 });
+
 
 /////////////////////
 
@@ -285,8 +288,8 @@ $("#itemnameser2").on("keyup", function() {
 
 $('#itemnameser2').on('keyup', function(e) {
   var keywords = $('#itemnameser2').val();
-
-    if (keywords.length > 3) {
+  if (keywords.length >= 1) {
+    // if (keywords.length > 3) {
   var input, filter, table, tr, td, i, txtValue;
   input = document.getElementById("itemnameser2");
   filter = input.value.toUpperCase();

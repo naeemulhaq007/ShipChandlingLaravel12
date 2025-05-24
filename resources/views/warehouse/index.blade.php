@@ -64,7 +64,7 @@
             <table  style="margin-left: 20%"class="table table-striped table-inverse table-responsive">
                 <thead class="thead-inverse">
                     <tr>
-                        <th>Code</th>
+                        <th>Codesss</th>
                         <th>Warehouse Name</th>
                         <th>Printer Name</th>
                         <th>Stock Code</th>

@@ -145,46 +145,251 @@ public function searchvendor(Request $request){
 
     return response()->json($gitem);
    }
-   public function indexitem(Request $request)
-   {
-    //    info($request->all());
+//   public function indexitem(Request $request)
+//   {
+//         // info($request->all());
 
-       $BranchCode = Auth::user()->BranchCode;
-       $GodownCode = $request->input('GodownCode');
-       $DateTo = date('Y-m-d');
-       $DateFrom = "2019-08-28";
-       $ItemName = $request->input('ItemNameq');
-       $DepartmentCode = $request->input('DepartmentCode');
-       $ChkDeckEngin = $request->input('ChkDeckEngin');
-    //    info('item'.$ItemName);
-    //    info($DepartmentCode);
-    //    info($ChkDeckEngin);
-    //    $gitem = DB::select(DB::raw("SET NOCOUNT ON ;exec SPVendorProductListWithStock @BranchCode='$BranchCode',@GodownCode='$GodownCode',@DateTo='$DateTo',@DateFrom='$DateFrom',@ItemName='$ItemName',@DepartmentCode='$DepartmentCode',@ChkDeckEngin='$ChkDeckEngin'"));
-//     $gitem = DB::select(DB::raw("SET @BranchCode = $BranchCode, @GodownCode = $GodownCode, @DateTo = '$DateTo', @DateFrom = '$DateFrom', @ItemName = '$ItemName', @DepartmentCode = '$DepartmentCode', @ChkDeckEngin = $ChkDeckEngin;"));
-// $gitem = DB::select(DB::raw("CALL SPVendorProductListWithStock(@BranchCode, @GodownCode, @DateTo, @DateFrom, @ItemName, @DepartmentCode, @ChkDeckEngin)"));
-try {
-    $gitem = DB::select(
-        "CALL SPVendorProductListWithStock(:BranchCode, :GodownCode, :DateTo, :DateFrom, :SearchItemName, :DepartmentCode, :ChkDeckEngin)",
-        [
-            'BranchCode' => $BranchCode,
-            'GodownCode' => $GodownCode,
-            'DateTo' => $DateTo,
-            'DateFrom' => $DateFrom,
-            'SearchItemName' => $ItemName,
-            'DepartmentCode' => $DepartmentCode,
-            'ChkDeckEngin' => (int)$ChkDeckEngin,
-        ]
-    );
-} catch (\Exception $e) {
-    info('Stored Procedure Error: ' . $e->getMessage());
-    // Handle error gracefully
+//       $BranchCode = Auth::user()->BranchCode;
+//       $GodownCode = $request->input('GodownCode');
+//       $DateTo = date('Y-m-d');
+//       $DateFrom = "2019-08-28";
+//       $ItemName = $request->input('ItemNameq');
+//       $DepartmentCode = $request->input('DepartmentCode');
+//       $ChkDeckEngin = $request->input('ChkDeckEngin');
+//     //    info('item'.$ItemName);
+//     //    info($DepartmentCode);
+//     //    info($ChkDeckEngin);
+//     //    $gitem = DB::select(DB::raw("SET NOCOUNT ON ;exec SPVendorProductListWithStock @BranchCode='$BranchCode',@GodownCode='$GodownCode',@DateTo='$DateTo',@DateFrom='$DateFrom',@ItemName='$ItemName',@DepartmentCode='$DepartmentCode',@ChkDeckEngin='$ChkDeckEngin'"));
+// //     $gitem = DB::select(DB::raw("SET @BranchCode = $BranchCode, @GodownCode = $GodownCode, @DateTo = '$DateTo', @DateFrom = '$DateFrom', @ItemName = '$ItemName', @DepartmentCode = '$DepartmentCode', @ChkDeckEngin = $ChkDeckEngin;"));
+// // $gitem = DB::select(DB::raw("CALL SPVendorProductListWithStock(@BranchCode, @GodownCode, @DateTo, @DateFrom, @ItemName, @DepartmentCode, @ChkDeckEngin)"));
+// $gitem = []; 
+
+// try {
+//     $gitem = DB::select(
+//         "CALL SPVendorProductListWithStock(:BranchCode, :GodownCode, :DateTo, :DateFrom, :SearchItemName, :DepartmentCode, :ChkDeckEngin)",
+//         [
+//             'BranchCode' => $BranchCode,
+//             'GodownCode' => $GodownCode,
+//             'DateTo' => $DateTo,
+//             'DateFrom' => $DateFrom,
+//             'SearchItemName' => $ItemName,
+//             'DepartmentCode' => $DepartmentCode,
+//             'ChkDeckEngin' => (int)$ChkDeckEngin,
+//         ]
+//     );
+// } catch (\Exception $e) {
+//     info('Stored Procedure Error: ' . $e->getMessage());
+
+
+// }
+
+
+
+//     //    info($gitem);
+    
+
+//       return response()->json($gitem);
+//   }
+
+
+
+
+
+public function indexitem(Request $request)
+{
+    $BranchCode = Auth::user()->BranchCode;
+    $GodownCode = $request->input('GodownCode') ?? 0;
+    $ItemName = $request->input('ItemNameq', '');
+    $DepartmentCode = $request->input('DepartmentCode', '');
+    $ChkDeckEngin = (int) ($request->input('ChkDeckEngin') ?? 0);
+
+    $SearchItemName = '%' . strtolower($ItemName) . '%';
+
+    try {
+        $gitem = DB::table('qryvenderproductlist')
+            ->select(
+                'ItemCode',
+                'ItemName',
+                'UOM',
+                'IMPAItemCode',
+                'LastDate',
+                'OurPrice',
+                'FixedPrice',
+                'VenderName',
+                'Type',
+                'VendorPartNo',
+                'WorkUser',
+                'VenderCode',
+                'ChkStromme',
+                'Remarks'
+            )
+            ->when(!empty($ItemName), function ($q) use ($SearchItemName) {
+                $q->whereRaw('LOWER(ItemName) LIKE ?', [$SearchItemName]);
+            })
+            ->where('ChkDeckEngin', $ChkDeckEngin)
+            ->where(function ($q) use ($GodownCode) {
+                $q->where('GodownCode', $GodownCode)
+                  ->orWhereNull('GodownCode')
+                  ->orWhere('GodownCode', 0);
+            })
+            ->where(function ($q) {
+                $q->where('ExpiryDate', '>=', now())
+                  ->orWhereNull('ExpiryDate');
+            })
+            // ✅ REMOVE PRICE FILTER TO ALLOW RAGS (which may have OurPrice = 0)
+            // ->where(function ($q) {
+            //     $q->where('OurPrice', '>', 0)
+            //       ->orWhere('ChkStromme', 1);
+            // })
+            ->where(function ($q) {
+                $q->where('ChkInactive', 0)
+                  ->orWhereNull('ChkInactive');
+            })
+            ->orderByRaw("CASE 
+                WHEN Type = 'STOCK' THEN 1
+                WHEN Type = 'CONTRACT' THEN 2
+                ELSE 3
+            END")
+            ->orderBy('ItemName')
+            ->limit(800)
+            ->get();
+
+        return response()->json($gitem);
+
+    } catch (\Exception $e) {
+        \Log::error('Fetch Error in indexitem(): ' . $e->getMessage());
+
+        return response()->json([
+            'error' => 'Error fetching items',
+            'details' => $e->getMessage()
+        ], 500);
+    }
 }
 
 
-    //    info($gitem);
 
-       return response()->json($gitem);
-   }
+
+
+
+
+
+
+
+
+
+
+
+
+
+// public function indexitem(Request $request)
+// {
+//     $BranchCode = Auth::user()->BranchCode;
+//     $GodownCode = $request->input('GodownCode');
+//     $DateTo = date('Y-m-d');
+//     $DateFrom = "2019-08-28";
+
+//     $ItemName = $request->input('ItemNameq', '');
+//     $DepartmentCode = $request->input('DepartmentCode', '');
+//     $ChkDeckEngin = (int) $request->input('ChkDeckEngin', 0);
+
+
+//     $SearchItemName = strtolower($ItemName) . '%';
+
+//     try {
+//         $gitem = DB::table('qryvenderproductlist')
+//             ->select(
+//                 'ItemCode',
+//                 'ItemName',
+//                 'UOM',
+//                 'IMPAItemCode',
+//                 'LastDate',
+//                 'OurPrice',
+//                 'FixedPrice',
+//                 'VenderName',
+//                 'Type',
+//                 'VendorPartNo',
+//                 'WorkUser',
+//                 'VenderCode',
+//                 'ChkStromme',
+//                 'Remarks'
+//             )
+//             ->whereRaw('LOWER(ItemName) LIKE ?', [$SearchItemName])
+//             ->where('Type', 'STOCK') 
+//             ->where('ChkDeckEngin', $ChkDeckEngin)
+//             ->where(function ($q) use ($GodownCode) {
+//                 $q->where('GodownCode', $GodownCode)
+//                   ->orWhereNull('GodownCode')
+//                   ->orWhere('GodownCode', 0);
+//             })
+//             ->where(function ($q) {
+//                 $q->where('ExpiryDate', '>=', now())
+//                   ->orWhereNull('ExpiryDate');
+//             })
+//             ->where(function ($q) {
+//                 $q->where('OurPrice', '>', 0)
+//                   ->orWhere('ChkStromme', 1);
+//             })
+//             ->where(function ($q) {
+//                 $q->where('ChkInactive', 0)
+//                   ->orWhereNull('ChkInactive');
+//             })
+//             ->orderByDesc('LastDate')      
+//             ->orderByDesc('ItemName')      
+//             ->get();
+
+//         return response()->json($gitem);
+//     } catch (\Exception $e) {
+//         \Log::error('Fetch Error: ' . $e->getMessage()); 
+//         return response()->json([
+//             'error' => 'Error fetching items',
+//             'details' => $e->getMessage()              
+//         ], 500);
+//     }
+// }
+
+
+// public function indexitem(Request $request)
+// {
+//     $BranchCode = Auth::user()->BranchCode;
+//     $GodownCode = $request->input('GodownCode');
+//     $DateTo = date('Y-m-d');
+//     $DateFrom = '2019-08-28';
+//  $ItemName = $request->input('ItemName', ''); // NO %
+
+
+
+//     $DepartmentCode = $request->input('DepartmentCode', '');
+//     $ChkDeckEngin = $request->input('ChkDeckEngin', 0);
+
+//     $gitem = [];
+
+//     try {
+//         $gitem = DB::select(
+//             "CALL SPVendorProductListWithStock(:BranchCode, :GodownCode, :DateTo, :DateFrom, :SearchItemName, :DepartmentCode, :ChkDeckEngin)",
+//             [
+//                 'BranchCode'      => $BranchCode,
+//                 'GodownCode'      => $GodownCode,
+//                 'DateTo'          => $DateTo,
+//                 'DateFrom'        => $DateFrom,
+//                   'SearchItemName'  => $ItemName,
+//                 'DepartmentCode'  => $DepartmentCode,
+//                 'ChkDeckEngin'    => (int)$ChkDeckEngin,
+//             ]
+//         );
+//     } catch (\Exception $e) {
+//         \Log::info('Stored Procedure Error: ' . $e->getMessage());
+//         return response()->json([
+//             'error' => 'Something went wrong while fetching item list.',
+//             'details' => $e->getMessage()
+//         ], 500);
+//     }
+
+//     return response()->json($gitem);
+// }
+
+
+
+
    public function venconitem(Request $request)
    {
     $query = $request->input('query');

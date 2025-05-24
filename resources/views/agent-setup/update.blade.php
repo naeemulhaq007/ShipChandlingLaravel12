@@ -76,7 +76,7 @@
             <label for="agentname">Name Of Agent : </label>
             </div>
             <div class="col-sm-5">
-        <input style="margin-bottom: 2%" type="text" value="{{$data->CustomerName}}"   name="CustomerName" class="form-control"  id="agentname"  placeholder="Empty">
+        <input style="margin-bottom: 2%" type="text" value="{{$data ->CustomerName}}"   name="CustomerName" class="form-control"  id     ="agentname"  placeholder="Empty">
             </div>
         </div>
         
@@ -90,12 +90,12 @@
             <div class="col-sm-3">
         <input type="text"   name="agentcode" value="{{$data->CustomerCode}}" class="form-control"  id="CustomerCode"  placeholder="Empty">
             </div>
-            {{-- <div style="text-align: right" class="col-sm-2">
+              <div style="text-align: right" class="col-sm-2">
                 <label for="exchangeRate">Exchange Rate : </label>
                 </div>
             <div class="col-sm-3">
         <input type="text"   name="exchangerate" class="form-control"  id="exchangeRate"  placeholder="Empty">
-            </div> --}}
+            </div> 
         </div>
         <hr>
         <h2>General Information</h2>

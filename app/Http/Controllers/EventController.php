@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\Ship;
 use App\Http\Requests\EventRequest;
+
 use App\Models\Quote;
 use App\Models\Vessel;
 use App\Models\Customer;
@@ -21,6 +22,37 @@ use Illuminate\Support\Facades\Http;
 
 class EventController extends Controller
 {
+    
+
+    
+    public function getEventMasterData(Request $request)
+{
+    $event_no = $request->input('event_no');
+    $BranchCode = Auth::user()->BranchCode; 
+    try {
+        
+        $event = modelevents::where('EventNo', $event_no)
+                       ->where('BranchCode', $BranchCode)
+                       ->first();
+
+        if (!$event) {
+            return response()->json(['error' => 'Event not found'], 404);
+        }
+
+      
+               $contacts = \App\Models\CustomerContacts::where('CustomerCode', $event->CustomerCode)->get();
+
+    
+        return response()->json([
+            'event' => $event,
+            'contacts' => $contacts
+        ]);
+    } catch (\Exception $e) {
+     
+        return response()->json(['error' => $e->getMessage()], 500);
+    }
+}
+
     public function Event_setup()
     {
         $MBranchCode = Auth::user()->BranchCode;
@@ -229,135 +261,319 @@ class EventController extends Controller
         ]);
     }
 
-    public function event_store(Request $request)
-    {
-        $BranchCode = Auth::user()->BranchCode;
-        $datestamp = date("Y-m-d");
-        $timestamps = date("Y-m-d G:i:s");
-        $Eventr = $request->EventNo;
-        $vesselr = $request->VesselName;
-        $ShipId = $request->ShipId;
-        $Token = $request->Token;
-        $Customerr = $request->CustomerName;
-        $Event = modelevents::where('EventNo', $Eventr)->where('BranchCode', $BranchCode)->first();
+    // public function event_store(Request $request)
+    // {
+    //     $BranchCode = Auth::user()->BranchCode;
+    //     $datestamp = date("Y-m-d");
+    //     $timestamps = date("Y-m-d G:i:s");
+    //     $Eventr = $request->EventNo;
+    //     $vesselr = $request->VesselName;
+    //     $ShipId = $request->ShipId;
+    //     $Token = $request->Token;
+    //     $Customerr = $request->CustomerName;
+    //     $Event = modelevents::where('EventNo', $Eventr)->where('BranchCode', $BranchCode)->first();
 
-        if (!$Event) {
-            $vessel_check_date = modelevents::whereRaw('BidDueDate >= DATE_SUB(NOW(), INTERVAL 1 MONTH)')
-                ->where('VesselName', $vesselr)
-                ->where('CustomerName', $Customerr)
-                ->first();
-        }
+    //     if (!$Event) {
+    //         $vessel_check_date = modelevents::whereRaw('BidDueDate >= DATE_SUB(NOW(), INTERVAL 1 MONTH)')
+    //             ->where('VesselName', $vesselr)
+    //             ->where('CustomerName', $Customerr)
+    //             ->first();
+    //     }
 
-        if (!$Event) {
-            if (!$vessel_check_date) {
-                $Events = new modelevents([
-                    'EventNo' => $request->EventNo,
-                    'GeneralVesselNote' => $request->GeneralVesselNote,
-                    'BranchCode' => $BranchCode,
-                    'ETA' => $request->ETA,
-                    'Contact' => $request->Contact,
-                    'Phone' => $request->Phone,
-                    'Cell' => $request->Cell,
-                    'BidDUeDate' => $request->BidDUeDate,
-                    'DueTime' => $request->DueTime,
-                    'ShippingPort' => $request->ShippingPort,
-                    'Note' => $request->followup,
-                    'Name' => $request->Name,
-                    'Email' => $request->Email,
-                    'Fax' => $request->Fax,
-                    'Status' => $request->Status,
-                    'ReturnVia' => $request->ReturnVia,
-                    'Priority' => $request->Priority,
-                    'CustomerCode' => $request->Customercode,
-                    'IMONo' => $request->IMONo,
-                    'Department' => $request->Department,
-                    'CustomerRef' => $request->CustomerRef,
-                    'BidDUeDate2' => $request->BidDUeDate2,
-                    'ReturnVia2' => $request->ReturnVia2,
-                    'EstLineQuote' => $request->EstLineQuote,
-                    'DueTme2' => $request->DueTme2,
-                    'EventCreatedUser' => Auth::user()->UserName,
-                    'EventCreatedDate' => $datestamp,
-                    'EventCreatedTime' => $timestamps,
-                    'CustomerName' => $request->CustomerName,
-                    'VesselName' => $request->VesselName,
-                    'GodownCode' => $request->GodownName,
-                    'GodownName' => $request->GodownCodeget,
-                    'CusCode' => $request->CusCode,
-                    'CustomerActCode' => $request->CustomerActCode,
-                ]);
-                $Events->save();
-                return redirect('events-setups/update?EventNo=' . $Eventr . '&ShipId=' . $ShipId . '&Token=' . $Token)
-                    ->with('success', 'Your Event ' . $Eventr . ' With ' . $request->CustomerName . ' and ' . $request->VesselName . ' has been Created successfully!');
-            } else {
-                return redirect('events-setup')->with('error', 'Event Is Already Created! With ' . $request->CustomerName . ' Customer and Vessel IS: ' . $request->VesselName . ' <a href="/events-setups/update?EventNo=' . $vessel_check_date->EventNo . '"> Show me </a>');
-            }
+    //     if (!$Event) {
+    //         if (!$vessel_check_date) {
+    //             $Events = new modelevents([
+    //                 'EventNo' => $request->EventNo,
+    //                 'GeneralVesselNote' => $request->GeneralVesselNote,
+    //                 'BranchCode' => $BranchCode,
+    //                 'ETA' => $request->ETA,
+    //                 'Contact' => $request->Contact,
+    //                 'Phone' => $request->Phone,
+    //                 'Cell' => $request->Cell,
+    //                 'BidDUeDate' => $request->BidDUeDate,
+    //                 'DueTime' => $request->DueTime,
+    //                 'ShippingPort' => $request->ShippingPort,
+    //                 'Note' => $request->followup,
+    //                 'Name' => $request->Name,
+    //                 'Email' => $request->Email,
+    //                 'Fax' => $request->Fax,
+    //                 'Status' => $request->Status,
+    //                 'ReturnVia' => $request->ReturnVia,
+    //                 'Priority' => $request->Priority,
+    //                 'CustomerCode' => $request->Customercode,
+    //                 'IMONo' => $request->IMONo,
+    //                 'Department' => $request->Department,
+    //                 'CustomerRef' => $request->CustomerRef,
+    //                 'BidDUeDate2' => $request->BidDUeDate2,
+    //                 'ReturnVia2' => $request->ReturnVia2,
+    //                 'EstLineQuote' => $request->EstLineQuote,
+    //                 'DueTme2' => $request->DueTme2,
+    //                 'EventCreatedUser' => Auth::user()->UserName,
+    //                 'EventCreatedDate' => $datestamp,
+    //                 'EventCreatedTime' => $timestamps,
+    //                 'CustomerName' => $request->CustomerName,
+    //                 'VesselName' => $request->VesselName,
+    //                 'GodownCode' => $request->GodownName,
+    //                 'GodownName' => $request->GodownCodeget,
+    //                 'CusCode' => $request->CusCode,
+    //                 'CustomerActCode' => $request->CustomerActCode,
+    //             ]);
+    //             $Events->save();
+    //             return redirect('events-setups/update?EventNo=' . $Eventr . '&ShipId=' . $ShipId . '&Token=' . $Token)
+    //                 ->with('success', 'Your Event ' . $Eventr . ' With ' . $request->CustomerName . ' and ' . $request->VesselName . ' has been Created successfully!');
+    //         } else {
+    //             return redirect('events-setup')->with('error', 'Event Is Already Created! With ' . $request->CustomerName . ' Customer and Vessel IS: ' . $request->VesselName . ' <a href="/events-setups/update?EventNo=' . $vessel_check_date->EventNo . '"> Show me </a>');
+    //         }
+    //     } else {
+    //         $data = $request->except('BranchCode');
+    //       $data['BranchCode'] = $BranchCode;
+    //       $Event->update($data);
+
+    //         // $Event->update($request->all());
+    //     }
+
+    //     return redirect('events-setups/update?EventNo=' . $Eventr . '&ShipId=' . $ShipId . '&Token=' . $Token)
+    //         ->with('success', 'Your Event ' . $Eventr . ' With ' . $request->CustomerName . ' and ' . $request->VesselName . ' has been Updated successfully!');
+    // }
+
+
+   public function event_store(Request $request)
+{
+    $BranchCode = Auth::user()->BranchCode;
+    $datestamp = date("Y-m-d");
+    $timestamps = date("Y-m-d G:i:s");
+    $Eventr = $request->EventNo;
+    $vesselr = $request->VesselName;
+    $ShipId = $request->ShipId;
+    $Token = $request->Token;
+    $Customerr = $request->CustomerName;
+
+    $Event = modelevents::where('EventNo', $Eventr)->where('BranchCode', $BranchCode)->first();
+
+    if (!$Event) {
+        $vessel_check_date = modelevents::whereRaw('BidDueDate >= DATE_SUB(NOW(), INTERVAL 1 MONTH)')
+            ->where('VesselName', $vesselr)
+            ->where('CustomerName', $Customerr)
+            ->first();
+    }
+
+    if (!$Event) {
+        if (!$vessel_check_date) {
+            $Events = new modelevents([
+                'EventNo' => $request->EventNo,
+                'GeneralVesselNote' => $request->GeneralVesselNote,
+                'BranchCode' => $BranchCode,
+                'ETA' => $request->ETA,
+                'Contact' => $request->Contact,
+                'Phone' => $request->Phone,
+                'Cell' => $request->Cell,
+                'BidDUeDate' => $request->BidDUeDate,
+                'DueTime' => $request->DueTime ?? null,
+                'ShippingPort' => $request->ShippingPort,
+                'Note' => $request->followup,
+                'Name' => $request->Name,
+                'Email' => $request->Email,
+                'Fax' => $request->Fax,
+                'Status' => $request->Status,
+                'ReturnVia' => $request->ReturnVia,
+                'Priority' => $request->Priority,
+                'CustomerCode' => $request->Customercode,
+                'IMONo' => $request->IMONo,
+                'Department' => $request->Department,
+                'CustomerRef' => $request->CustomerRef,
+                'BidDUeDate2' => $request->BidDUeDate2,
+                'ReturnVia2' => $request->ReturnVia2,
+                'EstLineQuote' => $request->EstLineQuote,
+                'DueTme2' => $request->DueTme2 ?? null,
+                'EventCreatedUser' => Auth::user()->UserName,
+                'EventCreatedDate' => $datestamp,
+                'EventCreatedTime' => $request->EventCreatedTime ?? $timestamps,
+                'CustomerName' => $request->CustomerName,
+                'VesselName' => $request->VesselName,
+                'GodownCode' => $request->GodownName,
+                'GodownName' => $request->GodownCodeget,
+                'CusCode' => $request->CusCode,
+                'CustomerActCode' => $request->CustomerActCode,
+            ]);
+            $Events->save();
+
+            return redirect('events-setups/update?EventNo=' . $Eventr . '&ShipId=' . $ShipId . '&Token=' . $Token)
+                ->with('success', 'Your Event ' . $Eventr . ' With ' . $request->CustomerName . ' and ' . $request->VesselName . ' has been Created successfully!');
         } else {
-            $Event->update($request->all());
+            return redirect('events-setup')->with('error', 'Event Is Already Created! With ' . $request->CustomerName . ' Customer and Vessel IS: ' . $request->VesselName . ' <a href="/events-setups/update?EventNo=' . $vessel_check_date->EventNo . '"> Show me </a>');
         }
-
-        return redirect('events-setups/update?EventNo=' . $Eventr . '&ShipId=' . $ShipId . '&Token=' . $Token)
-            ->with('success', 'Your Event ' . $Eventr . ' With ' . $request->CustomerName . ' and ' . $request->VesselName . ' has been Updated successfully!');
+    } else {
+        $data = $request->except('BranchCode');
+        $data['BranchCode'] = $BranchCode;
+        $Event->update($data);
     }
 
-    public function quote_store(Request $request)
-    {
-        // dd($request->all());
+    return redirect('events-setups/update?EventNo=' . $Eventr . '&ShipId=' . $ShipId . '&Token=' . $Token)
+        ->with('success', 'Your Event ' . $Eventr . ' With ' . $request->CustomerName . ' and ' . $request->VesselName . ' has been Updated successfully!');
+}
 
-        $MWorkUser = config('app.MUserName');
-        $BranchCode = Auth::user()->BranchCode;
-        $datestamp = date("Y-m-d");
 
-        $gEventNo = $request->EventNo2;
-        $eventfiller = modelevents::where('EventNo', $gEventNo)->where('BranchCode', $BranchCode)->first();
-        if ($eventfiller) {
 
-            $CustomerData = Customer::where('CustomerCode', $eventfiller->CustomerCode)->where('BranchCode', $BranchCode)->first();
-        }
-        $quote = Quote::firstOrNew(['QuoteNo' => $request->QuoteNo, 'BranchCode' => $BranchCode]);
-        $quote->fill($request->all());
-        $quote->EventNo = $request->EventNo2;
-        $quote->DepartmentName = $request->DepartmentName;
-        $quote->DepartmentCode = $request->DepartmentCode ? $request->DepartmentCode : Ship::DeptCodeByName($request->DepartmentName);
-        $quote->CustomerRefNo = $request->CustomerRef;
-        $quote->BidDueDate = $request->BidDUeDate2;
-        $quote->ReturnVia = $request->ReturnVia;
-        $quote->EstLineQuote = $request->EstLineQuote;
-        $quote->DueTime = $request->DueTme2;
-        $quote->QuoteNo = $request->QuoteNo;
-        $quote->WorkUser = $MWorkUser;
-        $quote->AssignQuote = $request->WorkUser;
-        $quote->BranchCode = $BranchCode;
-        $quote->QDate = $datestamp;
-        $quote->QTime = date('H:i:s');
-        $quote->CreatedDate = $datestamp;
-        $quote->CreatedTime = date('H:i:s');
-        $quote->CustomerCode = $eventfiller->CustomerCode;
-        $quote->CustomerName = $eventfiller->CustomerName;
-        $quote->GodownName = $eventfiller->GodownName;
-        $quote->GodownCode = $eventfiller->GodownCode;
-        $quote->Terms = $CustomerData ? $CustomerData->Terms : '';
-        $quote->Status = $eventfiller->Status;
-        $quote->CustCode = $CustomerData ? $CustomerData->CusCode : '';
-        $quote->StatusCode = 1;
-        $quote->StatusColorCode = "-128";
-        $quote->ChkUpload = "E";
-        $quote->VesselName = $eventfiller->VesselName;
-        $quote->save();
 
-        return redirect('quotation?quote_no=' . $request->QuoteNo);
+
+
+public function quote_store(Request $request)
+{
+    // 1. Validate required fields
+    $request->validate([
+        'DepartmentName' => 'required|string',
+          'CustomerRef' => 'required|string',
+    ]);
+
+    $MWorkUser = config('app.MUserName');
+    $BranchCode = Auth::user()->BranchCode;
+    $datestamp = date("Y-m-d");
+
+    // 2. Get event data
+    $gEventNo = $request->EventNo2;
+    $eventfiller = modelevents::where('EventNo', $gEventNo)->where('BranchCode', $BranchCode)->first();
+    if (!$eventfiller) {
+        return back()->withErrors(['EventNo2' => 'Event not found.']);
     }
 
-    public function deleteevent(Request $request)
-    {
-        $EventNo = $request->EventNo;
-        if ($EventNo) {
-            Quote::where('EventNo', $EventNo)->delete();
-            modelevents::where('EventNo', $EventNo)->delete();
+    // 3. Get customer data
+    $CustomerData = Customer::where('CustomerCode', $eventfiller->CustomerCode)
+        ->where('BranchCode', $BranchCode)
+        ->first();
+
+    // 4. Check if CustomerRef already exists for this event (but not this quote)
+    $exists = Quote::where('EventNo', $gEventNo)
+        ->where('CustomerRefNo', $request->CustomerRef)
+        ->where('BranchCode', $BranchCode)
+        ->where('QuoteNo', '!=', $request->QuoteNo)
+        ->exists();
+
+    if ($exists) {
+        return back()->withErrors(['CustomerRef' => 'Customer Reference already exists for this Event.']);
+    }
+
+    // 5. Auto-generate QuoteNo if blank
+    if (empty($request->QuoteNo)) {
+        $lastQuote = Quote::where('BranchCode', $BranchCode)->max('QuoteNo');
+        $nextQuoteNo = $lastQuote ? $lastQuote + 1 : 1;
+        $request->merge(['QuoteNo' => $nextQuoteNo]);
+    }
+
+    // 6. Save or update quote
+    $quote = Quote::firstOrNew(['QuoteNo' => $request->QuoteNo, 'BranchCode' => $BranchCode]);
+    $quote->fill($request->all());
+
+    $quote->EventNo         = $gEventNo;
+    $quote->DepartmentName  = $request->DepartmentName;
+    $quote->DepartmentCode  = $request->DepartmentCode ?: Ship::DeptCodeByName($request->DepartmentName);
+    $quote->CustomerRefNo   = $request->CustomerRef;
+    $quote->BidDueDate      = $request->BidDUeDate2;
+    $quote->ReturnVia       = $request->ReturnVia;
+    $quote->EstLineQuote    = $request->EstLineQuote;
+    $quote->DueTime         = $request->DueTme2;
+    $quote->QuoteNo         = $request->QuoteNo;
+    $quote->WorkUser        = $MWorkUser;
+    $quote->AssignQuote     = $request->WorkUser;
+    $quote->BranchCode      = $BranchCode;
+    $quote->QDate           = $datestamp;
+    $quote->QTime           = date('H:i:s');
+    $quote->CreatedDate     = $datestamp;
+    $quote->CreatedTime     = date('H:i:s');
+    $quote->CustomerCode    = $eventfiller->CustomerCode;
+    $quote->CustomerName    = $eventfiller->CustomerName;
+    $quote->GodownName      = $eventfiller->GodownName;
+    $quote->GodownCode      = $eventfiller->GodownCode;
+    $quote->Terms           = $CustomerData ? $CustomerData->Terms : '';
+    $quote->Status          = $eventfiller->Status;
+    $quote->CustCode        = $CustomerData ? $CustomerData->CusCode : '';
+    $quote->StatusCode      = 1;
+    $quote->StatusColorCode = "-128";
+    $quote->ChkUpload       = "E";
+    $quote->VesselName      = $eventfiller->VesselName;
+
+    $quote->save();
+
+    return redirect('quotation?quote_no=' . $quote->QuoteNo)
+        ->with('success', 'Quote saved successfully!');
+}
+
+
+
+
+
+
+    // public function quote_store(Request $request)
+    // {
+    //     dd($request->all());
+        
+    //      $request->validate([
+    //     'DepartmentName' => 'required|string',
+    // ]);
+
+    //     $MWorkUser = config('app.MUserName');
+    //     $BranchCode = Auth::user()->BranchCode;
+    //     $datestamp = date("Y-m-d");
+
+    //     $gEventNo = $request->EventNo2;
+    //     $eventfiller = modelevents::where('EventNo', $gEventNo)->where('BranchCode', $BranchCode)->first();
+    //     if ($eventfiller) {
+
+    //         $CustomerData = Customer::where('CustomerCode', $eventfiller->CustomerCode)->where('BranchCode', $BranchCode)->first();
+    //     }
+    //     $quote = Quote::firstOrNew(['QuoteNo' => $request->QuoteNo, 'BranchCode' => $BranchCode]);
+    //     $quote->fill($request->all());
+    //     $quote->EventNo = $request->EventNo2;
+    //     $quote->DepartmentName = $request->DepartmentName;
+    //     $quote->DepartmentCode = $request->DepartmentCode ? $request->DepartmentCode : Ship::DeptCodeByName($request->DepartmentName);
+    //     $quote->CustomerRefNo = $request->CustomerRef;
+    //     $quote->BidDueDate = $request->BidDUeDate2;
+    //     $quote->ReturnVia = $request->ReturnVia;
+    //     $quote->EstLineQuote = $request->EstLineQuote;
+    //     $quote->DueTime = $request->DueTme2;
+    //     $quote->QuoteNo = $request->QuoteNo;
+    //     $quote->WorkUser = $MWorkUser;
+    //     $quote->AssignQuote = $request->WorkUser;
+    //     $quote->BranchCode = $BranchCode;
+    //     $quote->QDate = $datestamp;
+    //     $quote->QTime = date('H:i:s');
+    //     $quote->CreatedDate = $datestamp;
+    //     $quote->CreatedTime = date('H:i:s');
+    //     $quote->CustomerCode = $eventfiller->CustomerCode;
+    //     $quote->CustomerName = $eventfiller->CustomerName;
+    //     $quote->GodownName = $eventfiller->GodownName;
+    //     $quote->GodownCode = $eventfiller->GodownCode;
+    //     $quote->Terms = $CustomerData ? $CustomerData->Terms : '';
+    //     $quote->Status = $eventfiller->Status;
+    //     $quote->CustCode = $CustomerData ? $CustomerData->CusCode : '';
+    //     $quote->StatusCode = 1;
+    //     $quote->StatusColorCode = "-128";
+    //     $quote->ChkUpload = "E";
+    //     $quote->VesselName = $eventfiller->VesselName;
+    //     $quote->save();
+
+    //     return redirect('quotation?quote_no=' . $request->QuoteNo);
+    // }
+
+public function deleteevent(Request $request)
+{
+    $BranchCode = Auth::user()->BranchCode;
+    $EventNo = $request->EventNo;
+
+    if ($EventNo) {
+      
+        Quote::where('EventNo', $EventNo)->where('BranchCode', $BranchCode)->delete();
+        $deleted = modelevents::where('EventNo', $EventNo)->where('BranchCode', $BranchCode)->delete();
+
+        if ($deleted) {
             return response()->json(['data' => $EventNo, 'Code' => 'Success']);
+        } else {
+            return response()->json(['data' => $EventNo, 'Code' => 'NotFoundOrUnauthorized']);
         }
-        return response()->json(['data' => $EventNo, 'Code' => 'Error']);
     }
+
+    return response()->json(['data' => $EventNo, 'Code' => 'Error']);
+}
+
 
     public function update(Request $request)
     {
@@ -402,9 +618,10 @@ class EventController extends Controller
         }
     }
 
-    public function getEventMasterData(Request $request)
-    {
-        $event_no = $request->event_no;
-        return response()->json(modelevents::where('EventNo', $event_no)->orderBy('id', 'DESC')->get());
-    }
+    // public function getEventMasterData(Request $request)
+    // {
+    //     $event_no = $request->event_no;
+    //  return response()->json(modelevents::where('EventNo', $event_no)->first());
+
+    // }
 }

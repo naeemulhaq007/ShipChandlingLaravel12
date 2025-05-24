@@ -7,6 +7,7 @@ use App\Models\AcFile;
 use App\Models\UOMModel;
 use App\Models\Typesetup;
 use App\Models\termssetup;
+
 use Laminas\Db\Sql\Select;
 use App\Models\GodownSetup;
 use App\Models\VenderSetup;
@@ -132,7 +133,18 @@ class HomeController extends Controller
         $ShipingPortSetup = ShipingPortSetup::select('PortName', 'PortCode')->where('PortCode', '<>', '0')->Distinct()->where('BranchCode', $BranchCode)->orderBy('PortName')->get();
 
         $GodownSetup = GodownSetup::select('GodownName', 'GodownCode')->Distinct()->where('GodownCode', '>', 0)->where('BranchCode', $BranchCode)->orderBy('GodownCode')->get();
-        $OriginSetup = DB::table('originsetup')->select('OriginCode', 'OriginName')->where('BranchCode', $BranchCode)->orderBy('OriginCode')->get();
+$OriginSetup = DB::table('originsetup')
+    ->select('OriginCode', 'OriginName')
+    ->where('BranchCode', $BranchCode)
+    ->orderBy('OriginCode', 'desc') 
+    ->limit(20)
+    ->get()
+    ->sortBy('OriginName')          
+    ->values();                     
+
+
+
+        // $OriginSetup = DB::table('originsetup')->select('OriginCode', 'OriginName')->where('BranchCode', $BranchCode)->orderBy('OriginCode')->get();
 
 
 
@@ -149,79 +161,328 @@ class HomeController extends Controller
             'OriginSetup' => $OriginSetup,
         ]);
     }
+//     public function Origin_Save(Request $request)
+//     {
+//     try {
+//         $BranchCode = Auth::user()->BranchCode;
+//         $OriginCode = $request->OriginCode;
+//         $OriginName = $request->OriginName;
 
-    public function TermsSave(Request $request)
-    {
+        
+//         $existing = DB::table('originsetup')
+//             ->where('OriginCode', $OriginCode)
+//             ->where('BranchCode', $BranchCode)
+//             ->first();
+
+//         if ($existing) {
+            
+//             DB::table('originsetup')
+//                 ->where('OriginCode', $OriginCode)
+//                 ->where('BranchCode', $BranchCode)
+//                 ->update([
+//                     'OriginName' => $OriginName,
+//                 ]);
+//         } else {
+           
+//             DB::table('originsetup')->insert([
+//                 'OriginCode' => $OriginCode,
+//                 'OriginName' => $OriginName,
+//                 'BranchCode' => $BranchCode
+//             ]);
+//         }
+
+//         return response()->json([
+//             'status' => 'success',
+//             'OriginCode' => $OriginCode
+//         ]);
+//     } catch (\Exception $e) {
+//         \Log::error('Origin Save Error: ' . $e->getMessage());
+//         return response()->json([
+//             'status' => 'failed',
+//             'error' => $e->getMessage()
+//         ], 500);
+//     }
+// }
+
+public function Origin_Save(Request $request)
+{
+    try {
         $BranchCode = Auth::user()->BranchCode;
-        $TxtCode = $request->input('TxtCode');
-        $TxtTerms = $request->input('TxtTerms');
-        $TxtDays = $request->input('TxtDays');
-        $Message = '';
-        $Terms = termssetup::where('TermsCode', $TxtCode)->where('BranchCode', $BranchCode)->first();
-        if (!$Terms) {
-            $Terms = new termssetup;
+        $OriginCode = $request->OriginCode;
+        $OriginName = $request->OriginName;
+
+        $existing = DB::table('originsetup')
+            ->where('OriginCode', $OriginCode)
+            ->where('BranchCode', $BranchCode)
+            ->first();
+
+        if ($existing) {
+            DB::table('originsetup')
+                ->where('OriginCode', $OriginCode)
+                ->where('BranchCode', $BranchCode)
+                ->update([
+                    'OriginName' => $OriginName,
+                ]);
+
+            $message = 'Updated';
+        } else {
+            DB::table('originsetup')->insert([
+                'OriginCode' => $OriginCode,
+                'OriginName' => $OriginName,
+                'BranchCode' => $BranchCode
+            ]);
+
+            $message = 'Saved';
         }
-        $Terms->TermsCode = $TxtCode;
-        $Terms->Terms = $TxtTerms;
-        $Terms->Days = $TxtDays;
-        $Terms->BranchCode = $BranchCode;
-        $Terms->save();
-        if ($Terms) {
-            $Message = 'Saved';
-        }
-        $Terms = termssetup::where('BranchCode', $BranchCode)->get();
+
         return response()->json([
-            'Message' => $Message,
-            'Terms' => $Terms,
+            'status' => 'success',
+            'message' => $message,
+            'OriginCode' => $OriginCode
         ]);
+    } catch (\Exception $e) {
+        \Log::error('Origin Save Error: ' . $e->getMessage());
+        return response()->json([
+            'status' => 'failed',
+            'error' => $e->getMessage()
+        ], 500);
     }
-    public function Terms_setup()
-    {
-
-        $BranchCode = Auth::user()->BranchCode;
-        $Typesetup = Typesetup::select('Typecode', 'TypeName')->where('BranchCode', $BranchCode)->orderBy('Typecode')->get();
-        $TermsSetup = termssetup::where('BranchCode', $BranchCode)->get();
-        $ShipingPortSetup = ShipingPortSetup::select('PortName', 'PortCode')->where('PortCode', '<>', '0')->Distinct()->where('BranchCode', $BranchCode)->orderBy('PortName')->get();
-        $GodownSetup = GodownSetup::select('GodownName', 'GodownCode')->Distinct()->where('GodownCode', '>', 0)->where('BranchCode', $BranchCode)->orderBy('GodownCode')->get();
+}
 
 
 
+public function Origin_Delete(Request $request)
+{
+    $code = $request->input('OriginCode');
+    $branch = Auth::user()->BranchCode;
 
+    $origin = DB::table('originsetup')
+        ->where('OriginCode', $code)
+        ->where('BranchCode', $branch)
+        ->first();
 
+    if ($origin) {
+        DB::table('originsetup')
+            ->where('OriginCode', $code)
+            ->where('BranchCode', $branch)
+            ->delete();
 
-
-        return view('Setups.Terms_setup', [
-            'TermsSetup' => $TermsSetup,
-            'Deptsetup' => $Typesetup,
-            'BranchCode' => $BranchCode,
-            'ShipingPortSetup' => $ShipingPortSetup,
-            'GodownSetup' => $GodownSetup,
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Deleted successfully',
+            'code' => $code // return the deleted code so JS can remove that row
         ]);
+    } else {
+        return response()->json(['status' => 'error', 'message' => 'Record not found.']);
     }
+}
+
+
+
+
+
+
+
+
+// public function TermsSave(Request $request)
+// {
+//     $BranchCode = Auth::user()->BranchCode;
+
+//     $TxtCode = $request->input('TxtCode');
+//     $TxtTerms = $request->input('TxtTerms');
+//     $TxtDays = $request->input('TxtDays');
+
+//     // Auto-generate code if not provided
+//     if (empty($TxtCode)) {
+//         $lastCode = termssetup::where('BranchCode', $BranchCode)->max('TermsCode');
+//         $TxtCode = $lastCode ? $lastCode + 1 : 1;
+//     }
+
+//     // Save or update record
+//     $Terms = termssetup::updateOrCreate(
+//         ['TermsCode' => $TxtCode, 'BranchCode' => $BranchCode],
+//         ['Terms' => $TxtTerms, 'Days' => $TxtDays]
+//     );
+
+//     // Get all and next code
+//     $allTerms = termssetup::where('BranchCode', $BranchCode)->get();
+//     $nextCode = termssetup::where('BranchCode', $BranchCode)->max('TermsCode') + 1;
+
+//     return response()->json([
+//         'Message' => 'Saved',
+//         'Terms' => $allTerms,
+//         'Maxcode' => $nextCode,
+//     ]);
+// }
+
+
+public function TermsSave(Request $request)
+{
+    $BranchCode = Auth::user()->BranchCode;
+
+    // ✅ Validate input
+    $request->validate([
+        'TxtTerms' => 'required|string|max:255',
+        'TxtDays' => 'required|integer|min:1',
+    ], [
+        'TxtTerms.required' => 'Terms field is required.',
+        'TxtDays.required' => 'Days field is required.',
+        'TxtDays.integer' => 'Days must be a number.',
+        'TxtDays.min' => 'Days must be at least 1.',
+    ]);
+
+    $TxtCode = $request->input('TxtCode');
+    $TxtTerms = $request->input('TxtTerms');
+    $TxtDays = $request->input('TxtDays');
+
+    // Auto-generate code if not provided
+    if (empty($TxtCode)) {
+        $lastCode = termssetup::where('BranchCode', $BranchCode)->max('TermsCode');
+        $TxtCode = $lastCode ? $lastCode + 1 : 1;
+    }
+
+    // Save or update record
+    $Terms = termssetup::updateOrCreate(
+        ['TermsCode' => $TxtCode, 'BranchCode' => $BranchCode],
+        ['Terms' => $TxtTerms, 'Days' => $TxtDays]
+    );
+
+    // Get all and next code
+    $allTerms = termssetup::where('BranchCode', $BranchCode)->get();
+    $nextCode = termssetup::where('BranchCode', $BranchCode)->max('TermsCode') + 1;
+
+    return response()->json([
+        'Message' => 'Saved',
+        'Terms' => $allTerms,
+        'Maxcode' => $nextCode,
+    ]);
+}
+
+
+ public function Terms_setup()
+{
+    // dd('test');
+    $BranchCode = Auth::user()->BranchCode;
+
+    $Typesetup = Typesetup::select('Typecode', 'TypeName')->where('BranchCode', $BranchCode)->orderBy('Typecode')->get();
+    $TermsSetup = termssetup::where('BranchCode', $BranchCode)->get();
+    $ShipingPortSetup = ShipingPortSetup::select('PortName', 'PortCode')->where('PortCode', '<>', '0')->Distinct()->where('BranchCode', $BranchCode)->orderBy('PortName')->get();
+    $GodownSetup = GodownSetup::select('GodownName', 'GodownCode')->Distinct()->where('GodownCode', '>', 0)->where('BranchCode', $BranchCode)->orderBy('GodownCode')->get();
+
+    // ✅ Add this
+    $lastCode = termssetup::where('BranchCode', $BranchCode)->max('TermsCode');
+    $nextCode = $lastCode ? $lastCode + 1 : 1;
+
+    return view('Setups.Terms_setup', [
+        'TermsSetup' => $TermsSetup,
+        'Deptsetup' => $Typesetup,
+        'BranchCode' => $BranchCode,
+        'ShipingPortSetup' => $ShipingPortSetup,
+        'GodownSetup' => $GodownSetup,
+        'nextCode' => $nextCode, 
+    ]);
+}
+
+
+public function TermsDelete(Request $request)
+{
+    $code = $request->input('TermsCode');
+    $branch = Auth::user()->BranchCode;
+
+    $term = termssetup::where('TermsCode', $code)->where('BranchCode', $branch)->first();
+
+    if ($term) {
+        $term->delete();
+
+        // return updated list
+        $updated = termssetup::where('BranchCode', $branch)->get();
+        return response()->json([
+            'status' => 'success',
+            'Terms' => $updated,
+            'Maxcode' => $updated->max('TermsCode') + 1
+        ]);
+    } else {
+        return response()->json(['status' => 'error', 'message' => 'Record not found.'], 404);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // public function ShipingPortSave(Request $request)
+    // {
+    //     $BranchCode = Auth::user()->BranchCode;
+    //     $TxtCode = $request->input('TxtCode');
+    //     $TxtPortName = $request->input('TxtPortName');
+    //     $Message = '';
+    //     $ShipingPortSetup = ShipingPortSetup::where('PortCode', $TxtCode)->where('BranchCode', $BranchCode)->first();
+    //     if (!$ShipingPortSetup) {
+    //         $ShipingPortSetup = new ShipingPortSetup;
+    //     }
+    //     $ShipingPortSetup->PortCode = $TxtCode;
+    //     $ShipingPortSetup->PortName = $TxtPortName;
+    //     $ShipingPortSetup->BranchCode = $BranchCode;
+    //     $ShipingPortSetup->save();
+    //     if ($ShipingPortSetup) {
+    //         $Message = 'Saved';
+    //     }
+    //     $ShipingPortSetup = ShipingPortSetup::where('BranchCode', $BranchCode)->where('PortCode', '<>', '0')->orderBy('PortName')->get();
+
+    //     return response()->json([
+    //         'Message' => $Message,
+    //         'ShipingPortSetup' => $ShipingPortSetup,
+    //     ]);
+    // }
+    
+    
     public function ShipingPortSave(Request $request)
-    {
-        $BranchCode = Auth::user()->BranchCode;
-        $TxtCode = $request->input('TxtCode');
-        $TxtPortName = $request->input('TxtPortName');
-        $Message = '';
-        $ShipingPortSetup = ShipingPortSetup::where('PortCode', $TxtCode)->where('BranchCode', $BranchCode)->first();
-        if (!$ShipingPortSetup) {
-            $ShipingPortSetup = new ShipingPortSetup;
-        }
-        $ShipingPortSetup->PortCode = $TxtCode;
-        $ShipingPortSetup->PortName = $TxtPortName;
-        $ShipingPortSetup->BranchCode = $BranchCode;
-        $ShipingPortSetup->save();
-        if ($ShipingPortSetup) {
-            $Message = 'Saved';
-        }
-        $ShipingPortSetup = ShipingPortSetup::where('BranchCode', $BranchCode)->where('PortCode', '<>', '0')->orderBy('PortName')->get();
+{
+    $BranchCode = Auth::user()->BranchCode;
+    $TxtCode = $request->input('TxtCode');
+    $TxtPortName = $request->input('TxtPortName');
 
-        return response()->json([
-            'Message' => $Message,
-            'ShipingPortSetup' => $ShipingPortSetup,
-        ]);
-    }
+    // Check if record exists before updating
+    $existingRecord = ShipingPortSetup::where('PortCode', $TxtCode)->where('BranchCode', $BranchCode)->first();
+
+    // If exists, we're updating — else creating new
+    $ShipingPortSetup = $existingRecord ?? new ShipingPortSetup;
+
+    $ShipingPortSetup->PortCode = $TxtCode;
+    $ShipingPortSetup->PortName = $TxtPortName;
+    $ShipingPortSetup->BranchCode = $BranchCode;
+    $ShipingPortSetup->save();
+
+    $Message = $existingRecord ? 'Updated' : 'Saved';
+
+    $ShipingPortSetup = ShipingPortSetup::where('BranchCode', $BranchCode)
+        ->where('PortCode', '<>', '0')
+        ->orderBy('PortName')
+        ->get();
+
+    return response()->json([
+        'Message' => $Message,
+        'ShipingPortSetup' => $ShipingPortSetup,
+    ]);
+}
+
     public function ShipingPortDelete(Request $request)
     {
         $BranchCode = Auth::user()->BranchCode;
@@ -322,16 +583,23 @@ class HomeController extends Controller
             'CompanySetup' => $CompanySetup,
         ]);
     }
+
     public function company_setup()
-    {
-        $BranchCode = Auth::user()->BranchCode;
+{
+    $BranchCode = Auth::user()->BranchCode;
 
-        $CompanySetup = CompanySetup::where('BranchCode', $BranchCode)->get();
 
-        return view('Setups.CompanySetup', [
-            'CompanySetup' => $CompanySetup,
-        ]);
-    }
+    $CompanySetup = CompanySetup::where('BranchCode', $BranchCode)->get();
+
+ 
+    $nextCompanyCode = CompanySetup::where('BranchCode', $BranchCode)->max('ID') + 1;
+
+    return view('Setups.CompanySetup', [
+        'CompanySetup' => $CompanySetup,
+        'nextCompanyCode' => $nextCompanyCode,
+    ]);
+}
+
 
     public function WarehouseDelete(Request $request)
     {
@@ -453,6 +721,7 @@ class HomeController extends Controller
             }
         }
         $Typesetup = Typesetup::where('BranchCode', $BranchCode)->orderBy('Typecode')->get();
+      
 
         return response()->json([
             'Message' => $Message,
@@ -509,7 +778,9 @@ class HomeController extends Controller
         if ($Typesetup) {
             $Message = 'Saved';
         }
-        $Typesetup = Typesetup::where('BranchCode', $BranchCode)->orderBy('Typecode')->get();
+        $Typesetup = Typesetup::where('BranchCode', $BranchCode)
+        ->orderByRaw('LOWER(TypeName) ASC')
+        ->get();
 
         $Maxcode = 1;
         $code = Typesetup::where('BranchCode', $BranchCode)->max('Typecode');
@@ -522,6 +793,9 @@ class HomeController extends Controller
             'Maxcode' => $Maxcode,
         ]);
     }
+    
+
+
     public function Departmentget(Request $request)
     {
         $BranchCode = Auth::user()->BranchCode;
@@ -574,64 +848,130 @@ class HomeController extends Controller
         ]);
     }
 
+    // public function vendorsave(Request $request)
+    // {
+    //     $MBranchCode = Auth::user()->BranchCode;
+    //     $ChkInactive = 0;
+    //     info($request->all());
+    //     $VenderCode = (int) $request->VenderCode;
+    //     if ($VenderCode == null) {
+    //         $VenderCode = VenderSetup::where('BranchCode', $MBranchCode)->max('VenderCode');
+    //         $VenderCode = $VenderCode + 1;
+    //     }
+    //     $Venodr = VenderSetup::where('VenderCode', $VenderCode)->first();
+    //     if (!$Venodr) {
+    //         $Venodr = new VenderSetup();
+    //         $Venodr->VenderCode = $VenderCode;
+    //     }
+
+    //     $Venodr->VenderName = $request->VenderName;
+    //     $Venodr->PhoneNo = $request->PhoneNo;
+    //     $Venodr->CallSign = $request->CallSign;
+    //     $Venodr->Address = $request->Address;
+    //     $Venodr->FaxNo = $request->FaxNo;
+    //     $Venodr->EmailAddress = $request->EmailAddress;
+    //     $Venodr->WebAddress = $request->WebAddress;
+    //     $Venodr->Status = $request->Status;
+    //     $Venodr->DepartmentCode = $request->Department;
+    //     $Venodr->City = $request->City;
+    //     $Venodr->Country = $request->Country;
+    //     $Venodr->State = $request->State;
+    //     $Venodr->Date = $request->Date;
+    //     $Venodr->BranchCode = $MBranchCode;
+    //     $Venodr->ChkInactive = $ChkInactive;
+    //     $Venodr->save();
+    //     $VendorDepartment = VendorDepartment::where('VenderCode', $VenderCode)->first();
+    //     if (!$VendorDepartment) {
+    //         $VendorDepartment = new VendorDepartment();
+    //         $VendorDepartment->VenderCode = $VenderCode;
+    //     }
+    //     $VendorDepartment->TypeCode = $request->Department;
+    //     $VendorDepartment->BranchCode = $MBranchCode;
+    //     $VendorDepartment->ChkSelect = 1;
+    //     $VendorDepartment->CommPer1 = 0;
+    //     $VendorDepartment->DiscPer1 = 0;
+    //     $VendorDepartment->save();
+
+
+    //     if ($Venodr) {
+    //         $status = 'success';
+    //     } else {
+
+    //         $status = 'failed';
+    //     }
+
+
+    //     return response()->json([
+    //         'status' => $status,
+    //         'Venodr' => $Venodr,
+    //     ]);
+    // }
+    
+    
+    
     public function vendorsave(Request $request)
-    {
+{
+    try {
         $MBranchCode = Auth::user()->BranchCode;
         $ChkInactive = 0;
-        info($request->all());
         $VenderCode = (int) $request->VenderCode;
-        if ($VenderCode == null) {
-            $VenderCode = VenderSetup::where('BranchCode', $MBranchCode)->max('VenderCode');
-            $VenderCode = $VenderCode + 1;
-        }
-        $Venodr = VenderSetup::where('VenderCode', $VenderCode)->first();
-        if (!$Venodr) {
-            $Venodr = new VenderSetup();
-            $Venodr->VenderCode = $VenderCode;
+
+        if (!$VenderCode) {
+            $VenderCode = VenderSetup::where('BranchCode', $MBranchCode)->max('VenderCode') + 1;
         }
 
-        $Venodr->VenderName = $request->VenderName;
-        $Venodr->PhoneNo = $request->PhoneNo;
-        $Venodr->CallSign = $request->CallSign;
-        $Venodr->Address = $request->Address;
-        $Venodr->FaxNo = $request->FaxNo;
-        $Venodr->EmailAddress = $request->EmailAddress;
-        $Venodr->WebAddress = $request->WebAddress;
-        $Venodr->Status = $request->Status;
-        $Venodr->DepartmentCode = $request->Department;
-        $Venodr->City = $request->City;
-        $Venodr->Country = $request->Country;
-        $Venodr->State = $request->State;
-        $Venodr->Date = $request->Date;
-        $Venodr->BranchCode = $MBranchCode;
-        $Venodr->ChkInactive = $ChkInactive;
+        $Venodr = VenderSetup::firstOrNew(['VenderCode' => $VenderCode]);
+        $Venodr->fill([
+            'VenderName' => $request->VenderName,
+            'PhoneNo' => $request->PhoneNo,
+            'CallSign' => $request->CallSign,
+            'Address' => $request->Address,
+            'FaxNo' => $request->FaxNo,
+            'EmailAddress' => $request->EmailAddress,
+            'WebAddress' => $request->WebAddress,
+            'Status' => $request->Status,
+            'DepartmentCode' => $request->Department,
+            'City' => $request->City,
+            'Country' => $request->Country,
+            'State' => $request->State,
+            'Date' => $request->Date,
+            'BranchCode' => $MBranchCode,
+            'ChkInactive' => $ChkInactive,
+        ]);
+
         $Venodr->save();
-        $VendorDepartment = VendorDepartment::where('VenderCode', $VenderCode)->first();
-        if (!$VendorDepartment) {
-            $VendorDepartment = new VendorDepartment();
-            $VendorDepartment->VenderCode = $VenderCode;
-        }
+
+        // Save related department
+        $VendorDepartment = VendorDepartment::firstOrNew([
+            'VenderCode' => $VenderCode,
+            'BranchCode' => $MBranchCode
+        ]);
+
         $VendorDepartment->TypeCode = $request->Department;
-        $VendorDepartment->BranchCode = $MBranchCode;
         $VendorDepartment->ChkSelect = 1;
         $VendorDepartment->CommPer1 = 0;
         $VendorDepartment->DiscPer1 = 0;
         $VendorDepartment->save();
 
-
-        if ($Venodr) {
-            $status = 'success';
-        } else {
-
-            $status = 'failed';
-        }
-
-
         return response()->json([
-            'status' => $status,
+            'status' => 'success',
             'Venodr' => $Venodr,
         ]);
+    } catch (\Exception $e) {
+        // Log actual error for debugging
+        \Log::error('Vendor Save Error: ' . $e->getMessage());
+
+        return response()->json([
+            'status' => 'failed',
+            'Venodr' => null,
+            'error' => $e->getMessage()
+        ], 500);
     }
+}
+
+    
+    
+    
     public function vendor_setup()
     {
 
@@ -712,35 +1052,66 @@ class HomeController extends Controller
 
         return response()->json($data);
     }
-    public function Vendorlist_save(Request $request)
-    {
-        $BranchCode = Auth::user()->BranchCode;
-        $TableData = $request->input('dataarray');
+    // public function Vendorlist_save(Request $request)
+    // {
+    //     $BranchCode = Auth::user()->BranchCode;
+    //     $TableData = $request->input('dataarray');
 
-        for ($i = 0; $i < count($TableData); $i++) {
-            info($TableData[$i]);
-            $insert_update = [];
-            $insert_update["VenderCode"] = $VendorCode = $TableData[$i]['VendorCode'];
-            $insert_update["VenderName"] = $VendorName = $TableData[$i]['VendorName'];
-            $insert_update["Status"] = $TableData[$i]['Status'];
-            $insert_update["DepartmentCode"] = $TableData[$i]['Department'];
-            $insert_update["CallSign"] = $TableData[$i]['CallSign'];
+    //     for ($i = 0; $i < count($TableData); $i++) {
+    //         info($TableData[$i]);
+    //         $insert_update = [];
+    //         $insert_update["VenderCode"] = $VendorCode = $TableData[$i]['VendorCode'];
+    //         $insert_update["VenderName"] = $VendorName = $TableData[$i]['VendorName'];
+    //         $insert_update["Status"] = $TableData[$i]['Status'];
+    //         $insert_update["DepartmentCode"] = $TableData[$i]['Department'];
+    //         $insert_update["CallSign"] = $TableData[$i]['CallSign'];
 
-            $status = VenderSetup::updateOrInsert(
-                ['VenderCode' => $VendorCode, 'VenderName' => $VendorName, 'BranchCode' => $BranchCode],
-                $insert_update
-            );
-            if ($status) {
-                $message = 'Saved';
-            }
+    //         $status = VenderSetup::updateOrInsert(
+    //             ['VenderCode' => $VendorCode, 'VenderName' => $VendorName, 'BranchCode' => $BranchCode],
+    //             $insert_update
+    //         );
+    //         if ($status) {
+    //             $message = 'Saved';
+    //         }
+    //     }
+
+    //     return response()->json([
+    //         'message' => $message,
+    //     ]);
+    // }
+
+
+public function Vendorlist_save(Request $request)
+{
+    $BranchCode = Auth::user()->BranchCode;
+    $TableData = $request->input('dataarray');
+
+    $message = 'No data found';
+
+    foreach ($TableData as $item) {
+        $insert_update = [
+            "VenderCode" => $item['VendorCode'],
+            "VenderName" => $item['VendorName'],
+            "Status" => $item['Status'],
+            "DepartmentCode" => $item['Department'],
+            "CallSign" => $item['CallSign'],
+            "BranchCode" => $BranchCode,
+        ];
+
+        $status = VenderSetup::updateOrInsert(
+            ['VenderCode' => $item['VendorCode'], 'BranchCode' => $BranchCode],
+            $insert_update
+        );
+
+        if ($status) {
+            $message = 'Saved';
         }
-
-        return response()->json([
-            'message' => $message,
-        ]);
     }
 
-
+    return response()->json([
+        'message' => $message,
+    ]);
+}
 
 
 
@@ -1175,47 +1546,116 @@ class HomeController extends Controller
             'UOMsetups' => $UOMsetups,
         ]);
     }
+    
+    
+    
     public function UomSave(Request $request)
-    {
-        $MBranchCode = Auth::user()->BranchCode;
+{
+    $MBranchCode = Auth::user()->BranchCode;
 
-        $TxtCode = $request->input('TxtCode');
-        $TxtStateName = $request->input('TxtStateName');
-        $ChkInactive = $request->input('ChkInactive');
+  
+    $request->validate([
+      
+        'TxtStateName' => 'required|string|max:255',
+    ], [
+        
+        'TxtStateName.required' => 'UOM Name is required.',
+    ]);
 
-        if ($ChkInactive == 'true') {
-            $ChkInactive = 1;
-        } else {
-            $ChkInactive = 0;
-        }
+    $TxtCode = $request->input('TxtCode');
+    $TxtStateName = $request->input('TxtStateName');
+    $ChkInactive = $request->input('ChkInactive');
+    $ChkInactive = ($ChkInactive == 'true' || $ChkInactive == 1) ? 1 : 0;
 
-        $UOMsetup = UOMModel::find($TxtCode);
-        if (!$UOMsetup) {
-            $UOMsetup = new UOMModel;
-        }
-        $UOMsetup->UOMName = $TxtStateName;
-        $UOMsetup->ChkInactive = $ChkInactive;
-        $UOMsetup->BranchCode = $MBranchCode;
-        $UOMsetup->save();
-        $Message = '';
-        if ($UOMsetup) {
-            $Message = 'Saved';
-        }
-        $UOMsetups = UOMModel::where('BranchCode', $MBranchCode)->get();
+    $UOMsetup = UOMModel::find($TxtCode);
+    $isNew = false;
 
-        return response()->json([
-            'Message' => $Message,
-            'UOMsetups' => $UOMsetups,
-        ]);
+    if (!$UOMsetup) {
+        $UOMsetup = new UOMModel;
+        $UOMsetup->UOMCode = $TxtCode;
+        $isNew = true;
     }
-    public function UOM_Setup()
-    {
-        $MBranchCode = Auth::user()->BranchCode;
-        $UOM = UOMModel::where('BranchCode', $MBranchCode)->get();
-        return view('Setups.UOM_Setup', [
-            'UOM' => $UOM,
-        ]);
-    }
+
+    $UOMsetup->UOMName = $TxtStateName;
+    $UOMsetup->ChkInactive = $ChkInactive;
+    $UOMsetup->BranchCode = $MBranchCode;
+    $UOMsetup->save();
+
+    $Message = $isNew ? 'Inserted' : 'Updated';
+    $UOMsetups = UOMModel::where('BranchCode', $MBranchCode)->get();
+
+    return response()->json([
+        'Message' => $Message,
+        'SavedCode' => $UOMsetup->UOMCode,
+        'SavedName' => $UOMsetup->UOMName,
+        'ChkInactive' => $UOMsetup->ChkInactive,
+        'UOMsetups' => $UOMsetups,
+    ]);
+}
+
+public function UOM_Setup()
+{
+    $MBranchCode = Auth::user()->BranchCode;
+
+    // Get all existing UOM records for the branch
+    $UOM = UOMModel::where('BranchCode', $MBranchCode)->get();
+
+    // Generate the next UOMCode
+    $maxCode = UOMModel::where('BranchCode', $MBranchCode)->max('UOMCode');
+
+    // Convert to integer and add 1, or default to 1
+    $nextCode = $maxCode ? str_pad(((int)$maxCode) + 1, 3, '0', STR_PAD_LEFT) : '001';
+
+    return view('Setups.UOM_Setup', [
+        'UOM' => $UOM,
+        'nextCode' => $nextCode // Pass next code to Blade
+    ]);
+}
+
+
+//     public function UomSave(Request $request)
+// {
+//     $MBranchCode = Auth::user()->BranchCode;
+
+//     $TxtCode = $request->input('TxtCode');
+//     $TxtStateName = $request->input('TxtStateName');
+//     $ChkInactive = $request->input('ChkInactive');
+
+//     $ChkInactive = ($ChkInactive == 'true' || $ChkInactive == 1) ? 1 : 0;
+
+//     $UOMsetup = UOMModel::find($TxtCode);
+//     $isNew = false;
+
+//     if (!$UOMsetup) {
+//         $UOMsetup = new UOMModel;
+//         $UOMsetup->UOMCode = $TxtCode;
+//         $isNew = true; // Mark it as new
+//     }
+
+//     $UOMsetup->UOMName = $TxtStateName;
+//     $UOMsetup->ChkInactive = $ChkInactive;
+//     $UOMsetup->BranchCode = $MBranchCode;
+//     $UOMsetup->save();
+
+//     $Message = $isNew ? 'Inserted' : 'Updated';
+
+//     $UOMsetups = UOMModel::where('BranchCode', $MBranchCode)->get();
+
+//     return response()->json([
+//         'Message' => $Message,
+//         'UOMsetups' => $UOMsetups,
+//     ]);
+// }
+
+ 
+    // public function UOM_Setup()
+    // {
+    //     $MBranchCode = Auth::user()->BranchCode;
+    //     $UOM = UOMModel::where('BranchCode', $MBranchCode)->get();
+    //     return view('Setups.UOM_Setup', [
+    //         'UOM' => $UOM,
+    //     ]);
+    // }
 
     public function Shipserv_Setup()
     {
@@ -1294,15 +1734,30 @@ class HomeController extends Controller
             'Message' => $Message,
         ]);
     }
-    public function Category_Setup()
-    {
-        $MBranchCode = Auth::user()->BranchCode;
-        $category = CategoryModel::where('BranchCode', $MBranchCode)->orderBy('CategoryCode')->get();
+    // public function Category_Setup()
+    // {
+    //     $MBranchCode = Auth::user()->BranchCode;
+    //     $category = CategoryModel::where('BranchCode', $MBranchCode)->orderBy('CategoryCode')->get();
 
-        return view('Setups.Category_Setup', [
-            'category' => $category,
-        ]);
-    }
+    //     return view('Setups.Category_Setup', [
+    //         'category' => $category,
+    //     ]);
+    // }
+
+public function Category_Setup()
+{
+    $MBranchCode = Auth::user()->BranchCode;
+    $category = CategoryModel::where('BranchCode', $MBranchCode)->orderBy('CategoryCode')->get();
+
+    // Get the next auto-incremented ID
+    $lastCategory = CategoryModel::where('BranchCode', $MBranchCode)->orderBy('CategoryCode', 'desc')->first();
+    $nextCode = $lastCategory ? $lastCategory->CategoryCode + 1 : 1;
+
+    return view('Setups.Category_Setup', [
+        'category' => $category,
+        'nextCode' => $nextCode
+    ]);
+}
 
 
     public function currencyDelete(Request $request)
@@ -1357,12 +1812,26 @@ class HomeController extends Controller
             'Message' => $Message,
         ]);
     }
+    
     public function Currency_Setup()
-    {
+{
+    $MBranchCode = Auth::user()->BranchCode;
+
+   
+    $maxSerial = CurrencyModel::where('BranchCode', $MBranchCode)->max('SerialNo');
+    $nextSerial = $maxSerial ? $maxSerial + 1 : 1;
+
+    return view('Setups.Currency_Setup', [
+        'nextSerial' => $nextSerial
+    ]);
+}
+
+    // public function Currency_Setup()
+    // {
 
 
-        return view('Setups.Currency_Setup', []);
-    }
+    //     return view('Setups.Currency_Setup', []);
+    // }
 
     public function Currencydataget()
     {

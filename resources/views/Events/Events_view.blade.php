@@ -45,7 +45,7 @@
                 <div class="card">
                     <div class="card-header">
                         <div class="row ">
-                            <h2 class="">Create Event</h2>
+                            <h2 class="">Create Events</h2>
                             <h4 class="ml-auto shipdata">Ship Serv Data</h4>
                             <div class="card-tools ">
                                 <button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -62,9 +62,19 @@
                                     <textarea title="GeneralVessel" placeholder="" name="GeneralVesselNote" id="generalvessel" cols="10"
                                         rows="2"></textarea>
                                     <span class="Txtspan">
-                                        General Vessel</span>
+                                        General Vessel Note</span>
 
                                 </div>
+                                
+                                
+   <div class="form-group d-flex">
+    <input  type="number" name="EventNo" id="event_no" class="form-control" placeholder="Enter Event No">
+   </div>
+
+
+
+                           
+
                                 {{-- <div class="col-sm-1">
                                 </div> --}}
 
@@ -123,6 +133,10 @@
                                                     Customer
                                                 </span>
                                             </div>
+
+
+                                            
+                                            
                                             <div class="input-group-append py-2">
                                                 <span data-toggle="modal" data-target="#searchrmod" data-id="cussearch"
                                                     data-name="cussearch" data-th1="Customer&nbsp;Code"
@@ -131,13 +145,21 @@
                                                     class="input-group-text bg-info" style="cursor: pointer;"
                                                     id="cussearch"><i class="fas fa-search"></i></span>
                                             </div>
+                                                                        
+                                                                        
+                                                                             <!-- <div class="inputbox col-sm-2 py-2">
+                                <input type="text" class="" id="showCustomerCode" placeholder="Customer Code" readonly>
+                                <span class="Txtspan">Code</span>
+                                   </div> -->
+                                            
+                                            
                                             <div class="inputbox col-sm-2 py-2">
                                                 <span class="Txtspan">
                                                     Warehouse
                                                 </span>
-                                                <select required name="GodownName" id="GodownName">
+                             <select required name="GodownName" id="GodownName">
 
-                                                    <option id="" value="" selected> </option>
+                                 <option id="" value="" selected> </option>
 
 
                                                 </select>
@@ -195,6 +217,12 @@
                                                     data-th2="Vessel Name" data-th3="Address" data-th4="Email Address"><i
                                                         class="fas fa-search"></i></span>
                                             </div>
+  <!-- <div class="inputbox col-sm-2 py-2">
+    <input type="text" class="" id="showVesselIMO" placeholder="Vessel IMO No" readonly>
+    <span class="Txtspan">IMO</span>
+</div> -->
+
+        
 
                                             <div class="col-sm-2 py-2">
                                                 <div class="inputbox">
@@ -221,7 +249,7 @@
                                         <div class="input-group col-sm-12 ">
                                             <div class="inputbox col-sm-3 py-2">
                                                 <span class="Txtspan">
-                                                    Contact
+                                                    Contacts
                                                 </span>
                                                 <select type="text" name="Contact" id="Contact" title="Contact"
                                                     placeholder="Wait">
@@ -362,18 +390,28 @@
 
                                     <div class="row">
 
-                                        <button name="" id="NewBtn" class="btn btn-primary ml-3"
-                                            role="button"><i class="fa fa-plus mr-1" aria-hidden="true"></i>
-                                            New</button>
-                                        <button type="submit" id="savebtn" class="btn btn-success mx-2"><i
+<button type="button" id="NewItem" class="btn btn-primary my-2 mx-2">
+    <i class="fa fa-plus mr-1" aria-hidden="true"></i> New
+</button>
+
+
+
+                                    
+                                        <button type="submit" id="savebtn" class="btn btn-success my-2 mx-2"><i
                                                 class="fa fa-cloud mr-1" aria-hidden="true"></i> Save
                                             Event</button>
-                                        <button name="" id="DeleteBtn" class="btn btn-warning " role="button"><i
+                                        <button name="" id="DeleteBtn" class="btn btn-warning my-2 mx-2" role="button"><i
                                                 class="fa fa-trash mr-1" aria-hidden="true"></i>
                                             Delete</button>
-                                        <button name="" id="ExitBtn" href="/" class="btn btn-danger mx-2"
-                                            role="button"><i class="fa fa-door-open mr-1"
-                                                aria-hidden="true"></i>Exit</button>
+                                                
+                                                
+                                                
+                                                 <a name="" id="" class="btn btn-danger my-2 mx-2" href="{{url('events-setup') }}" role="button">
+                         <i class="fa fa-arrow-right mr-1" aria-hidden="true"></i> Exit
+                         </a>
+                                        <!--<button name="" id="ExitBtn" href="/" class="btn btn-danger mx-2"-->
+                                        <!--    role="button"><i class="fa fa-door-open mr-1"-->
+                                        <!--        aria-hidden="true"></i>Exit</button>-->
                                     </div>
 
                                 </div>
@@ -406,294 +444,569 @@
 @section('js')
 
 
-    <script>
-        function ajaxSetup() {
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-        }
+@section('js')
+<script>
+    function ajaxSetup() {
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+    }
 
-        function updategodown(code) {
-            ajaxSetup();
-            $.ajax({
-                type: "get",
-                url: "{{ route('Es_godownsetup') }}",
-                // data: "data",
-                success: function(response) {
-                    console.log(response);
-                    if (response.warehouse) {
-                        // alert('data');
-                        var optionsArray = response.warehouse;
-                        var selectElement = $('#GodownName');
-                        selectElement.empty();
+    function updategodown(code) {
+        ajaxSetup();
+        $.ajax({
+            type: "get",
+            url: "{{ route('Es_godownsetup') }}",
+            success: function(response) {
+                if (response.warehouse) {
+                    var optionsArray = response.warehouse;
+                    var selectElement = $('#GodownName');
+                    selectElement.empty().append($('<option>', {
+                        value: '',
+                        text: ''
+                    }));
+                    $.each(optionsArray, function(index, value) {
                         selectElement.append($('<option>', {
-                            value: '',
-                            text: ''
+                            value: value.GodownCode,
+                            text: value.GodownName
                         }));
-                        $.each(optionsArray, function(index, value) {
-                            // console.log(value);
-                            selectElement.append($('<option>', {
-                                value: value.GodownCode,
-                                text: value.GodownName
-                            }));
-                        });
-                        $('#GodownName').val(code);
-
-                    }
-
-                },
-                error: function(error) {
-                    console.log(error);
+                    });
+                    $('#GodownName').val(code);
                 }
-            });
-        }
+            },
+            error: function(error) {
+                console.log(error);
+            }
+        });
+    }
 
-        function updateport(code) {
-            ajaxSetup();
-            $.ajax({
-                type: "get",
-                url: "{{ route('Es_portsetup') }}",
-                // data: "data",
-                success: function(response) {
-                    console.log(response);
-                    if (response.shiping) {
-                        // alert('data');
-                        var selectElement = $('#ShippingPort');
-                        var optionsArray = response.shiping;
-                        selectElement.empty();
+    function updateport(code) {
+        ajaxSetup();
+        $.ajax({
+            type: "get",
+            url: "{{ route('Es_portsetup') }}",
+            success: function(response) {
+                if (response.shiping) {
+                    var selectElement = $('#ShippingPort');
+                    var optionsArray = response.shiping;
+                    selectElement.empty().append($('<option>', {
+                        value: '',
+                        text: ''
+                    }));
+                    $.each(optionsArray, function(index, value) {
                         selectElement.append($('<option>', {
-                            value: '',
-                            text: ''
+                            value: value.PortName,
+                            text: value.PortName
                         }));
-                        $.each(optionsArray, function(index, value) {
-                            // console.log(value);
-                            selectElement.append($('<option>', {
-                                value: value.PortName,
-                                text: value.PortName
-                            }));
-                        });
-                        $('#ShippingPort').val(code);
-
-                    }
-
-                },
-                error: function(error) {
-                    console.log(error);
+                    });
+                    $('#ShippingPort').val(code);
                 }
-            });
-        }
-        $(document).ready(function() {
-
-            const today = new Date();
-            const tomorrow = new Date(today);
-            tomorrow.setDate(today.getDate() + 1);
-
-            const todayISOString = today.toISOString().substring(0, 10);
-            const tomorrowISOString = tomorrow.toISOString().substring(0, 10);
-
-            $('#ETA').val(todayISOString);
-            $('#BidDueDate').val(tomorrowISOString);
-
-            $(document).on("dblclick", ".js-click", function() {
-                $targetcustcode = $(this).attr('data-custcode');
-                $targetact = $(this).attr('data-act');
-                $targetcuscode = $(this).attr('data-cuscode');
-                $targetcusname = $(this).attr('data-cusname');
-
-
-                document.getElementById("companyname").value = $targetcusname;
-                $('#searchcustname').val($targetcusname);
-                document.getElementById("companycode").value = $targetcustcode;
-                document.getElementById("searchbox").value = $targetcustcode;
-                document.getElementById("Custcode").value = $targetcuscode;
-                document.getElementById("ACTcode").value = $targetact;
-                $('#searchrmod').modal('hide');
-                if ($targetcusname) {
-                    $("#companycode").change();
-                }
-                $('#searchrmodw').modal('show');
-
-
-            });
-
-
-            let x = {{ $lastid }};
-            x++;
-            let z = x;
-
-
-            document.getElementById("eventid").value = z;
-
-            $(document).on("dblclick", ".vesrow", function() {
-                $targetvesname = $(this).attr('data-vesname');
-                $targetvesimo = $(this).attr('data-vesimo');
-
-                document.getElementById("vesselname").value = $targetvesname;
-                document.getElementById("vesselcode").value = $targetvesimo;
-                $('#searchrmodw').modal('hide');
-
-            });
-
-            $("#Department").on('change', function() {
-                var id = this.options[this.selectedIndex].id;
-                document.getElementById("Department_coder").value = id;
-
-            });
-            $('#GodownName').click(function(e) {
-                var code = $(this).val();
-
-                updategodown(code);
-            });
-            $('#ShippingPort').click(function(e) {
-                var code = $(this).val();
-                updateport(code);
-            });
-            $("#GodownName").on('change', function() {
-                var id = this.options[this.selectedIndex].text;
-                document.getElementById("godowncode").value = id;
-            });
-
-            $("#eventform").submit(function() {
-                $("#savebtn").attr("disabled", true);
-            });
-
-
-            $('#Newbtn').click(function(e) {
-
-                document.getElementById('generalvessel').value = '';
-                document.getElementById('companyname').value = '';
-                document.getElementById('vesselname').value = '';
-                document.getElementById('GodownName').value = '';
-                document.getElementById('companycode').value = '';
-                document.getElementById('vesselcode').value = '';
-                document.getElementById('GodownName').value = '';
-                document.getElementById('ReturnVia').value = '';
-                document.getElementById('phoneno').value = '';
-                document.getElementById('name').value = '';
-                document.getElementById('Contact').value = '';
-                document.getElementById('cell').value = '';
-                document.getElementById('email').value = '';
-                document.getElementById('fax').value = '';
-                document.getElementById('BidDueDate').value = '';
-                document.getElementById('appt').value = '';
-                document.getElementById('ETA').value = '';
-                document.getElementById('Status').value = '';
-                document.getElementById('Priority').value = '';
-                document.getElementById('ShippingPort').value = '';
-                document.getElementById('followup').value = '';
-            });
-
-
-            $("#companycode").change(function(e) {
-                e.preventDefault();
-                var customercode = $(this).val();
-                // alert(customercode);
-
-                ajaxSetup();
-                $.ajax({
-                    url: "/getcontact",
-                    type: "POST",
-                    data: {
-                        customercode,
-                    },
-
-                    beforeSend: function() {
-                        // Show the overlay and spinner before sending the request
-                        $('.overlay').show();
-                    },
-                    success: function(response) {
-                        console.log(response);
-
-                        var contacts = response.contacts;
-                        $('#Contact').empty(); // Clear existing options
-                        $('#Contact').append($('<option>', {
-                            value: '',
-                            text: '-- Select Contact --'
-                        }));
-                        for (let i = 0; i < contacts.length; i++) {
-                            let option = $('<option>', {
-                                value: contacts[i].ID,
-                                text: contacts[i].CustName
-                            });
-                            $('#Contact').append(option);
-                        }
-
-                        $('#Contact').change(function(e) {
-                            e.preventDefault();
-                            var id = $(this).val();
-                            $.ajax({
-                                url: "/getcontact",
-                                type: "POST",
-                                data: {
-                                    customercode,
-                                    id,
-                                },
-                                success: function(response) {
-                                    console.log(response);
-                                    if (response.Customercon) {
-                                        var Customercon = response
-                                            .Customercon;
-                                        $('#name').val(Customercon
-                                            .CustName);
-                                        $('#cell').val(Customercon.Cell);
-                                        $('#email').val(Customercon.Email);
-                                        $('#phoneno').val(Customercon
-                                            .Phone);
-                                    }
-                                }
-                            });
-
-
-                        });
-
-                    },
-                    failed: function(output) {
-                        var errors = output.responseJSON;
-                        alert(errors.message);
-                        //Swal.close();
-                    },
-                    complete: function() {
-                        // Hide the overlay and spinner after the request is complete
-                        $('.overlay').hide();
-                    }
+            },
+            error: function(error) {
+                console.log(error);
+            }
+        });
+    }
+    
 
 
 
+function updateContactDropdown(code) {
+    let customerCode = $('#companycode').val();
+    if (!customerCode) return;
+
+    $.ajax({
+        type: 'POST',
+        url: '/getcontact',
+        data: {
+            _token: '{{ csrf_token() }}',
+            customercode: customerCode
+        },
+        success: function (response) {
+            if (response.contacts) {
+                var selectElement = $('#Contact');
+                selectElement.empty().append('<option value="">--Select Contact --</option>');
+
+                $.each(response.contacts, function (index, contact) {
+                    selectElement.append($('<option>', {
+                        value: contact.ID,
+                        text: contact.CustName
+                    }));
                 });
-            });
 
+                // Select contact
+                selectElement.val(code);
+
+                // Rebind dropdown change
+                selectElement.off('change').on('change', function () {
+                    let selectedId = $(this).val();
+                    if (!selectedId) return;
+
+                    $.ajax({
+                        url: "/getcontact",
+                        type: "POST",
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                            customercode: customerCode,
+                            id: selectedId
+                        },
+                        success: function (res) {
+                            if (res.Customercon) {
+                                let c = res.Customercon;
+                                $('#name').val(c.CustName);
+                                $('#cell').val(c.Cell);
+                                $('#email').val(c.Email);
+                                $('#phoneno').val(c.Phone);
+                            }
+                        }
+                    });
+                });
+
+                // Trigger once manually if code is already selected
+                if (code) {
+                    selectElement.trigger('change');
+                }
+            }
+        }
+    });
+}
+
+
+
+
+
+
+
+    $(document).ready(function() {
+        ajaxSetup();
+
+        // Set default dates
+        const today = new Date();
+        const tomorrow = new Date(today);
+        tomorrow.setDate(today.getDate() + 1);
+        $('#ETA').val(today.toISOString().substring(0, 10));
+        $('#BidDueDate').val(tomorrow.toISOString().substring(0, 10));
+
+        // Last ID assign
+        let x = {{ $lastid }};
+        document.getElementById("eventid").value = ++x;
+
+        // Event vessel name select
+        $(document).on("dblclick", ".vesrow", function() {
+            $('#showVesselIMO').val($(this).data('vesimo'));
+
+            $('#vesselname').val($(this).data('vesname'));
+            $('#vesselcode').val($(this).data('vesimo'));
+            $('#searchrmodw').modal('hide');
         });
 
-        $(document).ready(function () {
-            $('.shipdata').hide();
-            var ShipID = $('#ShipId').val();
-            var Token = $('#Token').val();
-            var Priority = $('#TxtPriority').val();
-            async function fetchData() {
-                ajaxSetup();
-                $.ajax({
-                    url: "{{route('getshiptoevent')}}",
-                    type: "POST",
-                    data: {
-                        ShipID,
-                        Token,
-                    },
+        // Event customer select
+        $(document).on("dblclick", ".js-click", function() {
+              $('#showCustomerCode').val($(this).data('custcode'));
+            $('#companyname').val($(this).data('cusname'));
+            $('#searchcustname').val($(this).data('cusname'));
+            $('#companycode').val($(this).data('custcode'));
+            $('#searchbox').val($(this).data('custcode'));
+            $('#Custcode').val($(this).data('cuscode'));
+            $('#ACTcode').val($(this).data('act'));
+            $('#searchrmod').modal('hide');
+            $('#searchrmodw').modal('show');
 
-                    beforeSend: function() {
-                        // Show the overlay and spinner before sending the request
-                        $('.overlay').show();
-                    },
-                    success: function(response) {
-                        console.log(response);
-                        $('#GodownName').click();
-                        $('#ShippingPort').click();
-                        // customersearchtable
-                        if(response.data){
-                            var list = response.data;
+            if ($(this).data('cusname')) {
+                $("#companycode").trigger("change");
+            }
+        });
+        
+        
+      $('#event_no').blur(function () {
+    let eventNo = $('#event_no').val().trim();
+
+    if (eventNo === '') {
+        alert("Please enter Event No");
+        return;
+    }
+
+    $('#eventid').val(eventNo);
+
+    $.ajax({
+        url: '/getEventMasterData',
+        type: 'POST',
+        data: {
+            _token: '{{ csrf_token() }}',
+            event_no: eventNo
+        },
+        success: function (data) {
+            if (data && data.event) {
+                const e = data.event;
+
+                $('#generalvessel').val(e.GeneralVesselNote ?? '');
+                $('#companyname').val(e.CustomerName ?? '');
+                $('#companycode').val(e.CustomerCode ?? '');
+                $('#Custcode').val(e.CusCode ?? '');
+                $('#ACTcode').val(e.CustomerActCode ?? '');
+                $('#vesselname').val(e.VesselName ?? '');
+                $('#vesselcode').val(e.IMONo ?? '');
+                  
+        $('#showCustomerCode').val(e.CustomerCode ?? '');
+        $('#showVesselIMO').val(e.IMONo ?? '');
+
+                updategodown(e.GodownCode ?? '');
+                updateport(e.ShippingPort ?? '');
+                updateContactDropdown(e.Contact ?? '');
+
+                $('#phoneno').val(e.Phone ?? '');
+                $('#cell').val(e.Cell ?? '');
+                $('#email').val(e.Email ?? '');
+                $('#name').val(e.Name ?? '');
+                $('#ReturnVia').val(e.ReturnVia ?? '');
+                $('#ETA').val(e.ETA ? e.ETA.substring(0, 10) : '');
+                $('#BidDueDate').val(e.BidDUeDate ? e.BidDUeDate.substring(0, 10) : '');
+                $('#appt').val(e.DueTime ?? '');
+                $('#Priority').val(e.Priority ?? '');
+                $('#followup').val(e.Note ?? '');
+            } else {
+                alert("Event not found.");
+            }
+        },
+        error: function (xhr) {
+            console.error(xhr.responseText);
+            alert("Error fetching event: " + xhr.responseText);
+        }
+    });
+});
+
+
+
+    // $('#searchEventBtn').click(function () {
+    //     let eventNo = $('#event_no').val().trim();
+
+    //     if (eventNo === '') {
+    //         alert("Please enter Event No");
+    //         return;
+    //     }
+
+       
+    //     $('#eventid').val(eventNo);
+
+    //       $.ajax({
+    //         url: '/getEventMasterData',
+    //         type: 'POST',
+    //         data: {
+    //             _token: '{{ csrf_token() }}',
+    //             event_no: eventNo
+    //         },
+    //         success: function (data) {
+    //             if (data && data.EventNo) {
+    //                  const e = data.event;
+                  
+    //                 $('#generalvessel').val(data.GeneralVesselNote ?? '');
+    //                 $('#companyname').val(data.CustomerName ?? '');
+    //                 $('#companycode').val(data.CustomerCode ?? '');
+    //                 $('#Custcode').val(data.CusCode ?? '');
+    //                 $('#ACTcode').val(data.CustomerActCode ?? '');
+    //                 $('#vesselname').val(data.VesselName ?? '');
+    //                 $('#vesselcode').val(data.IMONo ?? '');
+    //                       // These 2 lines replace direct .val()
+    //     updategodown(data.GodownCode ?? '');
+    //     updateport(data.ShippingPort ?? '');
+    //          updateContactDropdown(data.Contact ?? '');
+    //                 // $('#GodownName').val(data.GodownCode ?? '');
+    //                 // $('#ShippingPort').val(data.ShippingPort ?? '');
+    //                 $('#phoneno').val(data.Phone ?? '');
+    //                 $('#cell').val(data.Cell ?? '');
+    //                 $('#email').val(data.Email ?? '');
+    //                 $('#name').val(data.Name ?? '');
+              
+
+    //                 // $('#Contact').val(data.Contact ?? '');
+    //                 $('#ReturnVia').val(data.ReturnVia ?? '');
+    //                 $('#ETA').val(data.ETA ? data.ETA.substring(0, 10) : '');
+    //                 $('#BidDueDate').val(data.BidDUeDate ? data.BidDUeDate.substring(0, 10) : '');
+    //                 $('#appt').val(data.DueTime ?? '');
+    //                 $('#Priority').val(data.Priority ?? '');
+    //                 $('#followup').val(data.Note ?? '');
+                    
+                    
+                    
+                    
+
+                 
+    //                 // alert("Event data loaded. You can now edit and save.");
+    //             } else {
+    //                 alert("Event not found.");
+    //             }
+    //         },
+        
+         
+         
+ 
+
+    //         error: function (xhr) {
+    //             console.error(xhr.responseText);
+    //             alert("Error fetching event: " + xhr.responseText);
+    //         }
+    //     });
+        
+    //   });
+
+          
+
+
+
+
+
+
+//         Event No on blur → fetch event data
+//         $('#event_no').on('blur', function () {
+//                     const e = data.event;
+//             let eventNo = $(this).val().trim();
+//             if (eventNo === '') return;
+
+//             $.ajax({
+//                 url: '/getEventMasterData',
+//                 type: 'POST',
+//                 data: {
+//                     _token: '{{ csrf_token() }}',
+//                     event_no: eventNo
+//                 },
+//               success: function (data) {
+//                 if (data && data.EventNo) {
+//                      const e = data.event;
+//                     $('#generalvessel').val(data.GeneralVesselNote ?? '');
+//                     $('#companyname').val(data.CustomerName ?? '');
+//                     $('#companycode').val(data.CustomerCode ?? '');
+//                   $('#Custcode').val(data.CusCode ?? '');
+//                     $('#ACTcode').val(data.CustomerActCode ?? '');
+//                     $('#vesselname').val(data.VesselName ?? '');
+//                     $('#vesselcode').val(data.IMONo ?? '');
+//                     $('#GodownName').val(data.GodownCode ?? '');
+//                     $('#ShippingPort').val(data.ShippingPort ?? '');
+//                     $('#phoneno').val(data.Phone ?? '');
+//                       $('#cell').val(data.Cell ?? '');
+//                       $('#email').val(data.Email ?? '');
+//                       $('#name').val(data.Name ?? '');
+//                         updateContactDropdown(data.Contact ?? '');
+//                     //   updateContactDropdown(e.ContactID ?? e.Contact ?? '');
+//                     //   $('#Contact').val(data.Contact ?? '');
+//                       $('#ReturnVia').val(data.ReturnVia ?? '');
+//                       $('#ETA').val(data.ETA ? data.ETA.substring(0, 10) : '');
+//                       $('#BidDueDate').val(data.BidDUeDate ? data.BidDUeDate.substring(0, 10) : '');
+//                       $('#appt').val(data.DueTime ?? '');
+//                       $('#Priority').val(data.Priority ?? '');
+//                       $('#followup').val(data.Note ?? '');
+//                     } else {
+//                       alert("Event not found");
+//                       $('#companyname, #vesselname').val('');
+//                   }
+//                 }
+
+//             });
+//         });
+
+
+
+//     $('#event_no').on('blur', function () {
+//     let eventNo = $(this).val().trim();
+//     if (eventNo === '') return;
+
+//     $.ajax({
+//         url: '/getEventMasterData',
+//         type: 'POST',
+//         data: {
+//             _token: '{{ csrf_token() }}',
+//             event_no: eventNo
+//         },
+//         success: function (data) {
+//             if (data && data.EventNo) {
+//                 const e = data.event;  // ✅ Correct place
+
+//                 $('#generalvessel').val(e.GeneralVesselNote ?? '');
+//                 $('#companyname').val(e.CustomerName ?? '');
+//                 $('#companycode').val(e.CustomerCode ?? '');
+//                 $('#Custcode').val(e.CusCode ?? '');
+//                 $('#ACTcode').val(e.CustomerActCode ?? '');
+//                 $('#vesselname').val(e.VesselName ?? '');
+//                 $('#vesselcode').val(e.IMONo ?? '');
+//                 $('#GodownName').val(e.GodownCode ?? '');
+//                 $('#ShippingPort').val(e.ShippingPort ?? '');
+//                 $('#phoneno').val(e.Phone ?? '');
+//                 $('#cell').val(e.Cell ?? '');
+//                 $('#email').val(e.Email ?? '');
+//                 $('#name').val(e.Name ?? '');
+           
+//                              updateContactDropdown(data.Contact ?? '');
+//                 $('#ReturnVia').val(e.ReturnVia ?? '');
+//                 $('#ETA').val(e.ETA ? e.ETA.substring(0, 10) : '');
+//                 $('#BidDueDate').val(e.BidDUeDate ? e.BidDUeDate.substring(0, 10) : '');
+//                 $('#appt').val(e.DueTime ?? '');
+//                 $('#Priority').val(e.Priority ?? '');
+//                 $('#followup').val(e.Note ?? '');
+//             } else {
+//                 alert("Event not found");
+//                 $('#companyname, #vesselname').val('');
+//             }
+//         }
+//     });
+// });
+
+        // On Department change
+        $("#Department").on('change', function() {
+            $('#Department_coder').val(this.options[this.selectedIndex].id);
+        });
+
+        // Godown/Port click
+        $('#GodownName').click(function() {
+            updategodown($(this).val());
+        });
+
+        $('#ShippingPort').click(function() {
+            updateport($(this).val());
+        });
+        
+        
+        
+
+        $("#GodownName").on('change', function() {
+            $('#godowncode').val(this.options[this.selectedIndex].text);
+        });
+
+
+         function updategodown(selectedCode) {
+    $.ajax({
+        type: "get",
+        url: "{{ route('Es_godownsetup') }}",
+        success: function(response) {
+            if (response.warehouse) {
+                var select = $('#GodownName');
+                select.empty().append('<option value="">Select</option>');
+                response.warehouse.forEach(item => {
+                    select.append(new Option(item.GodownName, item.GodownCode));
+                });
+                select.val(selectedCode); // set selected
+            }
+        }
+    });
+}
+
+function updateport(selectedPort) {
+    $.ajax({
+        type: "get",
+        url: "{{ route('Es_portsetup') }}",
+        success: function(response) {
+            if (response.shiping) {
+                var select = $('#ShippingPort');
+                select.empty().append('<option value="">Select</option>');
+                response.shiping.forEach(item => {
+                    select.append(new Option(item.PortName, item.PortName));
+                });
+                select.val(selectedPort); // set selected
+            }
+        }
+    });
+}
+
+
+ 
+ $("#eventform").submit(function (e) {
+    let eventNo = $('#eventid').val().trim();
+
+
+});
+
+        
+        
+        
+        
+        
+        
+        
+
+        // New button clear form
+     $(document).on("click", "#NewItem", function () {
+    Cleardata();
+    GenerateCode();
+});
+
+
+// clear form data
+function Cleardata() {
+    
+    $('#eventform').find('input[type="text"], input[type="number"], input[type="email"], input[type="tel"], input[type="date"], input[type="time"]').val('');
+    $('#eventform').find('textarea').val('');
+    $('#eventform').find('select').prop('selectedIndex', 0);
+    $('#eventform').find('input[type="hidden"]').val('');
+    $('#eventform').find('input[type="checkbox"], input[type="radio"]').prop('checked', false);
+    $('#shipcustomername, #shipDeliveryPort, #shipvesselname').text('');
+}
+
+
+
+        // Company code change →  this is For get form data With search input contact dropdown
+        $("#companycode").change(function(e) {
+            e.preventDefault();
+            let customercode = $(this).val();
+            ajaxSetup();
+            $.ajax({
+                url: "/getcontact",
+                type: "POST",
+                data: { customercode },
+                beforeSend: function() { $('.overlay').show(); },
+                success: function(response) {
+                    var contacts = response.contacts;
+                    $('#Contact').empty().append($('<option>', {
+                        value: '',
+                        text: '-- Select Contact --'
+                    }));
+                    contacts.forEach(contact => {
+                        $('#Contact').append($('<option>', {
+                            value: contact.ID,
+                            text: contact.CustName
+                        }));
+                    });
+
+                    $('#Contact').off('change').on('change', function() {
+                        $.ajax({
+                            url: "/getcontact",
+                            type: "POST",
+                            data: {
+                                customercode,
+                                id: $(this).val()
+                            },
+                            success: function(response) {
+                                if (response.Customercon) {
+                                    let c = response.Customercon;
+                                    $('#name').val(c.CustName);
+                                    $('#cell').val(c.Cell);
+                                    $('#email').val(c.Email);
+                                    $('#phoneno').val(c.Phone);
+                                }
+                            }
+                        });
+                    });
+                },
+                complete: function() { $('.overlay').hide(); }
+            });
+        });
+
+        // ShipServ order pre-fill
+        $('.shipdata').hide();
+        var ShipID = $('#ShipId').val();
+        var Token = $('#Token').val();
+        var Priority = $('#TxtPriority').val();
+
+        async function fetchData() {
+            ajaxSetup();
+            $.ajax({
+                url: "{{route('getshiptoevent')}}",
+                type: "POST",
+                data: { ShipID, Token },
+                beforeSend: function() { $('.overlay').show(); },
+                success: function(response) {
+                    if (response.data) {
+                        var list = response.data;
                         $('.cuser').html(response.output);
-
                         $('#searchrmod').modal('show');
                         $('.shipdata').show();
                         $('#name').val(list.consignee.contact.name);
@@ -703,55 +1016,92 @@
                         $('#ReturnVia').val('Shipserv');
 
                         const BidDueDate = new Date(list.orderDeliveryDate);
-                        const BidDueDateISOString = BidDueDate.toISOString().substring(0, 10);
-                        $('#BidDueDate').val(BidDueDateISOString);
+                        $('#BidDueDate').val(BidDueDate.toISOString().substring(0, 10));
 
-                        // $('#ShippingPort').val(list.deliveryPort.name);
-                        // $('#GodownName').val(list.deliveryPort.name);
                         $('#followup').val(list.termsAndConditions);
                         $('#Priority').val(Priority);
-                        console.log(list.buyer.name);
                         $('#shipcustomername').text(list.buyer.name);
                         $('#shipvesselname').text(list.vessel.name);
                         $('#shipDeliveryPort').text(list.deliveryPort.name);
                     }
+                },
+                complete: function() { $('.overlay').hide(); }
+            });
+        }
 
+        if (ShipID !== '') {
+            fetchData();
+        }
+    });
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    $(document).on("click", "#DeleteBtn", function (e) {
+    e.preventDefault();
 
+    const eventNo = $('#eventid').val();
+    if (!eventNo) {
+        alert("Please select an event to delete.");
+        return;
+    }
+
+    const password = prompt("Please enter your password to confirm deletion:");
+
+    if (!password) {
+        alert("Deletion cancelled.");
+        return;
+    }
+
+    // First verify password
+    $.ajax({
+        url: '/verify-password',
+        type: 'POST',
+        data: {
+            _token: '{{ csrf_token() }}',
+            password: password
+        },
+        success: function (res) {
+            if (res.status === 'success') {
+                // Proceed to delete
+                $.ajax({
+                    url: '/delete-event',
+                    type: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        EventNo: eventNo
                     },
-                    failed: function(output) {
-                        var errors = output.responseJSON;
-                        alert(errors.message);
-                        //Swal.close();
+                    success: function (delRes) {
+                        alert("Deleted: " + delRes.Code);
+                        Cleardata();
                     },
-                    complete: function() {
-                        // Hide the overlay and spinner after the request is complete
-                        $('.overlay').hide();
+                    error: function (xhr) {
+                        alert("Delete failed.");
+                        console.error(xhr.responseText);
                     }
-
-
-
                 });
-
+            } else {
+                alert("Incorrect password. Deletion denied.");
             }
+        },
+        error: function (xhr) {
+            alert("Password verification failed.");
+            console.error(xhr.responseText);
+        }
+    });
+});
 
-            if (ShipID !== '') {
-                // const url = 'https://api.shipserv.com/order-management/documents/'+ShipID;
-                //     const options = {
-                //     method: 'GET',
-                //     headers: {'Api-Version': 'v2', Accept: 'application/json', Authorization: Token}
-                //     };
+</script>
+@stop
 
-                //     try {
-                //     const response = await fetch(url, options);
-                //     const data = await response.json();
-                //     console.log(data);
-                //     } catch (error) {
-                //     console.error(error);
-                //     }
-                fetchData();
-            }
-        });
-    </script>
 @stop
 
 

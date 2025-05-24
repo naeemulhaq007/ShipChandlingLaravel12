@@ -18,6 +18,7 @@ class Ship
         return $html;
 
     }
+    
     static function Branches(){
         $branches = DB::table('branchsetup')->get();
         info($branches);
@@ -142,15 +143,21 @@ class Ship
         ]);
 
     }
-    static function DeptCodeByName($Departname){
-         $Department = Typesetup::where('DepartmentName', $Departname)->first();
-            if ($Department) {
-                $DepartmentCode = $Department->DepartmentCode;
-            } else {
-                $DepartmentCode = null;
-            }
-            return $DepartmentCode;
+    
+    static function DeptCodeByName($Departname) {
+    $Department = Typesetup::where('TypeName', $Departname)->first();
+    return $Department ? $Department->TypeCode : null;
+}
 
-    }
+    // static function DeptCodeByName($Departname){
+    //      $Department = Typesetup::where('DepartmentName', $Departname)->first();
+    //         if ($Department) {
+    //             $DepartmentCode = $Department->DepartmentCode;
+    //         } else {
+    //             $DepartmentCode = null;
+    //         }
+    //         return $DepartmentCode;
+
+    // }
 
 }

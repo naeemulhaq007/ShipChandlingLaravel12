@@ -141,7 +141,7 @@
                                         <table class="table small" id="Gd1">
                                             <thead class="bg-info">
                                                 <tr>
-                                                    <th>Code</th>
+                                                    <th>Codesss</th>
                                                     <th>Warehouse&nbsp;Name</th>
                                                     <th>Stock&nbsp;Name</th>
                                                     <th>State&nbsp;Name</th>
@@ -159,7 +159,9 @@
                                                         <td>{{ $GodownSetupitem->GodownCode }}</td>
                                                         <td>{{ $GodownSetupitem->GodownName }}</td>
                                                         <td>{{ $GodownSetupitem->StockName }}</td>
-                                                        <td>{{ $GodownSetupitem->StateName }}</td>
+                                                        <td>{{ $GodownSetupitem->StateName ?? '' }}</td>
+
+                                                    
                                                         <td hidden>{{ $GodownSetupitem->PrinterName }}</td>
                                                         <td hidden>{{ $GodownSetupitem->StockCode }}</td>
                                                         <td hidden>{{ $GodownSetupitem->Prefix }}</td>
@@ -196,7 +198,7 @@
 
                         <button class="btn btn-warning my-2 mx-2" id="CmdDelete" role="button"> <i class="fa fa-multiply mr-1"
                                 aria-hidden="true"></i>Delete</button>
-                        <a href="/" class="btn btn-danger my-2 mx-2" id="CmdExit" role="button"> <i class="fa fa-door-open mr-1"
+                        <a href="{{url('warehouse-setup') }}" class="btn btn-danger my-2 mx-2" id="CmdExit" role="button"> <i class="fa fa-door-open mr-1"
                                 aria-hidden="true"></i>Exit</a>
                     </div>
 
@@ -248,32 +250,26 @@
         }
 
 
-
-        $(document).ready(function() {
-
+$(document).ready(function() {
 
 
-            var table1 = $('#Gd1').DataTable({
-
-                scrollY: 400,
-                deferRender: true,
-                scroller: true,
-                paging: false,
-                info: false,
-                ordering: false,
-                searching: false,
-                responsive: true,
-
-
-            });
+var table1 = $('#Gd1').DataTable({
+    scrollY: 400,
+    deferRender: true,
+    scroller: true,
+    paging: false,
+    info: false,
+    searching: true,
+    responsive: true,
+    ordering: true,
+    order: [[1, 'asc']] // ✅ ASCENDING order
+});
 
 
+    // table1.column.adjust();
 
-            // table1.column.adjust();
 
-
-        });
-
+});
 
         $(document).ready(function() {
             $('#CmdStock').click(function(e) {
@@ -346,7 +342,8 @@
                             let table = document.getElementById('Gd1body');
                             table.innerHTML = ""; // Clear the table
                             Ships.forEach(function(item) {
-                            let row = table.insertRow();
+                           
+                             let row = table.insertRow(0)
                             row.classList.add("js-row");
 
                             function createCell(content) {
@@ -399,52 +396,102 @@
                var ChkNotShow = $('#ChkNotShow').is(":checked");
                 e.preventDefault();
                 ajaxSetup();
-                $.ajax({
-                    type: "post",
-                    url: "/WarehouseSave",
-                    data: {
-                        TxtGodownCode,
-                        TxtGodownName,
-                        txt_print,
-                        TxtStockCode,
-                        TxtStockName,
-                        TxtPrefix,
-                        CmbStateName,
-                        ChkNotShow,
-                    },
-                    success: function (response) {
-                    console.log(response);
-                    if (response.Message == 'Saved') {
-                            alert(response.Message)
+               $.ajax({
+    type: "post",
+    url: "/WarehouseSave",
+    data: {
+        TxtGodownCode,
+        TxtGodownName,
+        txt_print,
+        TxtStockCode,
+        TxtStockName,
+        TxtPrefix,
+        CmbStateName,
+        ChkNotShow,
+    },
+success: function (response) {
+    console.log(response);
 
-                        if(response.GodownSetup.length > 0){
-                            var Ships = response.GodownSetup;
-                            let table = document.getElementById('Gd1body');
-                            table.innerHTML = ""; // Clear the table
-                            Ships.forEach(function(item) {
-                            let row = table.insertRow();
-                            row.classList.add("js-row");
+    if (response.Message == 'Saved') {
 
-                            function createCell(content) {
-                                let cell = row.insertCell();
-                                cell.innerHTML = content;
-                                return cell;
-                            }
-                            createCell(item.GodownCode);
-                            createCell(item.GodownName);
-                            createCell(item.StockName);
-                            createCell(item.StateName);
-                            createCell(item.PrinterName).hidden = 'true';
-                            createCell(item.StockCode).hidden = 'true';
-                            createCell(item.Prefix).hidden = 'true';
-                            createCell(item.ChkNotShow).hidden = 'true';
-                            createCell(item.stateCode).hidden = 'true';
-                            });
+        Swal.fire({
+            icon: 'success',
+            title: 'Saved Successfully!',
+            text: 'Warehouse has been saved.',
+            showConfirmButton: true,
+            timer: 2000
+        });
 
-                        }
-                        }
-                    }
-                });
+        if (response.GodownSetup.length > 0) {
+            var Ships = response.GodownSetup;
+
+            // ✅ Sort ascending by Warehouse Name
+            Ships.sort(function(a, b) {
+                var nameA = (a.GodownName || '').toUpperCase();
+                var nameB = (b.GodownName || '').toUpperCase();
+                if (nameA < nameB) return -1;
+                if (nameA > nameB) return 1;
+                return 0;
+            });
+
+          
+            if ($.fn.DataTable.isDataTable('#Gd1')) {
+                $('#Gd1').DataTable().destroy();
+            }
+
+            let table = document.getElementById('Gd1body');
+            table.innerHTML = ""; // Clear the table
+
+            Ships.forEach(function(item) {
+                let row = table.insertRow();
+                row.classList.add("js-row");
+
+                function createCell(content) {
+                    let cell = row.insertCell();
+                    cell.innerHTML = content ?? '';
+                    return cell;
+                }
+
+                createCell(item.GodownCode);
+                createCell(item.GodownName);
+                createCell(item.StockName);
+                createCell(item.StateName);
+                createCell(item.PrinterName).hidden = true;
+                createCell(item.StockCode).hidden = true;
+                createCell(item.Prefix).hidden = true;
+                createCell(item.ChkNotShow).hidden = true;
+                createCell(item.stateCode).hidden = true;
+            });
+
+          
+       var table1 = $('#Gd1').DataTable({
+    scrollY: 400,
+    deferRender: true,
+    scroller: true,
+    paging: false,
+    info: false,
+    searching: false,
+    responsive: true,
+    ordering: true,
+    order: [[1, 'asc']] 
+});
+
+        }
+    }
+},
+
+
+
+    error: function () {
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops!',
+            text: 'Something went wrong while saving.',
+            timer: 3000
+        });
+    }
+});
+
             });
 
 

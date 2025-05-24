@@ -37,9 +37,12 @@
                             <div class="row">
                                 <div class="inputbox col-sm-8 py-2">
                                     <input readonly type="text" class="" id="TxtCode" name="TxtCode"
-                                        required="required">
+       required="required" value="{{ old('TxtCode', $nextCode ?? '') }}">
+
+                                    <!--<input readonly type="text" class="" id="TxtCode" name="TxtCode"-->
+                                    <!--    required="required">-->
                                     <span class="Txtspan">
-                                        Category Code </span>
+                                        Category Codes </span>
                                 </div>
                             </div>
                             <div class="row">
@@ -58,7 +61,7 @@
 
                             <div class="row py-2">
                                 <button class="btn btn-primary  mx-2" id="CmdAdd" role="button"> <i
-                                        class="fa fa-plus mr-1" aria-hidden="true"></i>Add</button>
+                                        class="fa fa-plus mr-1" aria-hidden="true"></i>New</button>
 
                                 <button class="btn btn-success mx-2" id="CmdSave" role="button"> <i
                                         class="fa fa-cloud mr-1" aria-hidden="true"></i>Save</button>
@@ -66,7 +69,7 @@
                                 <button class="btn btn-warning mx-2" id="CmdDelete" role="button"> <i
                                         class="fa fa-multiply mr-1" aria-hidden="true"></i>Delete</button>
 
-                                <button class="btn btn-danger mx-2" id="CmdExit" onclick="window.location.href='/'" role="button"> <i
+                                <button class="btn btn-danger mx-2" id="CmdExit" onclick="window.location.href='Category-Setup'" role="button"> <i
                                         class="fa fa-door-open mr-1" aria-hidden="true"></i>Exit</button>
                             </div>
 
@@ -300,59 +303,107 @@
             });
 
 
-            $('#CmdSave').click(function(e) {
+            // $('#CmdSave').click(function(e) {
+            //     e.preventDefault();
+            //     var TxtCode = $('#TxtCode').val();
+            //     var TxtCategoryName = $('#TxtCategoryName').val();
+
+            //     ajaxSetup();
+            //     $.ajax({
+            //         url: "{{ route('CategorySave') }}",
+            //         type: 'POST',
+            //         data: {
+            //             TxtCode,
+            //             TxtCategoryName,
+
+            //         },
+            //         beforeSend: function() {
+            //             $('.overlay').show();
+            //         },
+            //         success: function(resposne) {
+            //             console.log(resposne);
+            //             if (resposne.Message == 'Saved') {
+            //                 if (resposne.categorysetup.length > 0) {
+            //                     var categorysetup = resposne.categorysetup;
+            //                     createlist(categorysetup);
+            //                 }
+
+
+            //                 clearform();
+            //                 Swal.fire(
+            //                     'Confirmed!',
+            //                     'Category Is Saved.',
+            //                     'success'
+            //                 );
+
+            //             }
+            //             $('.js-row').dblclick(function(e) {
+            //                 e.preventDefault();
+            //                 var row = $(this);
+            //                 jsdblfunc(row);
+
+            //             });
+            //         },
+            //         error: function(data) {
+            //             console.log(data);
+            //             $('.overlay').hide();
+            //         },
+            //         complete: function() {
+            //             $('.overlay').hide();
+            //         }
+
+
+            //     });
+            // });
+
+           $('#CmdSave').click(function(e) {
+    e.preventDefault();
+    var TxtCode = $('#TxtCode').val();
+    var TxtCategoryName = $('#TxtCategoryName').val();
+
+    ajaxSetup();
+    $.ajax({
+        url: "{{ route('CategorySave') }}",
+        type: 'POST',
+        data: {
+            TxtCode,
+            TxtCategoryName,
+        },
+        beforeSend: function() {
+            $('.overlay').show();
+        },
+        success: function(resposne) {
+            console.log(resposne);
+            if (resposne.Message === 'Saved') {
+                if (resposne.categorysetup.length > 0) {
+                    var categorysetup = resposne.categorysetup;
+                    createlist(categorysetup);
+                }
+
+                clearform();
+
+                Swal.fire(
+                    'Confirmed!',
+                    TxtCode ? 'Updated Successfully' : 'Saved Successfully',
+                    'success'
+                );
+            }
+
+            $('.js-row').dblclick(function(e) {
                 e.preventDefault();
-                var TxtCode = $('#TxtCode').val();
-                var TxtCategoryName = $('#TxtCategoryName').val();
-
-                ajaxSetup();
-                $.ajax({
-                    url: "{{ route('CategorySave') }}",
-                    type: 'POST',
-                    data: {
-                        TxtCode,
-                        TxtCategoryName,
-
-                    },
-                    beforeSend: function() {
-                        $('.overlay').show();
-                    },
-                    success: function(resposne) {
-                        console.log(resposne);
-                        if (resposne.Message == 'Saved') {
-                            if (resposne.categorysetup.length > 0) {
-                                var categorysetup = resposne.categorysetup;
-                                createlist(categorysetup);
-                            }
-
-
-                            clearform();
-                            Swal.fire(
-                                'Confirmed!',
-                                'Category Is Saved.',
-                                'success'
-                            );
-
-                        }
-                        $('.js-row').dblclick(function(e) {
-                            e.preventDefault();
-                            var row = $(this);
-                            jsdblfunc(row);
-
-                        });
-                    },
-                    error: function(data) {
-                        console.log(data);
-                        $('.overlay').hide();
-                    },
-                    complete: function() {
-                        $('.overlay').hide();
-                    }
-
-
-                });
+                var row = $(this);
+                jsdblfunc(row);
             });
-
+        },
+        error: function(data) {
+            console.log(data);
+            $('.overlay').hide();
+        },
+        complete: function() {
+            $('.overlay').hide();
+        }
+    });
+});
 
 
             $('#CmdAdd').click(function(e) {

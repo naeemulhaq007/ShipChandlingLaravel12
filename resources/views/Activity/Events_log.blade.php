@@ -107,7 +107,9 @@
 
                     <td>{{$item->VesselName}}</td>
                     <td>{{$item->ShippingPort}}</td>
-                    <td>{{$item->STATUS}}</td>
+                    <td>{{ $item->Status ?? '-' }}</td>
+
+                 
                     <td>{{$item->ETA = date('d-M-Y', strtotime($item->ETA))}}</td>
                     <td>{{$item->Priority}}</td>
                     <td>{{date('d-M-Y', strtotime($item->EventCreatedDate))}}</td>

@@ -11,5 +11,10 @@ class UOMModel extends Model
     protected $table = "uomsetup";
     protected $primaryKey = 'UOMCode';
     public $timestamps = false;
+    public $incrementing = false; 
+  
+
+    // Optional: define fillable fields
+    protected $fillable = ['UOMCode', 'UOMName', 'ChkInactive', 'BranchCode'];
 
 }

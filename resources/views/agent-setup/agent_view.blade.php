@@ -233,7 +233,10 @@
                                     <a name="" id="BtnNew" class="btn btn-info mx-2 my-2"  role="button"><i class="fa fa-file" aria-hidden="true"></i> New</a>
                                     <button type="submit" class="btn btn-success mx-2 my-2"><i class="fa fa-cloud" aria-hidden="true"></i> Save</button>
                                         <a name="" id="BtnDelete" class="btn btn-danger mx-2 my-2"  role="button"><i class="fa fa-window-close" aria-hidden="true"></i> Delete</a>
-                                        <a name="" id="" href="/" class="btn btn-danger mx-2 my-2"  role="button"><i class="fas fa-door-open    "></i> Exit</a>
+                                     <a href="{{ url('agent-setup') }}" class="btn btn-danger mx-2 my-2" role="button">
+    <i class="fas fa-door-open"></i> Exit
+</a>
+
                                 </div>
                             </div>
 
@@ -257,7 +260,7 @@
 
                                 <div class="row pt-3">
                                     <div class="inputbox col-sm-8">
-                                        <input type="text" class="" id="creaditlimit" name="CreditLimit"
+                                        <input type="number" step="0.01" class="" id="creaditlimit" name="CreditLimit"
                                             required="required">
                                         <span class="Txtspan">
                                             Credit Limit </span>
@@ -359,6 +362,33 @@
 @section('js')
 <script type="text/javascript" language="javascript"
         src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+
+
+
+
+
+
+
+
+
+@if(Session::has('Message') && Session::get('Message') == 'Saved')
+<script>
+    $(document).ready(function () {
+        Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: 'Agent saved successfully!',
+            timer: 2000,
+            showConfirmButton: false
+        });
+    });
+</script>
+@endif
+
+
 
     <script>
 
@@ -381,43 +411,189 @@ function ajaxSetup() {
             $('#actcode').val(b);
 
 
-            $('.js-row').dblclick(function (e) {
-        e.preventDefault();
-        var row = $(this);
-    var AgentCode = row.find('td:eq(0)').text();
-    var ActCode = row.find('td:eq(1)').text();
-    var AgentName = row.find('td:eq(2)').text();
-    var Address = row.find('td:eq(3)').text();
-    var CreditLimit = row.find('td:eq(4)').text();
-    var CusCode = row.find('td:eq(5)').text();
+    //         $('.js-row').dblclick(function (e) {
+    //     e.preventDefault();
+    //     var row = $(this);
+    // var AgentCode = row.find('td:eq(0)').text();
+    // var ActCode = row.find('td:eq(1)').text();
+    // var AgentName = row.find('td:eq(2)').text();
+    // var Address = row.find('td:eq(3)').text();
+    // var CreditLimit = row.find('td:eq(4)').text();
+    // var CusCode = row.find('td:eq(5)').text();
 
-    $('#actcode').val(ActCode);
-    $('#actcode').val(ActCode);
-    $('#act_code').val(ActCode);
-    $('#agentname').val(AgentName);
-    $('#agentid').val(AgentCode);
-    $('#address').val(Address);
+    // $('#actcode').val(ActCode);
+    // $('#actcode').val(ActCode);
+    // $('#act_code').val(ActCode);
+    // $('#agentname').val(AgentName);
+    // $('#agentid').val(AgentCode);
+    // $('#address').val(Address);
     // $('#WebsiteAddress').val(WebsiteAddress);
     // $('#BranchCode').val(BranchCode);
-    });
+    // });
+// $('.js-row').dblclick(function (e) {
+//     e.preventDefault();
+//     var row = $(this);
 
-            var table = $('#agent-table').DataTable({
+//     var agentid = row.find('td:eq(0)').text().trim();
+//     var exchangeRate = row.find('td:eq(1)').text().trim();
+//     var agentname = row.find('td:eq(2)').text().trim();
+//     var Address = row.find('td:eq(3)').text().trim();
+//     var creaditlimit = row.find('td:eq(4)').text().trim();
+//     var CustomerCode = row.find('td:eq(5)').text().trim();
 
-                scrollY:400,
-                deferRender:true,
-                scroller:true,
-                // paging: false,
-                // info:false,
-                ordering:false,
-                // searching:false,
+//     // Fill only available fields
+//     $('#agentid').val(agentid);
+//     $('#agentname').val(agentname);
+//     $('#CustomerCode').val(CustomerCode);
+//     $('#exchangeRate').val(exchangeRate);
+//     $('#Address').val(Address);
+//     $('#creaditlimit').val(creaditlimit);
+
+  
+//     $('#telephone').val('');
+//     $('#fax').val('');
+//     $('#email').val('');
+//     $('#web').val('');
+//     $('#country').val('');
+//     $('#city').val('');
+//     $('#state').val('');
+//     $('#zip').val('');
+//     $('#contactperson').val('');
+//     $('#billingaddress').val('');
+//     $('#bilingtelephone').val('');
+//     $('#bilingfax').val('');
+//     $('#bilingemail').val('');
+//     $('#bilingweb').val('');
+//     $('#bilingstatus').val('');
+//     $('#terms').val('');
+//     $('#eqcic').val('');
+// });
+
+$('.js-row').dblclick(function (e) {
+    e.preventDefault();
+    var agentId = $(this).find('td:eq(0)').text().trim(); 
+    
+    if (agentId) {
+        ajaxSetup();
+        $.ajax({
+            url: '/agent-setup/fetch',  // new route
+            type: 'POST',
+            data: { AgentCode: agentId },
+            success: function (response) {
+                if (response.agent) {
+                    var agent = response.agent;
+
+                    $('#agentid').val(agent.AgentCode);
+                    $('#agent_id').val(agent.AgentCode);
+                    $('#act_code').val(agent.ActCode);
+                    $('#actcode').val(agent.ActCode);
+                    $('#agentname').val(agent.AgentName);
+                    $('#CusCode').val(agent.CusCode);
+                       $('#Address').val(agent.Address); 
+                    $('#telephone').val(agent.PhoneNo);
+                    $('#fax').val(agent.FaxNo);
+                    $('#email').val(agent.EmailAddress);
+                    $('#web').val(agent.WebAddress);
+                    $('#country').val(agent.Country);
+                    $('#city').val(agent.City);
+                    $('#state').val(agent.State);
+                    $('#zip').val(agent.Zip);
+                    $('#contactperson').val(agent.BContactPerson);
+                    $('#billingaddress').val(agent.BillingAddress);
+                    $('#bilingtelephone').val(agent.BTelephoneNo);
+                    $('#bilingfax').val(agent.BFaxNo);
+                    $('#bilingemail').val(agent.BEmailAddress);
+                    $('#bilingweb').val(agent.BWeb);
+                    $('#bilingstatus').val(agent.Status);
+                    $('#creaditlimit').val(agent.CreditLimit);
+                    $('#terms').val(agent.Terms);
+                    $('#eqcic').val(agent.EventQuateCharges);
+                } else {
+                    Swal.fire("Error", "Agent not found!", "error");
+                }
+            },
+            error: function () {
+                Swal.fire("Error", "Server error!", "error");
+            }
+        });
+    }
+});
 
 
-                });
+
+
+
+var table = $('#agent-table').DataTable({
+    scrollY: 400,
+    deferRender: true,
+    scroller: true,
+    ordering: true,
+    order: [[0, 'desc']], 
+    responsive: true,
+});
+
+                
                 $('#BtnNew').click(function (e) {
                     e.preventDefault();
                     location.reload();
                 });
-                $('#BtnDelete').click(function (e) {
+           
+//                 $('#BtnDelete').click(function (e) {
+//     e.preventDefault();
+
+//     var AgentCode = $('#agentid').val();
+
+//     if (!AgentCode) {
+//         Swal.fire("Error", "Please select an agent to delete.", "warning");
+//         return;
+//     }
+
+//     Swal.fire({
+//         title: 'Are you sure?',
+//         text: "You want to delete this agent?",
+//         icon: 'warning',
+//         showCancelButton: true,
+//         confirmButtonColor: '#d33',
+//         cancelButtonColor: '#3085d6',
+//         confirmButtonText: 'Yes, delete it!'
+//     }).then((result) => {
+//         if (result.isConfirmed) {
+//             ajaxSetup();
+
+//             $.ajax({
+//                 url: '{{ route('Deleteagent') }}',
+//                 type: 'POST',
+//                 data: {
+//                     AgentCode,
+//                 },
+//                 success: function (response) {
+//                     console.log(response);
+
+//                     if (response.Message === 'Deleted') {
+//                         Swal.fire({
+//                             icon: 'success',
+//                             title: 'Deleted!',
+//                             text: 'Agent deleted successfully.',
+//                             timer: 2000,
+//                             showConfirmButton: false
+//                         });
+
+//                         setTimeout(function () {
+//                             location.reload();
+//                         }, 2000);
+//                     } else {
+//                         Swal.fire("Error", "Could not delete agent.", "error");
+//                     }
+//                 },
+//                 error: function () {
+//                     Swal.fire("Error", "Something went wrong.", "error");
+//                 }
+//             });
+//         }
+//     });
+// });
+   
+       $('#BtnDelete').click(function (e) {
                     e.preventDefault();
                     var AgentCode = $('#agentid').val();
                     var password = prompt("Please enter Admin Authentication:");
@@ -449,6 +625,7 @@ function ajaxSetup() {
                     }
 
                 });
+
 
         });
     </script>

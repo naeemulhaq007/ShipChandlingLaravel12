@@ -40,6 +40,27 @@ class AgentSetup extends Controller
             'Message'=> $Message ,
         ]);
     }
+  
+  
+
+public function fetch(Request $request)
+{
+    $MBranchCode = Auth::user()->BranchCode;
+
+    $agent = ModelsAgentSetup::where('AgentCode', $request->AgentCode)
+        ->where('BranchCode', $MBranchCode)
+        ->first();
+
+    if ($agent) {
+        return response()->json([
+            'agent' => $agent
+        ]);
+    } else {
+        return response()->json([
+            'agent' => null
+        ]);
+    }
+}
 
   
 
@@ -84,44 +105,148 @@ class AgentSetup extends Controller
             ]
         ];
     }
+    
+    
+    public function store(Request $request)
+{
+    $MBranchCode = Auth::user()->BranchCode;
 
+    // Step 1: Agar user ne AgentCode diya ho to usi ko use karo
+    $inputAgentCode = $request->AgentCode;
 
-    public function store(Request $request )
-    {
-        // DB::table('AgentSetup')->insert
-        $agents = new ModelsAgentSetup([
-            'AgentCode' => $request->AgentCode,
-            'ActCode' => $request->ActCode,
-            'AgentName' => $request->AgentName,
-            'Address' => $request->Address,
-            'CallSign'=> null,
-            'ChkInactive'=>0,
-            'BranchCode'=>config('app.MBranchCode'),
-            'CusCode'=>$request->CusCode,
-            'PhoneNo' =>$request->PhoneNo,
-           'FaxNo' => $request->FaxNo,
-           'EmailAddress' => $request->EmailAddress,
-            'WebAddress' => $request->WebAddress,
-            'Country' => $request->Country,
-            'City' => $request->City,
-            'State' => $request->State,
-            'Zip' => $request->Zip,
-            'BContactPerson' => $request->BContactPerson,
-            'BillingAddress' => $request->BillingAddress,
-            'BTelephoneNo' => $request->BTelephoneNo,
-            'BFaxNo' =>$request->BFaxNo,
-            'BEmailAddress' =>$request->BEmailAddress,
-            'BWeb'=> $request->BWeb,
-            'Status' => $request->Status,
-            'CreditLimit' => $request->CreditLimit,
-            'Terms' => $request->Terms,
-            'EventQuateCharges' => $request->EventQuateCharges,
+    // Step 2: Agar nahi diya, to auto-generate karo
+    if (empty($inputAgentCode)) {
+        $lastAgent = ModelsAgentSetup::where('AgentCode', 'like', 'AG%')
+            ->orderBy('AgentCode', 'desc')
+            ->first();
 
-        ]);
-        $agents->save();
+        if ($lastAgent && preg_match('/AG(\d+)/', $lastAgent->AgentCode, $matches)) {
+            $nextNumber = (int)$matches[1] + 1;
+        } else {
+            $nextNumber = 1;
+        }
 
-        return redirect('agent-setup');
+        $inputAgentCode = 'AG' . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
     }
+
+    // Step 3: Check if agent already exists
+    $agent = ModelsAgentSetup::where('AgentCode', $inputAgentCode)
+        ->where('BranchCode', $MBranchCode)
+        ->first();
+
+    $agentData = [
+        'AgentCode' => $inputAgentCode,
+        'ActCode' => $request->ActCode,
+        'AgentName' => $request->AgentName,
+        'Address' => $request->Address,
+        'CallSign' => null,
+        'ChkInactive' => 0,
+        'BranchCode' => $MBranchCode,
+        'CusCode' => $request->CusCode,
+        'PhoneNo' => $request->PhoneNo,
+        'FaxNo' => $request->FaxNo,
+        'EmailAddress' => $request->EmailAddress,
+        'WebAddress' => $request->WebAddress,
+        'Country' => $request->Country,
+        'City' => $request->City,
+        'State' => $request->State,
+        'Zip' => $request->Zip,
+        'BContactPerson' => $request->BContactPerson,
+        'BillingAddress' => $request->BillingAddress,
+        'BTelephoneNo' => $request->BTelephoneNo,
+        'BFaxNo' => $request->BFaxNo,
+        'BEmailAddress' => $request->BEmailAddress,
+        'BWeb' => $request->BWeb,
+        'Status' => $request->Status,
+        'CreditLimit' => $request->CreditLimit,
+        'Terms' => $request->Terms,
+        'EventQuateCharges' => $request->EventQuateCharges,
+    ];
+
+    if ($agent) {
+        $agent->update($agentData);
+    } else {
+        ModelsAgentSetup::create($agentData);
+    }
+
+    return redirect('agent-setup')->with('Message', 'Saved with Agent Code: ' . $inputAgentCode);
+}
+
+    
+//     public function store(Request $request)
+// {
+//     $MBranchCode = Auth::user()->BranchCode;
+
+//     // Check if agent already exists
+//     $agent = ModelsAgentSetup::where('AgentCode', $request->AgentCode)
+//         ->where('BranchCode', $MBranchCode)
+//         ->first();
+
+//     if ($agent) {
+//         // If agent exists, update only other fields
+//         $agent->update([
+//             'ActCode' => $request->ActCode,
+//             'AgentName' => $request->AgentName,
+//             'Address' => $request->Address,
+//             'CallSign' => null,
+//             'ChkInactive' => 0,
+//             'CusCode' => $request->CusCode,
+//             'PhoneNo' => $request->PhoneNo,
+//             'FaxNo' => $request->FaxNo,
+//             'EmailAddress' => $request->EmailAddress,
+//             'WebAddress' => $request->WebAddress,
+//             'Country' => $request->Country,
+//             'City' => $request->City,
+//             'State' => $request->State,
+//             'Zip' => $request->Zip,
+//             'BContactPerson' => $request->BContactPerson,
+//             'BillingAddress' => $request->BillingAddress,
+//             'BTelephoneNo' => $request->BTelephoneNo,
+//             'BFaxNo' => $request->BFaxNo,
+//             'BEmailAddress' => $request->BEmailAddress,
+//             'BWeb' => $request->BWeb,
+//             'Status' => $request->Status,
+//             'CreditLimit' => $request->CreditLimit,
+//             'Terms' => $request->Terms,
+//             'EventQuateCharges' => $request->EventQuateCharges,
+//         ]);
+//     } else {
+//         // If agent doesn't exist, insert new
+//         ModelsAgentSetup::create([
+//             'AgentCode' => $request->AgentCode,
+//             'ActCode' => $request->ActCode,
+//             'AgentName' => $request->AgentName,
+//             'Address' => $request->Address,
+//             'CallSign' => null,
+//             'ChkInactive' => 0,
+//             'BranchCode' => $MBranchCode,
+//             'CusCode' => $request->CusCode,
+//             'PhoneNo' => $request->PhoneNo,
+//             'FaxNo' => $request->FaxNo,
+//             'EmailAddress' => $request->EmailAddress,
+//             'WebAddress' => $request->WebAddress,
+//             'Country' => $request->Country,
+//             'City' => $request->City,
+//             'State' => $request->State,
+//             'Zip' => $request->Zip,
+//             'BContactPerson' => $request->BContactPerson,
+//             'BillingAddress' => $request->BillingAddress,
+//             'BTelephoneNo' => $request->BTelephoneNo,
+//             'BFaxNo' => $request->BFaxNo,
+//             'BEmailAddress' => $request->BEmailAddress,
+//             'BWeb' => $request->BWeb,
+//             'Status' => $request->Status,
+//             'CreditLimit' => $request->CreditLimit,
+//             'Terms' => $request->Terms,
+//             'EventQuateCharges' => $request->EventQuateCharges,
+//         ]);
+//     }
+
+//     return redirect('agent-setup')->with('Message', 'Saved');
+// }
+
+
+
 
 
 }

@@ -3,13 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\Quote;
+use Illuminate\Support\Facades\DB;
 use App\Models\ItemSetupNew;
+ use Illuminate\Database\QueryException;
 use App\Models\QuoteDetails;
 use Illuminate\Http\Request;
 use App\Models\VenderProductList;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -201,131 +204,287 @@ public function importExcel(Request $request){
 
     return response()->json($data);
 }
-public function importQuataionShow(Request $request){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+public function importQuataionShow(Request $request)
+{
     try {
         $file = $request->file('excel_file');
-        $filePath = $file->getPathname();
-
-        $spreadsheet = IOFactory::load($filePath);
-        $sheet = $spreadsheet->getActiveSheet();
-
-        // Get the highest row number
-        $highestRow = $sheet->getHighestRow();
-
-        $rowData = [];
-
-        // Loop through each row
-        for ($row = 1; $row <= $highestRow; $row++) {
-            $rowValues = [];
-
-            // Get the cell iterator for the current row
-            $cellIterator = $sheet->getRowIterator($row)->current()->getCellIterator();
-
-            // Loop through each cell in the row
-            foreach ($cellIterator as $cell) {
-                $rowValues[] = $cell->getValue();
-            }
-
-            $rowData[] = $rowValues;
+        if (!$file) {
+            return response()->json(['error' => 'Excel file not found'], 400);
         }
 
-        return response()->json([
-            'rowData' => $rowData,
-        ]);
-    } catch (\Exception $e) {
-        return response()->json([
-            'error' => $e->getMessage(),
-        ], 500);
+        $spreadsheet = IOFactory::load($file->getPathname());
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $rowData = [];
+        foreach ($sheet->toArray() as $row) {
+            $rowData[] = $row;
+        }
+
+        return response()->json(['rowData' => $rowData]);
+    } catch (\Throwable $e) {
+        \Log::error('Import Error: '.$e->getMessage());
+        return response()->json(['error' => 'Server error: ' . $e->getMessage()], 500);
     }
 }
-// public function importQuotation(Request $request) {
+
+
+
+
+
+
+
+
+
+public function importQuataion(Request $request)
+{
+    if (!$request->hasFile('excel_file')) {
+        return response()->json(['status' => 'error', 'message' => 'No file uploaded.'], 400);
+    }
+
+    try {
+        $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($request->file('excel_file')->getPathname());
+        $sheet = $spreadsheet->getActiveSheet();
+        $rows = $sheet->toArray(null, true, true, true);
+    } catch (\Exception $e) {
+        return response()->json(['status' => 'error', 'message' => 'Failed to read Excel file.'], 500);
+    }
+
+    $startRow = (int) $request->input('start_row', 2); // Default to 2 (skip header)
+
+    $data = [];
+
+    foreach ($rows as $index => $row) {
+        if ($index < $startRow) continue; // Skip rows before start_row
+
+        $data[] = [
+            'ItemCode' => $row['A'] ?? '',
+            'ItemName' => $row['B'] ?? '',
+            'ItemNameVendor' => $row['C'] ?? '',
+            'UOM' => $row['D'] ?? '',
+            'IMPAItemCode' => $row['E'] ?? '',
+            'VendorPrice' => is_numeric($row['F'] ?? null) ? $row['F'] : 0,
+            'LastDate' => '',
+            'WorkUser' => '',
+            'VPartCode' => '',
+            'Remarks' => $row['G'] ?? '',
+        ];
+    }
+
+    return response()->json(['status' => 'success', 'data' => $data]);
+}
+
+
+
+// public function importQuataion(Request $request)
+// {
+//     if (!$request->hasFile('excel_file')) {
+//         return response()->json(['status' => 'error', 'message' => 'No file uploaded.'], 400);
+//     }
+
+//     try {
+//         $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($request->file('excel_file')->getPathname());
+//         $sheet = $spreadsheet->getActiveSheet();
+//         $rows = $sheet->toArray(null, true, true, true);
+//     } catch (\Exception $e) {
+//         return response()->json(['status' => 'error', 'message' => 'Failed to read Excel file.'], 500);
+//     }
+
+//     $data = [];
+
+//     foreach ($rows as $index => $row) {
+//         if ($index === 1) continue; // Skip header
+
+//         $data[] = [
+//             'ItemCode' => $row['A'] ?? '',
+//             'ItemName' => $row['B'] ?? '',
+//             'ItemNameVendor' => $row['C'] ?? '',
+//             'UOM' => $row['D'] ?? '',
+//             'IMPAItemCode' => $row['E'] ?? '',
+//             'VendorPrice' => is_numeric($row['F'] ?? null) ? $row['F'] : 0,
+//             'LastDate' => '',
+//             'WorkUser' => '',
+//             'VPartCode' => '',
+//             'Remarks' => $row['G'] ?? '',
+//         ];
+//     }
+
+//     return response()->json(['status' => 'success', 'data' => $data]);
+// }
+
+
+
+
+// public function importQuataion(Request $request)
+// {
+//     if (!$request->hasFile('excel_file')) {
+//         return response()->json(['status' => 'error', 'message' => 'No file uploaded.'], 400);
+//     }
+
 //     $file = $request->file('excel_file');
-//     $filePath = $file->getPathname();
-//     $spreadsheet = IOFactory::load($filePath);
+
+//     try {
+//         $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($file->getPathname());
+//     } catch (\Exception $e) {
+//         return response()->json(['status' => 'error', 'message' => 'Failed to read Excel file.'], 500);
+//     }
+
+//     $sheet = $spreadsheet->getActiveSheet();
+//     $rows = $sheet->toArray(null, true, true, true);
+
+//     $data = [];
+//     foreach ($rows as $index => $row) {
+//         if ($index === 1) continue; // Skip header
+
+//         $itemCode = $row['A'] ?? null;
+//         $itemName = $row['B'] ?? null;
+//         $vendorName = $row['C'] ?? null;
+//         $uom = $row['D'] ?? null;
+//         $impaCode = $row['E'] ?? null;
+//         $vendorPrice = $row['F'] ?? 0;
+//         $remarks = $row['G'] ?? null;
+
+//         if (empty($itemCode) && empty($itemName)) {
+//             continue;
+//         }
+
+//         // Validate prices
+//         if (!is_numeric($vendorPrice)) {
+//             \Log::warning("Non-numeric price at row $index", ['vendorPrice' => $vendorPrice]);
+//             $vendorPrice = 0;
+//         }
+
+//         $ourPrice = $vendorPrice;
+
+//         $vProduct = new VenderProductList();
+//         $vProduct->ItemCode = $itemCode;
+//         $vProduct->IMPAItemCode = $impaCode;
+//         $vProduct->ItemName = $itemName;
+//         $vProduct->UOM = $uom;
+//         $vProduct->VendorPrice = $vendorPrice;
+//         $vProduct->OurPrice = $ourPrice;
+//         $vProduct->Rate = $ourPrice;
+//         $vProduct->LastRate = $vendorPrice;
+//         $vProduct->GP = ($ourPrice != 0) ? (($ourPrice - $vendorPrice) / $ourPrice) * 100 : 0;
+//         $vProduct->VenderCode = null;
+//         $vProduct->VenderName = $vendorName;
+//         $vProduct->VendorCodeItem = null;
+//         $vProduct->VendorNameItem = $vendorName;
+//         $vProduct->VPartCode = null;
+//         $vProduct->StockQty = 0;
+//         $vProduct->ItemNameVender = $itemName;
+
+//         try {
+//             $vProduct->save();
+//             \Log::info("Inserted row $index");
+//             $data[] = $vProduct;
+//         } catch (\Illuminate\Database\QueryException $e) {
+//             \Log::error("Insert failed at row $index", ['error' => $e->getMessage()]);
+//         }
+//     }
+
+//     return response()->json(['status' => 'success', 'data' => $data]);
+// }
+
+
+
+
+
+// public function importQuataion(Request $request)
+// {
+    
+//     $file = $request->file('excel_file');
+//     $startRow = $request->input('start_row');
+//     $end_row = $request->input('end_row');
+
+//     $itemCodeColumn = strtoupper($request->input('itemCodeColumn', 'Z'));
+//     $itemNameColumn = strtoupper($request->input('itemNameColumn', 'Z'));
+//     $Impacolumn = strtoupper($request->input('Impacolumn', 'Z'));
+//     $QtyColumn = strtoupper($request->input('QtyColumn', 'Z'));
+//     $VpartColumn = strtoupper($request->input('VpartColumn', 'Z'));
+//     $uomColumn = strtoupper($request->input('uomColumn', 'Z'));
+//     $vendorPriceColumn = strtoupper($request->input('vendorPriceColumn', 'Z'));
+//     $sellPriceColumn = strtoupper($request->input('sellPriceColumn', 'Z'));
+//     $VendorNameColumn = strtoupper($request->input('VendorNameColumn', 'Z'));
+
+//     $spreadsheet = IOFactory::load($file->getPathname());
 //     $sheet = $spreadsheet->getActiveSheet();
 
 //     $data = [];
 
-//     // Fetch all relevant items and vendor products in advance to minimize database queries
-//     // $items = ItemSetupNew::all()->keyBy('IMPACode');
-//     // $vendorProducts = VenderProductList::all()->keyBy('IMPAItemCode');
-
-//     // Loop through rows in the Excel sheet
-//     for ($row = $request->input('start_row'); $row <= $request->input('end_row'); $row++) {
+//     for ($row = $startRow; $row <= $end_row; $row++) {
 //         $rowData = [];
 
-//         // Fetch cell values directly without unnecessary variables
-//         $itemCode = $sheet->getCellByColumnAndRow(Coordinate::columnIndexFromString($request->input('itemCodeColumn') ? $request->input('itemCodeColumn') : 'z'), $row)->getValue();
-//         $itemName = $sheet->getCellByColumnAndRow(Coordinate::columnIndexFromString($request->input('itemNameColumn') ? $request->input('itemNameColumn') : 'z'), $row)->getValue();
-//         $uom = $sheet->getCellByColumnAndRow(Coordinate::columnIndexFromString($request->input('uomColumn') ? $request->input('uomColumn') : 'z'), $row)->getValue();
-//         $vendorPrice = $sheet->getCellByColumnAndRow(Coordinate::columnIndexFromString($request->input('vendorPriceColumn') ? $request->input('vendorPriceColumn') : 'z'), $row)->getValue();
-//         $sellPrice = $sheet->getCellByColumnAndRow(Coordinate::columnIndexFromString($request->input('sellPriceColumn') ? $request->input('sellPriceColumn') : 'z'), $row)->getValue();
-//         $VendorName = $sheet->getCellByColumnAndRow(Coordinate::columnIndexFromString($request->input('VendorNameColumn') ? $request->input('VendorNameColumn') : 'z'), $row)->getValue();
-//         $Vpart = $sheet->getCellByColumnAndRow(Coordinate::columnIndexFromString($request->input('VpartColumn') ? $request->input('VpartColumn') : 'z'), $row)->getValue();
-//         $Qty = $sheet->getCellByColumnAndRow(Coordinate::columnIndexFromString($request->input('QtyColumn') ? $request->input('QtyColumn') : 'z'), $row)->getValue();
-//         $Impa = $sheet->getCellByColumnAndRow(Coordinate::columnIndexFromString($request->input('Impacolumn') ? $request->input('Impacolumn') : "z"), $row)->getValue();
+//         $itemCode = $sheet->getCellByColumnAndRow(Coordinate::columnIndexFromString($itemCodeColumn), $row)->getValue();
+//         $itemName = $sheet->getCellByColumnAndRow(Coordinate::columnIndexFromString($itemNameColumn), $row)->getValue();
+//         $uom = $sheet->getCellByColumnAndRow(Coordinate::columnIndexFromString($uomColumn), $row)->getValue();
+//         $vendorPrice = $sheet->getCellByColumnAndRow(Coordinate::columnIndexFromString($vendorPriceColumn), $row)->getValue();
+//         $sellPrice = $sheet->getCellByColumnAndRow(Coordinate::columnIndexFromString($sellPriceColumn), $row)->getValue();
+//         $VendorName = $sheet->getCellByColumnAndRow(Coordinate::columnIndexFromString($VendorNameColumn), $row)->getValue();
+//         $Vpart = $sheet->getCellByColumnAndRow(Coordinate::columnIndexFromString($VpartColumn), $row)->getValue();
+//         $Qty = $sheet->getCellByColumnAndRow(Coordinate::columnIndexFromString($QtyColumn), $row)->getValue();
+//         $Impa = $sheet->getCellByColumnAndRow(Coordinate::columnIndexFromString($Impacolumn), $row)->getValue();
+        
+        
+
+//         $searchItem = null;
+//         $itemNameArray = [];
 //         $highestSimilarityPercentage = 0;
-//     //     info($itemCode);
-//     // }
-//         // Process Impa column directly
-//         if (strlen($Impa) > 1) {
-//             // if ($items->has($Impa)) {
-//             //     $searchItem = $items;
-//             // } elseif ($vendorProducts->has($Impa)) {
-//             //     $searchItem = $vendorProducts;
-//                           $impaitems = ItemSetupNew::where('IMPACode',$Impa)->get();
-//                 $impaven = VenderProductList::where('IMPAItemCode',$Impa)->get();
-//                 if(!$impaitems->isEmpty()){
-//                     foreach ($impaitems as $item) {
 
-//                     similar_text($itemName, $item->ItemName, $similarityPercentage);
-//                     if ($similarityPercentage > $highestSimilarityPercentage) {
-//                         $highestSimilarityPercentage = $similarityPercentage;
-//                         $searchItem = $item;
-//                     }
-//                     $itemNameArray[] = [
-//                         'ItemCode'=> $item->ItemCode,
-//                         'ItemName'=> $item->ItemName,
-//                         'UOM'=> $item->UOM,
-//                         'Percentage'=> $similarityPercentage,
-//                         'SaleRate'=> $item->SaleRate ? $item->SaleRate : $item->LastRate ,
-//                         'VenderName'=> '' ,
-//                         'VenderCode'=> '' ,
+//         $ImpaTrimmed = trim($Impa);
+//         $itemNameTrimmed = trim($itemName);
 
-//                      ];
-//                     }
+//         if (strlen($ImpaTrimmed) > 1) {
+//             $impaitems = ItemSetupNew::where('IMPACode', $ImpaTrimmed)->get();
+            
 
-//                 }else if(!$impaven->isEmpty()){
-//                     foreach ($impaven as $item) {
+//             if ($impaitems->isEmpty() && is_numeric($ImpaTrimmed)) {
+//                 $impaitems = ItemSetupNew::where('ItemCode', $ImpaTrimmed)->get();
+                
+//             }
 
-//                 similar_text($itemName, $item->ItemName, $similarityPercentage);
+//             if ($impaitems->isEmpty()) {
+//                 $impaitems = ItemSetupNew::where('IMPACode', 'like', "%$ImpaTrimmed%")->get();
+//             }
+            
+//             foreach ($impaitems as $item) {
+                
+//                 similar_text($itemNameTrimmed, $item->ItemName, $similarityPercentage);
+//                 $itemNameArray[] = [
+//                     'ItemCode' => $item->ItemCode,
+//                     'ItemName' => $item->ItemName,
+//                     'UOM' => $item->UOM,
+//                     'Percentage' => $similarityPercentage,
+//                     'SaleRate' => $item->SaleRate ?: $item->LastRate,
+//                     'VenderName' => '',
+//                     'VenderCode' => ''
+//                 ];
 
 //                 if ($similarityPercentage > $highestSimilarityPercentage) {
 //                     $highestSimilarityPercentage = $similarityPercentage;
 //                     $searchItem = $item;
 //                 }
-//                 $itemNameArray[] = [
-//                     'ItemCode'=> $item->ItemCode,
-//                     'ItemName'=> $item->ItemName,
-//                     'UOM'=> $item->UOM,
-//                     'Percentage'=> $similarityPercentage,
-//                     'SaleRate'=> $item->SaleRate ? $item->SaleRate : $item->LastRate ,
-//                     'VenderName'=> $item->VenderName ? $item->VenderName : '' ,
-//                     'VenderCode'=> $item->VenderCode ? $item->VenderCode : '' ,
-
-//                  ];
-//                 }
-
-//             usort($itemNameArray, function ($a, $b) {
-//                 return $b['Percentage'] <=> $a['Percentage'];
-//             });
-//             } else {
-//                 $searchItem = null;
 //             }
-//             // info( $searchItem);
-//         } else {
-//         $searchItemWords = explode(' ', $itemName);
 
+//             usort($itemNameArray, fn($a, $b) => $b['Percentage'] <=> $a['Percentage']);
+            
+//         } else {
+            
+//             $searchItemWords = explode(' ', $itemNameTrimmed);
 //             foreach ($searchItemWords as $word) {
 //                 $items = ItemSetupNew::where('ItemName', 'like', '%' . $word . '%')->get();
 
@@ -334,7 +493,7 @@ public function importQuataionShow(Request $request){
 //                 }
 
 //                 foreach ($items as $item) {
-//                     similar_text($itemName, $item->ItemName, $similarityPercentage);
+//                     similar_text($itemNameTrimmed, $item->ItemName, $similarityPercentage);
 
 //                     if ($similarityPercentage > $highestSimilarityPercentage) {
 //                         $highestSimilarityPercentage = $similarityPercentage;
@@ -342,391 +501,223 @@ public function importQuataionShow(Request $request){
 //                     }
 
 //                     $itemNameArray[] = [
-//                         'ItemCode'    => $item->ItemCode,
-//                         'ItemName'    => $item->ItemName,
-//                         'UOM'         => $item->UOM,
-//                         'Percentage'  => $similarityPercentage,
-//                         'SaleRate'    => $item->SaleRate ? $item->SaleRate : $item->LastRate,
-//                         'VenderName'=> $item->VenderName ? $item->VenderName : '' ,
-//                         'VenderCode'=> $item->VenderCode ? $item->VenderCode : '' ,
+//                         'ItemCode' => $item->ItemCode,
+//                         'ItemName' => $item->ItemName,
+//                         'UOM' => $item->UOM,
+//                         'Percentage' => $similarityPercentage,
+//                         'SaleRate' => $item->SaleRate ?? $item->LastRate,
+//                         'VenderName' => $item->VenderName ?? '',
+//                         'VenderCode' => $item->VenderCode ?? '',
 //                     ];
-
-//                     // Sort the array in descending order based on 'Percentage' as you iterate
-//                     usort($itemNameArray, function ($a, $b) {
-//                         return $b['Percentage'] <=> $a['Percentage'];
-//                     });
-
-//                     // Optionally limit the array to a certain number of items
-//                     $itemNameArray = array_slice($itemNameArray, 0, 10);
 //                 }
+
+//                 usort($itemNameArray, fn($a, $b) => $b['Percentage'] <=> $a['Percentage']);
+//                 $itemNameArray = array_slice($itemNameArray, 0, 10);
 //             }
+//         }
 
-
-//     }
-//     if ($searchItem){
-//             info( 'Most Similar Item: ' . $searchItem->ItemName . ' (Similarity Percentage: ' . $highestSimilarityPercentage . '%)');
+//         if ($searchItem) {
+            
 //             $rowData['ItemCodeget'] = $searchItem->ItemCode;
 //             $rowData['ItemNameget'] = $itemNameArray;
-
 //             $rowData['UOMget'] = $searchItem->UOM;
 //             $rowData['Priceget'] = $searchItem->SaleRate;
 //             $rowData['Vendorcode'] = '';
 //             $rowData['Vendor'] = '';
 
-//             if($searchItem->ItemCode){
-//                 $venditems = VenderProductList::where('ItemCode',$searchItem->ItemCode)->first();
-//                 // info('Ven'.$venditems);
-
-//                 if($venditems){
-//                     $rowData['Priceget'] = $venditems->LastRate;
-//                     $rowData['UOMget'] = $venditems->UOM;
-//                     $rowData['Vendorcode'] =$venditems->VenderCode;
-//                     $rowData['Vendor'] = $venditems->VenderName;
-//                 }
+//             $venditems = VenderProductList::where('ItemCode', $searchItem->ItemCode)->first();
+//             if ($venditems) {
+                
+//                 $rowData['Priceget'] = $venditems->LastRate;
+//                 $rowData['UOMget'] = $venditems->UOM;
+//                 $rowData['Vendorcode'] = $venditems->VenderCode ?? '';
+//                 $rowData['Vendor'] = $venditems->VenderName ?? '';
 //             }
-//         }else{
-//             info( 'No matching item found.');
-
+//         } else {
+            
 //             $rowData['ItemCodeget'] = '';
 //             $rowData['ItemNameget'] = '';
 //             $rowData['UOMget'] = '';
 //             $rowData['Priceget'] = '';
 //             $rowData['Vendorcode'] = '';
 //             $rowData['Vendor'] = '';
+            
 //         }
 
-//             $rowData['ItemCode'] = $itemCode;
-//             $rowData['Impa'] = $Impa;
-//             $rowData['ItemName'] = $itemName;
-//             $rowData['percentage'] = $highestSimilarityPercentage;
-//             $rowData['UOM'] = $uom;
-//             $rowData['VPrice'] = $vendorPrice;
-//             $rowData['Price'] = $sellPrice;
-//             $rowData['VendorName'] = $VendorName;
-//             $rowData['Vpart'] = $Vpart;
-//             $rowData['Qty'] = $Qty;
+//         $rowData['ItemCode'] = $itemCode;
+//         $rowData['Impa'] = $Impa;
+//         $rowData['ItemName'] = $itemName;
+//         $rowData['percentage'] = $highestSimilarityPercentage;
+//         $rowData['UOM'] = $uom;
+//         $rowData['VPrice'] = $vendorPrice;
+//         $rowData['Price'] = $sellPrice;
+//         $rowData['VendorName'] = $VendorName;
+//         $rowData['Vpart'] = $Vpart;
+//         $rowData['Qty'] = $Qty;
 
-//             $data[] = $rowData;
+//         $data[] = $rowData;
 //     }
+    
+// //     foreach ($data as $rowData) {
+// //     $pRoductList = new VenderProductList;
+// //     $pRoductList->ItemCode = $rowData['ItemCode'] ?? null;
+// //     $pRoductList->IMPAItemCode = $rowData['Impa'] ?? null;
+// //     $pRoductList->ItemName = $rowData['ItemName'] ?? null;
+// //     $pRoductList->UOM = $rowData['UOM'] ?? null;
+// // $pRoductList->VendorPrice = $rowData['VPrice'] ?? null;
+// //     $pRoductList->OurPrice = $rowData['Price'] ?? null;
+// //     $pRoductList->Rate = $rowData['Price'] ?? null;
+// //     $pRoductList->LastRate = $rowData['VPrice'] ?? null;
 
-//     return response()->json($data);
+// //     $price = $rowData['Price'] ?? 0;
+// //     $vprice = $rowData['VPrice'] ?? 0;
+// //     $pRoductList->GP = ($price != 0) ? (($price - $vprice) / $price) * 100 : 0;
+
+    
+// //     $pRoductList->VenderCode = !empty($rowData['Vendorcode']) ? $rowData['Vendorcode'] : null;
+// //     $pRoductList->VenderName = $rowData['VendorName'] ?? null;
+// //     $pRoductList->VendorCodeItem = !empty($rowData['Vendorcode']) ? $rowData['Vendorcode'] : null;
+// //     $pRoductList->VendorNameItem = $rowData['VendorName'] ?? null;
+// //     $pRoductList->VPartCode = $rowData['Vpart'] ?? null;
+// //     $pRoductList->StockQty = $rowData['Qty'] ?? 0;
+// //     $pRoductList->ItemNameVender = $rowData['ItemName'] ?? null;
+// //     $pRoductList->save();
+// //   \Log::info('Inserted VenderProductList', $pRoductList->toArray());
+    
+// // }
+
+ 
+
+// foreach ($data as $index => $rowData) {
+//     try {
+//         $pRoductList = new VenderProductList;
+//         $pRoductList->ItemCode = $rowData['ItemCode'] ?? null;
+//         $pRoductList->IMPAItemCode = $rowData['Impa'] ?? null;
+//         $pRoductList->ItemName = $rowData['ItemName'] ?? null;
+//         $pRoductList->UOM = $rowData['UOM'] ?? null;
+//         $pRoductList->VendorPrice = $rowData['VPrice'] ?? null;
+//         $pRoductList->OurPrice = $rowData['Price'] ?? null;
+//         $pRoductList->Rate = $rowData['Price'] ?? null;
+//         $pRoductList->LastRate = $rowData['VPrice'] ?? null;
+
+//         $price = $rowData['Price'] ?? 0;
+//         $vprice = $rowData['VPrice'] ?? 0;
+//         $pRoductList->GP = ($price != 0) ? (($price - $vprice) / $price) * 100 : 0;
+
+//         $pRoductList->VenderCode = !empty($rowData['Vendorcode']) ? $rowData['Vendorcode'] : null;
+//         $pRoductList->VenderName = $rowData['VendorName'] ?? null;
+//         $pRoductList->VendorCodeItem = !empty($rowData['Vendorcode']) ? $rowData['Vendorcode'] : null;
+//         $pRoductList->VendorNameItem = $rowData['VendorName'] ?? null;
+//         $pRoductList->VPartCode = $rowData['Vpart'] ?? null;
+//         $pRoductList->StockQty = $rowData['Qty'] ?? 0;
+//         $pRoductList->ItemNameVender = $rowData['ItemName'] ?? null;
+
+//         $pRoductList->save();
+
+//         \Log::info("Inserted VenderProductList Row #$index", $pRoductList->toArray());
+
+//     } catch (QueryException $qe) {
+       
+//         \Log::error("DB ERROR on Row #$index: " . $qe->getMessage(), [
+//             'sql' => $qe->getSql(),
+//             'bindings' => $qe->getBindings(),
+//             'rowData' => $rowData,
+//         ]);
+//     } catch (\Exception $e) {
+       
+//         \Log::error("General ERROR on Row #$index: " . $e->getMessage(), [
+//             'rowData' => $rowData,
+//         ]);
+//     }
 // }
 
-    public function importQuataion(Request $request){
-        $file = $request->file('excel_file');
-                $startRow = $request->input('start_row');
-                $end_row = $request->input('end_row');
-                $itemCodeColumn = $request->input('itemCodeColumn');
-                $itemNameColumn = $request->input('itemNameColumn');
-                $Impacolumn = $request->input('Impacolumn');
-                $QtyColumn = $request->input('QtyColumn');
-                $VpartColumn = $request->input('VpartColumn');
-                $uomColumn = $request->input('uomColumn');
-                $vendorPriceColumn = $request->input('vendorPriceColumn');
-                $sellPriceColumn = $request->input('sellPriceColumn');
-                $VendorNameColumn = $request->input('VendorNameColumn');
+    
+    
 
-                $itemCodeColumn = $itemCodeColumn ? $itemCodeColumn : 'z';
-                $itemNameColumn = $itemNameColumn ? $itemNameColumn : 'z';
-                $Impacolumn = $Impacolumn ? $Impacolumn : 'z';
-                $QtyColumn = $QtyColumn ? $QtyColumn : 'z';
-                $VpartColumn = $VpartColumn ? $VpartColumn : 'z';
-                $uomColumn = $uomColumn ? $uomColumn : 'z';
-                $vendorPriceColumn = $vendorPriceColumn ? $vendorPriceColumn : 'z';
-                $sellPriceColumn = $sellPriceColumn ? $sellPriceColumn : 'z';
-                $VendorNameColumn = $VendorNameColumn ? $VendorNameColumn : 'z';
+//  return response()->json([
+//     'status' => 'success',
+//     'data' => $data
+// ]);
 
-        $filePath = $file->getPathname();
+// }
 
-        $spreadsheet = IOFactory::load($filePath);
-        $sheet = $spreadsheet->getActiveSheet();
-
-        $data = [];
-        for ($row = $startRow; $row <= $end_row; $row++) {
-            $rowData = [];
-            $itemCode = $sheet->getCellByColumnAndRow(
-                Coordinate::columnIndexFromString($itemCodeColumn),
-                $row
-            )->getValue();
-            $itemName = $sheet->getCellByColumnAndRow(
-                Coordinate::columnIndexFromString($itemNameColumn),
-                $row
-            )->getValue();
-            $uom = $sheet->getCellByColumnAndRow(
-                Coordinate::columnIndexFromString($uomColumn),
-                $row
-            )->getValue();
-            $vendorPrice = $sheet->getCellByColumnAndRow(
-                Coordinate::columnIndexFromString($vendorPriceColumn),
-                $row
-            )->getValue();
-            $sellPrice = $sheet->getCellByColumnAndRow(
-                Coordinate::columnIndexFromString($sellPriceColumn),
-                $row
-            )->getValue();
-            $VendorName = $sheet->getCellByColumnAndRow(
-                Coordinate::columnIndexFromString($VendorNameColumn),
-                $row
-            )->getValue();
-            $Vpart = $sheet->getCellByColumnAndRow(
-                Coordinate::columnIndexFromString($VpartColumn),
-                $row
-            )->getValue();
-            $Qty = $sheet->getCellByColumnAndRow(
-                Coordinate::columnIndexFromString($QtyColumn),
-                $row
-            )->getValue();
-            $Impa = $sheet->getCellByColumnAndRow(
-                Coordinate::columnIndexFromString($Impacolumn),
-                $row
-            )->getValue();
-
-            $searchItemWords = explode(' ', $itemName);
-            info($searchItemWords);
-            $searchItem = null;
-            $itemNameArray = [];
-            $highestSimilarityPercentage = 0;
-
-            if(strlen($Impa) > 1){
-                $impaitems = ItemSetupNew::where('IMPACode',$Impa)->get();
-                $impaven = VenderProductList::where('IMPAItemCode',$Impa)->get();
-                if(!$impaitems->isEmpty()){
-                    foreach ($impaitems as $item) {
-
-                    similar_text($itemName, $item->ItemName, $similarityPercentage);
-                    if ($similarityPercentage > $highestSimilarityPercentage) {
-                        $highestSimilarityPercentage = $similarityPercentage;
-                        $searchItem = $item;
-                    }
-                    $itemNameArray[] = [
-                        'ItemCode'=> $item->ItemCode,
-                        'ItemName'=> $item->ItemName,
-                        'UOM'=> $item->UOM,
-                        'Percentage'=> $similarityPercentage,
-                        'SaleRate'=> $item->SaleRate ? $item->SaleRate : $item->LastRate ,
-                        'VenderName'=> '' ,
-                        'VenderCode'=> '' ,
-
-                     ];
-                    }
-
-                }else if(!$impaven->isEmpty()){
-                    foreach ($impaven as $item) {
-
-                similar_text($itemName, $item->ItemName, $similarityPercentage);
-
-                if ($similarityPercentage > $highestSimilarityPercentage) {
-                    $highestSimilarityPercentage = $similarityPercentage;
-                    $searchItem = $item;
-                }
-                $itemNameArray[] = [
-                    'ItemCode'=> $item->ItemCode,
-                    'ItemName'=> $item->ItemName,
-                    'UOM'=> $item->UOM,
-                    'Percentage'=> $similarityPercentage,
-                    'SaleRate'=> $item->SaleRate ? $item->SaleRate : $item->LastRate ,
-                    'VenderName'=> $item->VenderName ? $item->VenderName : '' ,
-                    'VenderCode'=> $item->VenderCode ? $item->VenderCode : '' ,
-
-                 ];
-                }
-            }
-            usort($itemNameArray, function ($a, $b) {
-                return $b['Percentage'] <=> $a['Percentage'];
-            });
-
-            }
-            else{
-
-                foreach ($searchItemWords as $word) {
-                    $items = ItemSetupNew::where('ItemName', 'like', '%' . $word . '%')->get();
-
-                    if ($items->isEmpty()) {
-                        $items = VenderProductList::where('ItemName', 'like', '%' . $word . '%')->limit(10)->get();
-                    }
-
-                    foreach ($items as $item) {
-                        similar_text($itemName, $item->ItemName, $similarityPercentage);
-
-                        if ($similarityPercentage > $highestSimilarityPercentage) {
-                            $highestSimilarityPercentage = $similarityPercentage;
-                            $searchItem = $item;
-                        }
-
-                        $itemNameArray[] = [
-                            'ItemCode'    => $item->ItemCode,
-                            'ItemName'    => $item->ItemName,
-                            'UOM'         => $item->UOM,
-                            'Percentage'  => $similarityPercentage,
-                            'SaleRate'    => $item->SaleRate ? $item->SaleRate : $item->LastRate,
-                            'VenderName'=> $item->VenderName ? $item->VenderName : '' ,
-                            'VenderCode'=> $item->VenderCode ? $item->VenderCode : '' ,
-                        ];
-
-                        // Sort the array in descending order based on 'Percentage' as you iterate
-                        usort($itemNameArray, function ($a, $b) {
-                            return $b['Percentage'] <=> $a['Percentage'];
-                        });
-
-                        // Optionally limit the array to a certain number of items
-                        $itemNameArray = array_slice($itemNameArray, 0, 10);
-                    }
-                }
-
-            if ($searchItem) {
-                info( 'Most Similar Item: ' . $searchItem->ItemName . ' (Similarity Percentage: ' . $highestSimilarityPercentage . '%)');
-            } else {
-                info( 'No matching item found.');
-            }
-            // info($searchItem);
-
-
-
-        }
-        info($searchItem);
-        if ($searchItem){
-            $rowData['ItemCodeget'] = $searchItem->ItemCode;
-            $rowData['ItemNameget'] = $itemNameArray;
-
-            $rowData['UOMget'] = $searchItem->UOM;
-            $rowData['Priceget'] = $searchItem->SaleRate;
-            $rowData['Vendorcode'] = '';
-            $rowData['Vendor'] = '';
-
-            if($searchItem->ItemCode){
-                $venditems = VenderProductList::where('ItemCode',$searchItem->ItemCode)->first();
-                // info('Ven'.$venditems);
-
-                if($venditems){
-                    $rowData['Priceget'] = $venditems->LastRate;
-                    $rowData['UOMget'] = $venditems->UOM;
-                    $rowData['Vendorcode'] =$venditems->VenderCode;
-                    $rowData['Vendor'] = $venditems->VenderName;
-                }
-            }
-        }else{
-
-            $rowData['ItemCodeget'] = '';
-            $rowData['ItemNameget'] = '';
-            $rowData['UOMget'] = '';
-            $rowData['Priceget'] = '';
-            $rowData['Vendorcode'] = '';
-            $rowData['Vendor'] = '';
-        }
-
-            $rowData['ItemCode'] = $itemCode;
-            $rowData['Impa'] = $Impa;
-            $rowData['ItemName'] = $itemName;
-            $rowData['percentage'] = $highestSimilarityPercentage;
-            $rowData['UOM'] = $uom;
-            $rowData['VPrice'] = $vendorPrice;
-            $rowData['Price'] = $sellPrice;
-            $rowData['VendorName'] = $VendorName;
-            $rowData['Vpart'] = $Vpart;
-            $rowData['Qty'] = $Qty;
-
-            $data[] = $rowData;
-        }
-
-        return response()->json($data);
-    }
 
 public function ExportQuataion(Request $request)
 {
-        $MBranchCode = Auth::user()->BranchCode;
+    $MBranchCode = Auth::user()->BranchCode;
+    $quoteno = $request->quoteno;
 
-    // Load the existing Excel file with the desired format
+    $QuoteMaster = Quote::where('QuoteNo', $quoteno)->where('BranchCode', $MBranchCode)->first();
+
+    if (!$QuoteMaster) {
+        return response()->json(['error' => 'Quote not found.'], 404);
+    }
+
     $templatePath = 'Reports/export.xlsx';
     $spreadsheet = IOFactory::load($templatePath);
     $sheet = $spreadsheet->getActiveSheet();
-    $quoteno = $request->quoteno;
 
-    $QuoteMaster = Quote::where('QuoteNo',$quoteno)->where('BranchCode',$MBranchCode)->first();
-    // Retrieve the QuoteDetails data
-    $CustomerName = $QuoteMaster->CustomerName;
-    $VesselName =$QuoteMaster->VesselName;
-    $EventNo =  $QuoteMaster->EventNo;
-    $QuoteNo =  $quoteno;
-    $Department =$QuoteMaster->DepartmentName;
-    $CustomerRef = $QuoteMaster->CustomerRefNo;
-    $Date =date('d/M/Y',strtotime($QuoteMaster->QDate));
-    $Terms = $QuoteMaster->Terms;
-    // Set the values for specific rows and columns
-    $sheet->setCellValue('A8', 'Customer Name: ' . $CustomerName);
-    $sheet->setCellValue('A9', 'Vessel Name: ' . $VesselName);
-    $sheet->setCellValue('A11', 'Event No: ' . $EventNo);
-    $sheet->setCellValue('A12', 'Quote No: ' . $QuoteNo);
-    $sheet->setCellValue('E10', 'Department: ' . $Department);
-    $sheet->setCellValue('E11', 'Customer Ref #: ' . $CustomerRef);
-    $sheet->setCellValue('E12', 'Dated: ' . $Date);
-    $sheet->setCellValue('E13', 'Terms: ' . $Terms);
-    $MBranchCode = config('app.MBranchCode');
-    $QuoteDetails = QuoteDetails::where('QuoteNo', $quoteno)->where('BranchCode', $MBranchCode)->get();
+    // Set header info
+    $sheet->setCellValue('A8', 'Customer Name: ' . $QuoteMaster->CustomerName);
+    $sheet->setCellValue('A9', 'Vessel Name: ' . $QuoteMaster->VesselName);
+    $sheet->setCellValue('A11', 'Event No: ' . $QuoteMaster->EventNo);
+    $sheet->setCellValue('A12', 'Quote No: ' . $quoteno);
+    $sheet->setCellValue('E10', 'Department: ' . $QuoteMaster->DepartmentName);
+    $sheet->setCellValue('E11', 'Customer Ref #: ' . $QuoteMaster->CustomerRefNo);
+    $sheet->setCellValue('E12', 'Dated: ' . date('d/M/Y', strtotime($QuoteMaster->QDate)));
+    $sheet->setCellValue('E13', 'Terms: ' . $QuoteMaster->Terms);
 
-    $data = [];
+    // Fetch detail items
+    $QuoteDetails = DB::table('quotedetails')
+        ->where('QuoteNo', $quoteno)
+        ->where('BranchCode', $MBranchCode)
+        ->orderBy('SNo', 'asc')
+        ->get();
+
+    $rowIndex = 16;
     $totalSum = 0;
-    foreach ($QuoteDetails as $key => $Details) {
-        $rowData = [
-            $Details->SNo,
-            $Details->Qty,
-            $Details->PUOM,
-            $Details->ItemName,
-            $Details->CustomerNotes,
-            $Details->IMPAItemCode,
-            $Details->SuggestPrice,
-            $Details->Total
-        ];
-        $totalSum += $Details->Total;
-        $data[] = $rowData;
-    }
 
-    // Define the starting cell for the table in the Excel file
-    $startRow = 16; // Adjust as needed
-    $startColumn = 'A'; // Adjust as needed
-
-    // Export the table data to the Excel file
-    $rowIndex = $startRow;
-    foreach ($data as $row) {
-        $columnIndex = $startColumn;
-        foreach ($row as $cellValue) {
-            $sheet->setCellValue($columnIndex . $rowIndex, $cellValue);
-            $columnIndex++;
-        }
+    foreach ($QuoteDetails as $item) {
+        $sheet->setCellValue('A' . $rowIndex, $item->SNo);
+        $sheet->setCellValue('B' . $rowIndex, $item->Qty);
+        $sheet->setCellValue('C' . $rowIndex, $item->PUOM);
+        $sheet->setCellValue('D' . $rowIndex, $item->ItemName);
+        $sheet->setCellValue('E' . $rowIndex, $item->CustomerNotes);
+        $sheet->setCellValue('F' . $rowIndex, $item->IMPAItemCode);
+        $sheet->setCellValue('G' . $rowIndex, $item->SuggestPrice);
+        $sheet->setCellValue('H' . $rowIndex, $item->Total);
+        $totalSum += $item->Total;
         $rowIndex++;
     }
-// Set the sum of Total in the last row and column H
-    $lastRowIndex = $rowIndex; // Index of the last row of the table
-    $disRowIndex = $rowIndex+1; // Index of the last row of the table
-    $totRowIndex = $disRowIndex+1; // Index of the last row of the table
-    $sheet->setCellValue('F' . $lastRowIndex, 'Total Amount');
-    $sheet->setCellValue('H' . $lastRowIndex, $totalSum);
+
+    // Totals
+    $sheet->setCellValue('F' . $rowIndex, 'Total Amount');
+    $sheet->setCellValue('H' . $rowIndex, $totalSum);
+
+    $discountRow = $rowIndex + 1;
+    $netAmountRow = $discountRow + 1;
+
     $inv = (float) $request->inv;
-    if($inv !== 0){
-        $discount = $inv*$totalSum/100;
-    }else{
-        $discount = 0;
-    }
+    $discount = $inv !== 0 ? ($inv * $totalSum / 100) : 0;
+    $netAmount = $totalSum - $discount;
 
+    $sheet->setCellValue('F' . $discountRow, 'Discount%');
+    $sheet->setCellValue('G' . $discountRow, $inv . '%');
+    $sheet->setCellValue('H' . $discountRow, $discount);
 
-    $tot = (float) $totalSum - (float) $discount;
-    $sheet->setCellValue('F' . $disRowIndex, 'Discount%');
-    $sheet->setCellValue('G' . $disRowIndex, $inv.'%');
-    $sheet->setCellValue('H' . $disRowIndex, $discount);
-    $sheet->setCellValue('F' . $totRowIndex, 'Net Amount');
-    $sheet->setCellValue('H' . $totRowIndex, $tot);
-    // Save the modified Excel file
-    $exportPath = 'Reports/Quotation'.$quoteno.'.xlsx'; // Specify the path to save the exported file
+    $sheet->setCellValue('F' . $netAmountRow, 'Net Amount');
+    $sheet->setCellValue('H' . $netAmountRow, $netAmount);
+
+    // Save and return
+    $exportPath = 'Reports/Quotation' . $quoteno . '.xlsx';
     $writer = new Xlsx($spreadsheet);
     $writer->save($exportPath);
-    $filename = 'exported_file_' . $exportPath;
-    $sanitizedFilename = str_replace(['/', '\\'], '_', $filename);
 
-    // $temporaryUrl = Storage::url($exportPath);
-    return response()
-    ->download($exportPath, $sanitizedFilename)
-    ->deleteFileAfterSend(false); // Deletes the temporary file after it's sent
-    // return response()->download($exportPath)->deleteFileAfterSend(true);
+    $filename = 'exported_file_' . str_replace(['/', '\\'], '_', $exportPath);
+
+    return response()->download($exportPath, $filename)->deleteFileAfterSend(false);
 }
+
 
 //     private function getTableData($quoteno){
 //         $MBranchCode = Auth::user()->BranchCode;

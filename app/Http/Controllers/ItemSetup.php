@@ -17,6 +17,73 @@ use Illuminate\Support\Facades\DB;
 
 class ItemSetup extends Controller
 {
+ 
+ 
+ 
+ 
+ 
+// public function itemnameserimpa(Request $request)
+// {
+    
+//     $impaCode = trim($request->input('impa'));
+//     $BranchCode = auth()->user()->BranchCode;
+
+//     \Log::info("Searching IMPA: $impaCode for BranchCode: $BranchCode");
+
+//     $items = collect(DB::select("SELECT ItemCode, ItemName, Type, UOM, IMPACode, TypeName, LastDate FROM qryitemsetupnew WHERE TRIM(IMPACode) = ? AND BranchCode = ? ORDER BY Date DESC LIMIT 10", [$impaCode, $BranchCode]));
+
+//     if ($items->isEmpty()) {
+//         \Log::info("No data in qryitemsetupnew. Falling back to qryvenderproductlist.");
+
+//         $items = collect(DB::select("SELECT ItemCode, ItemName, Type, UOM, IMPAItemCode as IMPACode, VenderName, LastDate FROM qryvenderproductlist WHERE (ChkInactive = 0 OR ChkInactive IS NULL) AND IMPAItemCode = ? AND BranchCode = ? ORDER BY Type DESC, LastDate DESC, ID DESC LIMIT 10", [$impaCode, $BranchCode]));
+//     }
+
+//     \Log::info("Final Items: " . $items->toJson());
+
+//     return response()->json($items);
+// }
+
+
+
+public function itemnameserimpa(Request $request)
+{
+    $impaCode = trim($request->input('impa'));
+    $BranchCode = auth()->user()->BranchCode;
+
+    \Log::info("IMPA: $impaCode | BranchCode: $BranchCode");
+
+    // STEP 1: Primary search in qryitemsetupnew (WITHOUT LastDate)
+    $items = DB::table('qryitemsetupnew')
+        ->select('ItemCode', 'ItemName', 'Type', 'UOM', 'IMPACode', 'TypeName', 'Date as EntryDate') // ✅ Replace LastDate with EntryDate
+        ->whereRaw('TRIM(IMPACode) = ?', [$impaCode])
+        ->where('BranchCode', $BranchCode)
+        ->orderByDesc('Date')
+        ->limit(10)
+        ->get();
+
+    if ($items->isEmpty()) {
+        \Log::info("No data in qryitemsetupnew. Falling back to qryvenderproductlist.");
+
+        // STEP 2: Fallback to qryvenderproductlist
+        $items = DB::table('qryvenderproductlist')
+            ->select('ItemCode', 'ItemName', 'Type', 'UOM', 'IMPAItemCode as IMPACode', 'VenderName', 'LastDate')
+            ->where(function ($query) {
+                $query->where('ChkInactive', 0)
+                      ->orWhereNull('ChkInactive');
+            })
+            ->where('IMPAItemCode', $impaCode)
+            ->where('BranchCode', $BranchCode)
+            ->orderByDesc('Type')
+            ->orderByDesc('LastDate')
+            ->orderByDesc('ID')
+            ->limit(10)
+            ->get();
+    }
+
+    return response()->json($items);
+}
+
+
 
     public function ItemRegisterSetup(Request $request)
     {
@@ -197,61 +264,141 @@ class ItemSetup extends Controller
         ]);
     }
 
+    // public function bulkitemsave(Request $request)
+    // {
+    //     $BranchCode = Auth::user()->BranchCode;
+    //     $WorkUser = Auth::user()->UserName;
+    //     $table = $request->input('dataarray');
+    //     $status = 'start';
+    //     $Allitemcode = [];
+    //     foreach ($table as $row) {
+    //         $saveitem = ItemSetupNew::where('ItemCode', $row['ItemCode'])
+    //             ->where('BranchCode', $BranchCode)
+    //             ->first();
+    //         if ($row['ItemCode'] == '' && $row['ItemName'] !== null) {
+    //             $lastid = ItemSetupNew::where('BranchCode', $BranchCode)->max('ItemCode');
+    //             // Extract the prefix and numeric part
+    //             $prefix = substr($lastid, 0, 1);
+    //             $numericPart = substr($lastid, 1);
+
+    //             // Increment the numeric part
+    //             $newNumericPart = intval($numericPart) + 1;
+
+    //             // Combine the prefix and incremented numeric part
+    //             $nItemCode = $prefix . $newNumericPart;
+    //         } else {
+    //             // info($row['ItemName']);
+    //             $nItemCode = $row['ItemCode'];
+    //         }
+    //         if ($row['ItemName'] !== null) {
+
+    //             if (!$saveitem) {
+    //                 $saveitem = new ItemSetupNew();
+    //                 $saveitem->ItemCode = $nItemCode;
+    //             }
+
+    //             $saveitem->ItemName = $row['ItemName'];
+    //             $saveitem->UOM = $row['UOM'];
+    //             $saveitem->SaleRate = $row['Price'];
+    //             $saveitem->BranchCode = $BranchCode;
+    //             $saveitem->save();
+    //         }
+
+    //         $Allitemcode[] = [
+    //             'itemcode' => $nItemCode,
+    //         ];
+
+    //         if ($saveitem) {
+    //             $status = 'saved';
+    //         }
+    //     }
+
+    //     return response()->json([
+    //         'status' => $status,
+    //         'BranchCode' => $BranchCode,
+    //         'Allitemcode' => $Allitemcode,
+    //     ]);
+    // }
+    
+    
+    
+    
+    
     public function bulkitemsave(Request $request)
-    {
-        $BranchCode = Auth::user()->BranchCode;
-        $WorkUser = Auth::user()->UserName;
-        $table = $request->input('dataarray');
-        $status = 'start';
-        $Allitemcode = [];
-        foreach ($table as $row) {
-            $saveitem = ItemSetupNew::where('ItemCode', $row['ItemCode'])
-                ->where('BranchCode', $BranchCode)
-                ->first();
-            if ($row['ItemCode'] == '' && $row['ItemName'] !== null) {
-                $lastid = ItemSetupNew::where('BranchCode', $BranchCode)->max('ItemCode');
-                // Extract the prefix and numeric part
-                $prefix = substr($lastid, 0, 1);
-                $numericPart = substr($lastid, 1);
+{
+    return "test";
+    
+    $BranchCode = Auth::user()->BranchCode;
+    $WorkUser = Auth::user()->UserName;
+    $table = $request->input('dataarray');
+    $status = 'start';
+    $Allitemcode = [];
 
-                // Increment the numeric part
-                $newNumericPart = intval($numericPart) + 1;
-
-                // Combine the prefix and incremented numeric part
-                $nItemCode = $prefix . $newNumericPart;
-            } else {
-                // info($row['ItemName']);
-                $nItemCode = $row['ItemCode'];
-            }
-            if ($row['ItemName'] !== null) {
-
-                if (!$saveitem) {
-                    $saveitem = new ItemSetupNew();
-                    $saveitem->ItemCode = $nItemCode;
-                }
-
-                $saveitem->ItemName = $row['ItemName'];
-                $saveitem->UOM = $row['UOM'];
-                $saveitem->SaleRate = $row['Price'];
-                $saveitem->BranchCode = $BranchCode;
-                $saveitem->save();
-            }
-
-            $Allitemcode[] = [
-                'itemcode' => $nItemCode,
-            ];
-
-            if ($saveitem) {
-                $status = 'saved';
-            }
+    foreach ($table as $row) {
+          info('Saving row: ' . json_encode($row));
+        // Generate new ItemCode if missing
+        if (empty($row['ItemCode']) && !empty($row['ItemName'])) {
+            $lastid = ItemSetupNew::where('BranchCode', $BranchCode)->max('ItemCode');
+            $prefix = substr($lastid, 0, 1);
+            $numericPart = substr($lastid, 1);
+            $newNumericPart = intval($numericPart) + 1;
+            $nItemCode = $prefix . $newNumericPart;
+        } else {
+            $nItemCode = $row['ItemCode'];
         }
 
-        return response()->json([
-            'status' => $status,
-            'BranchCode' => $BranchCode,
-            'Allitemcode' => $Allitemcode,
-        ]);
+        // Check if item already exists
+        $saveitem = ItemSetupNew::where('ItemCode', $nItemCode)
+            ->where('BranchCode', $BranchCode)
+            ->first();
+
+        if (!empty($row['ItemName'])) {
+            if (!$saveitem) {
+                $saveitem = new ItemSetupNew();
+                $saveitem->ItemCode = $nItemCode;
+            }
+
+            // Save or update item
+            $saveitem->ItemName = $row['ItemName'] ?? '';
+            $saveitem->UOM = $row['UOM'] ?? '';
+            $saveitem->SaleRate = $row['Price'] ?? 0;
+            $saveitem->BranchCode = $BranchCode;
+            $saveitem->WorkUser = $WorkUser;
+            $saveitem->save();
+
+            $status = 'saved';
+        }
+
+        // Prepare response object for JS table rendering
+       $Allitemcode[] = [
+    'itemcode' => $nItemCode,
+    'itemname' => $row['ItemName'],
+    'qty' => $row['Qty'] ?? 0,
+    'uom' => $row['UOM'],
+    'vpart' => $row['VPart'] ?? '',
+    'vendor_price' => $row['VendorPrice'] ?? '',
+    'sell_price' => $row['SellPrice'] ?? '',
+    'total' => $row['Total'] ?? '',
+    'vendorname' => $row['VendorName'] ?? '',
+    'customer_notes' => $row['CustomerNotes'] ?? '',
+    'vendor_notes' => $row['VendorNotes'] ?? '',
+    'internal_notes' => $row['InternalNotes'] ?? '',
+    'vessel_notes' => $row['VesselNotes'] ?? '',
+    'vendorcode' => $row['VendorCode'] ?? '',
+    'impa' => $row['IMPA'] ?? '',
+];
+
     }
+
+    return response()->json([
+        'status' => $status,
+        'BranchCode' => $BranchCode,
+        'Allitemcode' => $Allitemcode,
+    ]);
+  
+
+}
+
 
     public function itemreg_store(Request $request)
     {

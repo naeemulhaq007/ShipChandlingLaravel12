@@ -64,6 +64,7 @@
             </div>
             <div class="row">
 
+                       
                 <div class="col-form-label row ml-2 ">
                     <strong>Quotation # :&nbsp;</strong> <label class="quote_no text-blue" for="quote_no"><input
                             type="number" name="quote_no" class="col-sm-6 form-control form-control-sm" id="quote_no"
@@ -343,7 +344,7 @@
                     </div>
                     <div class="row pb-2">
 
-                        {{-- <a href="mailto:recipient@example.com?subject=Excel%20Export&body=Please%20find%20the%20attached%20Excel%20file.%0A%0AAttach%20the%20file%20manually%20from%20your%20computer.">Open in Outlook</a> --}}
+                   
 
 
                     </div>
@@ -374,7 +375,7 @@
     </div>
     <div class="card">
 
-        <div class="card-body item-data ">
+        <div class="card-body item-data">
 
             <div class="row">
 
@@ -409,7 +410,7 @@
                             <span class="Txtspan">UOM</span>
                         </div>
 
-                        <div class="inputbox col-sm-1">
+                        <div class="inputbox col-sm-2">
                             <input type="text" value=''id="vpart_no" required>
                             <span class="Txtspan">V-Part#</span>
                         </div>
@@ -428,26 +429,35 @@
 
                         <div class="inputbox col-sm-1">
                             <input type="number" value='' id="vendor_price">
-                            <span class="Txtspan">V. Price</span>
+                            <span class="Txtspan">V.Price</span>
                         </div>
 
                         <div class="inputbox col-sm-1">
                             <input type="number" value=''  tabindex="18" onkeyup="reSum();" onblur="reSum();"
                                 id="sell_price">
-                            <span class="Txtspan">S. Price</span>
+                            <span class="Txtspan">S.Price</span>
                         </div>
 
                         <div class="inputbox col-sm-1">
                             <input type="number" readonly value='' id="total" required>
                             <span class="Txtspan">Total</span>
                         </div>
+                        
+      
 
-                        <div class="col-sm-1 mt-auto">
-                            <button class="btn btn-success" id="saveitem" type="button">Add</button>
-                            <button class="btn btn-primary" id="clearform" type="button">Clear</button>
-                        </div>
+                         
+                         </div>
+    <div class="row">
+    <div class="inputbox col-sm-2 d-flex gap-2 align-items-center pt-2">
+        <button class="btn btn-primary" id="clearform" type="button">C</button>
+        <button class="btn btn-success" id="saveitem" type="button">Add</button>
+    </div>
+</div>
 
+                   
                     </div>
+              
+              
 
                 </div>
 
@@ -461,7 +471,7 @@
 
                         <div class="inputbox col-md-4">
                             <textarea tabindex="1" id="item_desc" {{-- data-toggle="modal" data-target="#searchrmod" --}} required></textarea>
-                            <span>Item Desc</span>
+                            <span>Item Descs</span>
                         </div>
                         <div id="suggestions"></div>
 
@@ -504,35 +514,39 @@
 
 
 
-            <div class=" mx-auto">
-                <table class="table  table-inverse" id="itemsgrid">
-                    <thead class="bg-info ">
-                        <tr>
-                            <th class="px5">SNO</th>
-                            <th class="px5">IMPA</th>
-                            <th class="px5">Item&nbsp;Code</th>
-                            <th style="padding-left: 7rem;padding-right: 7rem">Item&nbsp;Name</th>
-                            <th class="px5">Qty</th>
-                            <th class="px5">UOM</th>
-                            <th class="px5">Vpart</th>
-                            <th class="px5">Vendor&nbsp;Price</th>
-                            <th class="px5">Sell&nbsp;Price</th>
-                            <th class="px5">Total&nbsp;Price</th>
-                            <th style="padding-left: 5rem;padding-right: 5rem">Vendor&nbsp;Name</th>
-                            <th class="px5">Customer&nbsp;Note</th>
-                            <th class="px5">Vendor&nbsp;Note</th>
-                            <th class="px5">Internal&nbsp;Buyer&nbsp;Note</th>
-                            <th hidden>vessel_notes</th>
-                            <th hidden>VendorCode</th>
-
-                        </tr>
-                    </thead>
-                    <tbody id="myTable">
 
 
-                    </tbody>
-                </table>
-            </div>
+
+<div class="table-responsive">
+    <table class="table table-bordered table-hover text-sm" id="itemsgrid" style="min-width: 1200px;">
+        <thead class="bg-info text-white text-center">
+            <tr>
+                <th style="min-width: 30px;">SN</th>
+                <th style="min-width: 90px;">IMPA</th>
+                <th style="min-width: 100px;">Item Code</th>
+                <th style="min-width: 230px;">Item Name</th>
+                <th style="min-width: 60px;">Qty</th>
+                <th style="min-width: 70px;">UOM</th>
+                <th style="min-width: 80px;">Vpart</th>
+                <th style="min-width: 100px;">Vendor Price</th>
+                <th style="min-width: 100px;">Sell Price</th>
+                <th style="min-width: 100px;">Total Price</th>
+                <th style="min-width: 180px;">Vendor Name</th>
+                <th style="min-width: 150px;">Customer Note</th>
+                <th style="min-width: 150px;">Vendor Note</th>
+                <th style="min-width: 200px;">Internal Buyer Note</th>
+                <th style="display: none;">vessel_notes</th>
+                <th style="display: none;">VendorCode</th>
+            </tr>
+        </thead>
+        <tbody id="myTable">
+            
+        </tbody>
+    </table>
+</div>
+
+
+    
 
             <div class="position-fixed bg-success text-white rounded p-3" id="myElement"
                 style="right: -300px; top: 50px; transition: right 0.5s;">
@@ -549,7 +563,7 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="row py-1">
-                        <a href="/" class="btn btn-primary col-sm-2 mx-1">Close</a>
+                        <a href="/quotation" class="btn btn-primary col-sm-2 mx-1">Close</a>
                         <button class="btn btn-primary col-sm-2 mx-1">Send</button>
                         <button id="btnImport" class="btn btn-primary col-sm-2 mx-1">Import</button>
                         <a id="btnExport" class="btn btn-primary col-sm-2 mx-1">Export</a>
@@ -713,13 +727,15 @@
 
 
     <div class="modal fade" id="impalist" role="dialog">
-        <div class="modal-dialog "
-            style=" max-width: 100%;height: 100vh;">
+       <div class="modal-dialog modal-xl modal-dialog-scrollable">
+
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label=""><span>×</span></button>
+                    <button type="button" class="close" data-dismiss="modal" aria-label=""><span>Ãƒâ€”</span></button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body" style="max-height: 80vh; overflow-y: auto;">
+
+                <!--<div class="modal-body">-->
                     <div class="col-sm-12">
                         <div class="row pb-2">
                             <input type="text" class="form-control col-sm-1" name="TxtIMPAItemCode"
@@ -746,8 +762,8 @@
                                         <th>Last&nbsp;Update</th>
                                         <th>User</th>
                                         <th>Item&nbsp;Code</th>
-                                        <th hidden>VendorPN</th>
-                                        <th hidden>VendorCode</th>
+                                        <th>VendorPN</th>
+                                        <th>VendorCode</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -760,20 +776,36 @@
                                             ->get();
                                     @endphp
                                     @foreach ($SPIMPAItem as $item)
-                                        <tr>
-                                            <td>{{ $item->ItemCode }}</td>
-                                            <td>{{ $item->ItemName }}</td>
-                                            <td>{{ $item->UOM }}</td>
-                                            <td>{{ round($item->Cost, 2) }}</td>
-                                            <td>{{ $item->VendorName }}</td>
-                                            <td>{{ round($item->SalePrice, 2) }}</td>
-                                            <td>{{ $item->TypeName }}</td>
-                                            <td>{{ date('d-M-Y', strtotime($item->LastUpdate)) }}</td>
-                                            <td>{{ $item->WorkUser }}</td>
-                                            <td>{{ $item->StockCode }}</td>
-                                            <td hidden>{{ $item->VendorPN }}</td>
-                                            <td hidden>{{ $item->VendorCode }}</td>
-                                        </tr>
+                                    <tr>
+    <td>{{ $item->ItemCode ?? 'NULL' }}</td>
+    <td>{{ $item->ItemName ?? 'NULL' }}</td>
+    <td>{{ $item->UOM ?? 'NULL' }}</td>
+    <td>{{ isset($item->Cost) ? round($item->Cost, 2) : 'NULL' }}</td>
+    <td>{{ $item->VendorName ?? 'NULL' }}</td>
+    <td>{{ isset($item->SalePrice) ? round($item->SalePrice, 2) : 'NULL' }}</td>
+    <td>{{ $item->TypeName ?? 'NULL' }}</td>
+    <td>{{ !empty($item->LastUpdate) ? date('d-M-Y', strtotime($item->LastUpdate)) : 'NULL' }}</td>
+    <td>{{ $item->WorkUser ?? 'NULL' }}</td>
+    <td>{{ $item->StockCode ?? 'NULL' }}</td>
+    <td>{{ $item->VendorPN ?? 'NULL' }}</td>
+    <td>{{ $item->VendorCode ?? 'NULL' }}</td>
+</tr>
+
+                                        <!--<tr>-->
+                                        <!--<td>{{ $item->ItemCode ?? 'N/A' }}</td>-->
+
+                                        <!--    <td>{{ $item->ItemName }}</td>-->
+                                        <!--    <td>{{ $item->UOM }}</td>-->
+                                        <!--    <td>{{ round($item->Cost, 2) }}</td>-->
+                                        <!--    <td>{{ $item->VendorName }}</td>-->
+                                        <!--    <td>{{ round($item->SalePrice, 2) }}</td>-->
+                                        <!--    <td>{{ $item->TypeName }}</td>-->
+                                        <!--    <td>{{ date('d-M-Y', strtotime($item->LastUpdate)) }}</td>-->
+                                        <!--    <td>{{ $item->WorkUser }}</td>-->
+                                        <!--    <td>{{ $item->StockCode }}</td>-->
+                                        <!--    <td>{{ $item->VendorPN }}</td>-->
+                                        <!--    <td>{{ $item->VendorCode }}</td>-->
+                                        <!--</tr>-->
                                     @endforeach
                                 </tbody>
                             </table>
@@ -796,7 +828,7 @@
                     </button>
                 </div>
                 <div class="modal-body" id="previewModalBody">
-                    <!-- Email preview content will be inserted here -->
+                     Email preview content will be inserted here 
                 </div>
             </div>
         </div>
@@ -874,7 +906,7 @@
                     // handle error response
                 }
             });
-        }
+        };
         window.onunload = function() {
             var message = 'unset';
             var QuoteNo = $('#quote_no').val();
@@ -984,177 +1016,111 @@
             $('#netprofit').text((netsales - netcost).toFixed(2));
 
         }
-        function showSuggestions(item) {
-                var suggestions = $('#suggestions');
-                suggestions.empty();
-                // console.log(item);
-                if (item.length === 0) {
-                    suggestions.hide();
-                    return;
-                }
+ 
+            
+      function ImpaSearch($value) {
+      $('#impa').prop('disabled', true);
+  
+ 
 
-                var ul = $('<ul>').addClass('suggestions-list list-group').css({
-                    'position': 'absolute',
-                    'z-index': '100',
-                    'width': '800px'
-                });
+    var DepartmentCode = $('#DepartmentCode').val();
+    var GodownCode = $('#GodownCode').val();
+    var ChkDeckEngin = $('#ChkDeckEngin').val();
 
-                for (var i = 0; i < item.length; i++) {
-                    console.log(item[i]);
-                    var lastdate = new Date(item[i].LastDate);
-                    const lDate = lastdate.toISOString().substring(0, 10);
-                    // item[i].LastDate
-                    var li = $('<li>')
-                        .addClass('list-group-item')
-                        .text('ItemName : ' + item[i].ItemName + ',|  Type : ' + item[i].Type + ',| Last Date : '+ lDate )
-                        .data('ITemCode', item[i].ItemCode)
-                        .data('ItemName', item[i].ItemName)
-                        .data('UOM', item[i].UOM)
-                        .data('Type', item[i].Type)
-                        .data('VendorPrice', item[i].VendorPrice)
-                        .data('VenderCode', item[i].VenderCode)
-                        .data('VenderName', item[i].VenderName)
-                        .data('OurPrice', item[i].OurPrice)
-                        .data('VPartCode', item[i].VPartCode)
-                        .data('lastdate', lDate)
-                    ul.append(li);
-                }
-
-                // adjust the position of the ul element
-                ul.css({
-                    'top': -32 + 'px',
-                    'left': 4 + 'px'
-                });
-
-                suggestions.append(ul).show();
-
-            }
-        function ImpaSearch($value){
-            var DepartmentCode = $('#DepartmentCode').val();
-                    var GodownCode = $('#GodownCode').val();
-                    var ChkDeckEngin = $('#ChkDeckEngin').val();
-
-
-                    $.ajaxSetup({
-                        headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                        }
-                    });
-                    $.ajax({
-                        type: 'post',
-                        url: '{{ URL::to('itemnameserimpa') }}',
-                        data: {
-                            'impa': $value,
-
-                        },
-                        beforeSend: function() {
-                            // Show the overlay and spinner before sending the request
-                            $('.overlay').show();
-                        },
-                        success: function(item) {
-                            console.log(item);
-                            if (item.length > 1) {
-                                // alert('list');
-                                showSuggestions(item);
-                            } else if (item.length = 1) {
-                                $('#item_code').val(item[0].ItemCode);
-                                $('#item_desc').val(item[0].ItemName);
-                                $('#uom').val(item[0].UOM);
-                                $('#vpart_no').val(item[0].VPartCode);
-                                $('#vendor_price').val(parseFloat(item[0].VendorPrice).toFixed(
-                                    2));
-                                $('#sell_price').val(parseFloat(item[0].OurPrice).toFixed(2));
-                                $('select[name="VenderName"]').val(item[0].VenderCode);
-                                var lastdate = new Date(item[0].LastDate);
-                                const LDate = lastdate.toISOString().substring(0, 10);
-
-                                $('#sell_price').attr('title', LDate);
-
-
-                                $('#qty').focus();
-                                // alert('item');
-                                // console.log(item[0].ITemCode);
-                            }
-                        },
-                        error: function(xhr, status, error) {
-                            // Handle error
-                        },
-                        complete: function() {
-                            // Hide the overlay and spinner after the request is complete
-                            $('.overlay').hide();
-                        }
-                    });
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
+    });
+
+    $.ajax({
+        type: 'post',
+        url: '{{ URL::to("itemnameserimpa") }}',
+        data: {
+            impa: $value
+        },
+        beforeSend: function() {
+            $('.overlay').show();
+
+            // $('#item_code').val('');
+            $('#item_desc').val('');
+            $('#uom').val('');
+            $('#vpart_no').val('');
+            $('#vendor_price').val('');
+            $('#sell_price').val('');
+            $('select[name="VenderName"]').val('');
+            $('#sell_price').attr('title', '');
+        },
+        success: function(item) {
+            console.log(item);
+
+            if (item.length > 1) {
+           
+            } else if (item.length === 1 && item[0].ItemCode) {
+                $('#item_code').val(item[0].ItemCode);
+                $('#item_desc').val(item[0].ItemName);
+                $('#uom').val(item[0].UOM);
+                $('#vpart_no').val(item[0].VPartCode);
+                $('#vendor_price').val(parseFloat(item[0].VendorPrice).toFixed(2));
+                $('#sell_price').val(parseFloat(item[0].OurPrice).toFixed(2));
+                $('select[name="VenderName"]').val(item[0].VenderCode);
+                
+                 // âœ… Append vendor option dynamically if it doesn't exist
+    const vendorCode = item[0].VenderCode;
+    const vendorName = item[0].VenderName ?? 'Unnamed Vendor';
+    const vendorDropdown = $('select[name="VenderName"]');
+
+                if (item[0].LastDate) {
+                    var lastdate = new Date(item[0].LastDate);
+                    var LDate = lastdate.toISOString().substring(0, 10);
+                    $('#sell_price').attr('title', LDate);
+                }
+
+                $('#qty').focus();
+                
+     
+
+            } else {
+              
+                alert("There Is No Item in IMPA Code .");
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('IMPA search error:', error);
+        },
+        complete: function() {
+            $('.overlay').hide();
+        }
+    });
+}
+
+
+     
         $(document).ready(function() {
 
-            $('#btnimpa').click(function (e) {
-                e.preventDefault();
-                $('#impalist').modal('show');
-
-            });
-
-                // }
-
-            itemtablle = $('#itemsgrid').DataTable({
-                scrollY: 350,
-                deferRender: true,
-                scroller: true,
-                paging: false,
-                info: false,
-                ordering: false,
-                searching: false,
-                dom: 'Bfrtip',
-                // language: {
-                //   "emptyTable": ""
-                // },
-
-                buttons: [
 
 
+          let impaSearchDone = false;
+$('#btnimpa').click(function (e) {
+    e.preventDefault();
+
+    if (impaSearchDone) return; 
+
+    $('#impalist').modal('show');
+
+         if (impaSearchDone) {
+        e.preventDefault(); // ❌ Don't allow manual close if search is already done
+    }
+    $('#impa').prop('disabled', true);
+    $('#btnimpa').addClass('disabled').css('pointer-events', 'none');
+
+    impaSearchDone = true;
+});
 
 
-                    {
-                        text: 'Print',
-                        className: 'btn btn-primary',
-
-                        action: function(e, dt, node, config) {
-                            var quotno = $('#quote_no').val();
-
-                            window.open("/print/quotation/" + quotno, "_blank");
-                        }
-                    },
-                    {
-                        text: 'Register Item',
-                        className: 'btn btn-primary',
-                        action: function(e, dt, node, config) {
-                            RegisterItem();
-                        }
-                    },
-                    {
-                        text: 'Save All',
-                        className: 'btn btn-primary',
-                        action: function(e, dt, node, config) {
-                            updateDataOrder();
-                        }
-                    },
-                    {
-                        text: 'Delete Row',
-                        className: 'btn btn-danger',
-                        action: function(e, dt, node, config) {
-                            deleterow();
-                        }
-                    },
-                    // 'colvis'
-                ]
-
-                // autoClose: true,
-                //     columnDefs: [
-                //          {
-                //     targets: -1,
-                //     visible: false
-                // } ]
-
-            });
+    
+         
+            
 
             $(".dt-button").removeClass("dt-button")
 
@@ -1173,14 +1139,7 @@
                 update: function(event, ui) {
                     updateSNo();
                 },
-                //   start: function(event, ui) {
-                //     // detach the contenteditable functionality from the cells
-                //     $('#itemsgrid tbody td').attr('contenteditable', false);
-                //   },
-                //   stop: function(event, ui) {
-                //     // reattach the contenteditable functionality to the cells
-                //     $('#itemsgrid tbody td').attr('contenteditable', true);
-                //   }
+          
             });
             $('#itemsgrid tbody').on('click', 'tr', function () {
                 $(this).toggleClass('selected');
@@ -1252,11 +1211,7 @@
                     });
 
                 }
-                // dataarray.forEach(function(item) {
-
-
-
-                // });
+         
 
                 let table2 = document.getElementById('myTable');
                 table2.innerHTML = ""; // Clear the table
@@ -1271,7 +1226,8 @@
                         return cell;
                     }
                     createCell(Id);
-                    createCell('');
+                       createCell(impa);  
+                    // createCell('');
                     createCell(item.ItemCode);
                     createCell(item.ItemName);
                     let QtyCell = createCell(item.QTY);
@@ -1318,43 +1274,26 @@
 
             });
 
-            $('#impa').on('keypress', function(event) {
-                if (event.keyCode === 13) {
-                    $value = $(this).val();
-                    ImpaSearch($value);
-                }
-            });
-            $('#impa').on('blur', function(event) {
-                    $value = $(this).val();
-                    ImpaSearch($value);
-            });
+        
+            // $('#impa').on('blur', function(event) {
+            //         $value = $(this).val();
+            //         ImpaSearch($value);
+            // });
+              
+              $('#impa').on('blur', function(event) {
+    if (!impaSearchDone) {
+        let value = $(this).val().trim();
+        if (value !== '') {
+            ImpaSearch(value);
+            impaSearchDone = true;
+        }
+    }
+});
 
 
 
 
-            $(document).on('click', function(event) {
-                var suggestions = $('#suggestions');
-                // check if the clicked element is inside the suggestions box
-                if (!$(event.target).closest(suggestions).length) {
-                    suggestions.hide();
-                }
-            });
-            $(document).on('dblclick', '.suggestions-list li', function() {
-                var suggestions = $('#suggestions');
-
-                $('#item_code').val($(this).data('ITemCode'));
-                $('#item_desc').val($(this).data('ItemName'));
-                $('#uom').val($(this).data('UOM'));
-                $('#vpart_no').val($(this).data('VPartCode'));
-                $('#vendor_price').val(parseFloat($(this).data('VendorPrice')).toFixed(2));
-                $('#sell_price').val(parseFloat($(this).data('OurPrice')).toFixed(2));
-                $('select[name="VenderName"]').val($(this).data('VenderCode'));
-                $('#sell_price').attr('title', $(this).data('lastdate'));
-
-                suggestions.hide();
-
-            });
-
+        
             $('#file-input').on('change', function() {
                 if ($(this).val() != '') {
                     $('#import-button').click();
@@ -1445,48 +1384,110 @@
                     isCtrlPressed = false;
                 }
             });
-            // $("#item_desc").on("keyup", function() {
-            //     keywords = $('#item_desc').val();
-            //     if (keywords.length = 3) {
-            //         // $('#searchrmod').modal('show');
-            //     $('#cusmod').show();
+            $("#item_desc").on("keyup", function() {
+                keywords = $('#item_desc').val();
+               if (keywords.length === 1) {
+ 
+                    $('#searchrmod').modal('show');
+                $('#cusmod').show();
 
-            // //   $('#itemnameser').val(keywords);
+              $('#itemnameser').val(keywords);
 
-            //         // alert('yes');
-            //     }
-            // });
-
-
-
-
-            $(document).on("click", '#clearform', function() {
-
-
-                document.getElementById("sno").value = '';
-                document.getElementById("item_code").value = '';
-                document.getElementById("impa").value = '';
-                document.getElementById("uom").value = '';
-                document.getElementById("vpart_no").value = '';
-                document.getElementById("qty").value = '';
-                document.getElementById("Vendrorname").value = '';
-                document.getElementById("Vendrorname").value = '';
-                //  document.getElementById("vendoredit").innerHTML= '';
-                document.getElementById("vendor_price").value = '';
-                document.getElementById("sell_price").value = '';
-                document.getElementById("total").value = '';
-                document.getElementById("item_desc").value = '';
-                document.getElementById("customer_notes").value = '';
-                document.getElementById("notes").value = '';
-                document.getElementById("internal_notes").value = '';
-                document.getElementById("vessel_notes").value = '';
-                $("#Vendrorname").prop("disabled", false);
-                $('#Vendrorname option:eq(0)').prop('selected', true);
-                $('#Vendrorname').click();
-                $('#vendoredit').click();
-
-
+                    // alert('yes');
+                }
             });
+
+
+
+
+
+
+
+
+
+
+
+
+function clearFormFunction(isSubmitedFromSave = false)
+{
+    impaSearchDone = false;  // ✅ Reset search flag
+
+    document.getElementById("sno").value = '';
+        document.getElementById("impa").value = '';
+    document.getElementById("uom").value = '';
+    document.getElementById("vpart_no").value = '';
+    document.getElementById("qty").value = '';
+    document.getElementById("Vendrorname").value = '';
+    document.getElementById("vendor_price").value = '';
+    document.getElementById("sell_price").value = '';
+    document.getElementById("total").value = '';
+    document.getElementById("item_desc").value = '';
+    document.getElementById("customer_notes").value = '';
+    document.getElementById("notes").value = '';
+    document.getElementById("internal_notes").value = '';
+    document.getElementById("vessel_notes").value = '';
+
+    $("#Vendrorname").prop("disabled", false);
+    $('#Vendrorname option:eq(0)').prop('selected', true);
+    $('#Vendrorname').click();
+    $('#vendoredit').click();
+
+    if (!isSubmitedFromSave) {
+        // $('#impa').val('').prop('disabled', false);
+        $('#item_code').val('').prop('disabled', false);
+        $('#btnimpa').removeClass('disabled').css('pointer-events', 'auto');
+    }
+}
+
+$(document).on("click", '#clearform', function() {
+    clearFormFunction();
+});
+
+            // function clearFormFunction(isSubmitedFromSave = false)
+            // {
+            //       impaSearchDone = false;
+            //     document.getElementById("sno").value = '';
+            //   $('#item_code').val('').prop('disabled', false);
+            //   $('#impa').val('').prop('disabled', false);  
+            //   $('#btnimpa').removeClass('disabled').css('pointer-events', 'auto');
+            //     document.getElementById("uom").value = '';
+            //     document.getElementById("vpart_no").value = '';
+            //     document.getElementById("qty").value = '';
+            //     document.getElementById("Vendrorname").value = '';
+            //     document.getElementById("Vendrorname").value = '';
+            //     //  document.getElementById("vendoredit").innerHTML= '';
+            //     document.getElementById("vendor_price").value = '';
+            //     document.getElementById("sell_price").value = '';
+            //     document.getElementById("total").value = '';
+            //     document.getElementById("item_desc").value = '';
+            //     document.getElementById("customer_notes").value = '';
+            //     document.getElementById("notes").value = '';
+            //     document.getElementById("internal_notes").value = '';
+            //     document.getElementById("vessel_notes").value = '';
+            //     $("#Vendrorname").prop("disabled", false);
+            //     $('#Vendrorname option:eq(0)').prop('selected', true);
+            //     $('#Vendrorname').click();
+            //     $('#vendoredit').click();
+                
+            //     if(!isSubmitedFromSave)
+            //     {
+            //         // add which do you not want to fill 
+            //       $('#impa').val('').prop('disabled', false);  
+            //       $('#btnimpa').val('').prop('disabled', false); 
+            //       $('#item_code').val('').prop('disabled', false);  
+                        
+          
+            //     }
+            // }
+
+            // $(document).on("click", '#clearform', function() {
+            //      impaSearchDone = false; 
+
+            //     clearFormFunction();
+                
+
+
+            // });
 
 
 
@@ -1624,7 +1625,7 @@
             });
 
             function contsaveitem(itemcode) {
-                // var itemCode = document.getElementById("item_code").value;
+                var itemCode = document.getElementById("item_code").value;
                 var qty = document.getElementById("qty").value;
                 // alert(itemcode);
                 var sno = document.getElementById("sno").value;
@@ -1692,8 +1693,9 @@
                     var internal_notesCell = newRow.insertCell(13);
                     // Add the values to the cells
                     snoCell.innerHTML = sno;
-                    itemCodeCell.innerHTML = item_code;
+                    
                     impaCell.innerHTML = impa;
+                    itemCodeCell.innerHTML = item_code;
                     uomCell.innerHTML = uom;
                     vpart_noCell.innerHTML = vpart_no;
                     qtyCell.innerHTML = qty;
@@ -1723,23 +1725,23 @@
 
                 }
 
-                $('#clearform').click();
+                clearFormFunction(true)
 
                 ComposeTable();
                 updateSNo();
-                Swaal.fire({
-                    title: 'Save item?',
-                    text: 'Do You Want to Save to Database',
-                    icon: 'question',
-                    showCancelButton: true,
-                    confirmButtonText: 'Save',
-                    cancelButtonText: 'Cancel',
-                    showLoaderOnConfirm: true, // You can display a loader animation while confirming
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        updateDataOrder();
-                    }
-                });
+                // Swaal.fire({
+                //     title: 'Save item?',
+                //     text: 'Do You Want to Save to Database',
+                //     icon: 'question',
+                //     showCancelButton: true,
+                //     confirmButtonText: 'Save',
+                //     cancelButtonText: 'Cancel',
+                //     showLoaderOnConfirm: true, // You can display a loader animation while confirming
+                // }).then((result) => {
+                //     if (result.isConfirmed) {
+                //         updateDataOrder();
+                //     }
+                // });
             }
 
 
@@ -1809,40 +1811,33 @@
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     }
                 });
+     
                 $.ajax({
-                    type: 'post',
-                    url: '{{ route('QuotationItemsave') }}',
-                    data: {
-                        dataarray,
-                        quote_no,
-                        event_no,
-                        allcom,
-                        port,
-                        portcode,
-                        DepartmentCode,
-                        departmentname,
-                        CustomerRefNo,
-                        sum,
-                    },
+    type: 'post',
+    url: '{{ route('QuotationItemsave') }}',
+    data: {
+        dataarray,
+        quote_no,
+        event_no,
+        allcom,
+        port,
+        portcode,
+        DepartmentCode,
+        departmentname,
+        CustomerRefNo,
+        sum,
+    },
+    success: function(response) {
+        // Popup removed as per your request
+    console.log(response)
+        // Optional: Console log or silent confirmation
+        console.log('Quotation saved successfully.');
+    },
+    error: function(xhr) {
+        console.error('Error saving quotation:', xhr.responseText);
+    }
+});
 
-                    success: function($response) {
-                        Swaal.fire({
-                            icon: 'success',
-                            title: 'Saved Success',
-                            text: 'Your Items Has Been Saved!',
-                            showConfirmButton: true,
-                            timer: 1500
-                        })
-                        // document.getElementById("myElement").style.right = "0";
-
-                        // // Set a timeout to hide the element after 10 seconds
-                        // setTimeout(function() {
-                        //     // Set the right property of the element back to -300px to hide it
-                        //     document.getElementById("myElement").style.right = "-300px";
-                        // }, 10000);
-
-                    }
-                });
             }
             $(document).ready(function() {
                 $("#footer_inv_percent").on("keydown", function(event) {
@@ -2014,7 +2009,7 @@
             });
 
         });
-        // }
+    
     </script>
 
 
@@ -2051,6 +2046,8 @@
                         sk = 1;
                     } else if (n[i] != 0) {
                         str += tw[n[i] - 2] + ' ';
+                        str += tw[Number(n[i]) - 2] + ' ';
+
                         sk = 1;
                     }
                 } else if (n[i] != 0) { // 0235
@@ -2151,7 +2148,7 @@
                 var internalBuyerNote = table.rows[rowIndex].cells[13].innerHTML;
                 var vesselNote = table.rows[rowIndex].cells[14].innerHTML;
                 var vendorcode = table.rows[rowIndex].cells[15].innerHTML;
-
+                console.log("Reached here in d click ",impa)
                 // Set the values for the fields in the form
                 document.querySelector('#sno').value = serialNumber;
                 document.querySelector('#impa').value = impa;
@@ -2302,6 +2299,7 @@
 
 
             function dataserchandget() {
+                
                 var quoteno = $('#quote_no').val();
                 // var eventno = $('.event_no').text();
 
@@ -2328,7 +2326,8 @@
                     success: function(response) {
                         console.log(response);
                         if (response.DataQuotesMaster) {
-                            var Master = response.DataQuotesMaster;
+                             const Master = response.DataQuotesMaster;
+
                             console.log(Master);
 
                             $('#TxtQuoteID').val(Master.QuoteID);
@@ -2370,15 +2369,13 @@
                             $('#qtime').val(Master.QTime);
                             $('#DepartmentCode').val(Master.DepartmentCode);
                             $('#GodownCode').val(Master.GodownCode);
-                            // console.log('settigngodown' + Master.GodownCode);
-                            // console.log('DepartmentCode' + Master.DepartmentCode);
+        
                             if(response.TypeSetup){
                                 var type = response.TypeSetup;
                                 $('#ChkDeckEngin').val(type.ChkDeckEngin);
 
                             }
-                            // console.log('ChkDeckEngin' + type.ChkDeckEngin);
-                            // console.log('ch'+ $('#ChkDeckEngin').val());
+                     
                             if (Master.ChkSentToCust) {
                                 $('#ChkSentToCust').prop('checked', true).val(Master.ChkSentToCust);
                                 $("#LblWorkUserSentToCust1").text(Master.WorkUserSentToCust1);
@@ -2394,7 +2391,9 @@
                                 $("#LblWorkUserSentToVendor").text(Master.WorkUserSentToVendor);
                             }
                             if (Master.ChkQuoteEntry) {
-                                $('#ChkQuoteEntry').prop('checked', true).val(Master.ChkQuoteEntry);
+                                $('#ChkQuoteEntry').prop('checked', Master.ChkQuoteEntry == 1);
+
+                                // $('#ChkQuoteEntry').prop('checked', true).val(Master.ChkQuoteEntry);
                                 $("#LblWorkUserQuoteEntry").text(Master.WorkUserQuoteEntry);
                             }
                             if (Master.ChkPricing) {
@@ -2529,17 +2528,24 @@
 
                         //   console.log($response.insert_update);
                     },
-                    error : function(error){
-
-                        console.log(error);
-                        if (error.responseJSON) {
-                            if(error.responseJSON.message == 'Attempt to read property "DepartmentCode" on null'){
-                                alert('Quote Does Not Exist');
-
-                            }
-                        }
-
+                    error: function(error) {
+                      console.log(error);
                     },
+
+
+
+
+                    // error : function(error){
+
+                    //     console.log(error);
+                    //     if (error.responseJSON) {
+                    //         if(error.responseJSON.message == 'Attempt to read property "DepartmentCode" on null'){
+                    //             alert('Quote Does Not Exist');
+
+                    //         }
+                    //     }
+
+                    // },
                     complete: function() {
                         // Hide the overlay and spinner after the request is complete
                         $('.overlay').hide();
@@ -2605,7 +2611,7 @@
                         $('.overlay').show();
                     },
                     success: function(response) {
-                        console.log(response);
+                        
                         displayImportedData(response);
                     },
                     complete: function() {
@@ -2614,207 +2620,365 @@
                     }
                 });
             });
+            
+            $(document).ready(function () {
+    $('#SaveImportItem').click(function (e) {
+        e.preventDefault();
 
+        let table = document.getElementById('importitembody');
+        let rows = table.rows;
+        let dataarray = [];
 
-            // function displayImportedData(data) {
+        for (let i = 0; i < rows.length; i++) {
+            let cells = rows[i].cells;
 
-            // let table = document.getElementById('myTable');
-            // table.innerHTML = ""; // Clear the table
-            // let Id = 0;
-            //     data.forEach(function(item) {
-            //         Id = Id+1
-            // let row = table.insertRow();
-            // function createCell(content) {
-            // let cell = row.insertCell();
-            // cell.innerHTML = content;
-            // return cell;
-            // }
-            // createCell(Id);
-            // createCell(item.Impa);
-            // createCell(item.ItemCode);
-            // createCell(item.ItemName);
-            // let QtyCell = createCell(item.Qty);
-            // QtyCell.contentEditable = true;
-            // QtyCell.title="Right Click For Edit";
-            // QtyCell.classList.add("blurCell");
+            dataarray.push({
+                ItemCode: cells[0]?.innerText.trim() || '',
+                ItemName: cells[1]?.innerText.trim() || '',
+                UOM: cells[2]?.innerText.trim() || '',
+                Qty: cells[3]?.innerText.trim() || '',
+                Price: cells[4]?.innerText.trim() || '',
+                Matching: cells[5]?.innerText.trim() || '',
+                VendorName: cells[6]?.innerText.trim() || '',
+                IMPA: cells[7]?.innerText.trim() || '',
+                VItemName: cells[8]?.innerText.trim() || '',
+                VUOM: cells[9]?.innerText.trim() || '',
+                VendorPrice: cells[10]?.innerText.trim() || '',
+                VPart: cells[11]?.innerText.trim() || '',
+                CustomerNotes: '',
+                VendorNotes: '',
+                InternalNotes: '',
+                VesselNotes: '',
+                VendorCode: ''
+            });
+        }
 
-            // createCell(item.UOM);
-            // createCell(item.Vpart);
+        ajaxSetup();
 
-            // let VPrice = createCell(item.VPrice);
-            // VPrice.contentEditable = true;
-            // VPrice.title="Right Click For Edit";
-            // VPrice.classList.add("blurCell");
+        $.ajax({
+            type: 'POST',
+            url: '{{ URL::to("bulkitemsave") }}',
+            data: { dataarray: dataarray },
+            beforeSend: function () {
+                $('.overlay').show();
+            },
+            success: function (response) {
+    
+                if (response.status === 'saved') {
+                    let data = response.Allitemcode;
 
-            // let SPrice = createCell(item.Price);
-            // SPrice.contentEditable = true;
-            // SPrice.title="Right Click For Edit";
-            // SPrice.classList.add("blurCell");
+                    $('#myTable').html(''); // Clear existing rows
 
-
-            // createCell('');
-            // createCell(item.VendorName);
-            // let cusnote = createCell('');
-            // cusnote.contentEditable = true;
-            // cusnote.title="Right Click For Edit";
-            // let Vennote = createCell('');
-            // Vennote.contentEditable = true;
-            // Vennote.title="Right Click For Edit";
-            // let Intnote = createCell('');
-            // Intnote.contentEditable = true;
-            // Intnote.title="Right Click For Edit";
-            // let vesselNote = createCell('');
-            // vesselNote.contentEditable = true;
-            // vesselNote.title="Right Click For Edit";
-            // let vendorcode = createCell('');
-            // vendorcode.contentEditable = true;
-            // vendorcode.title="Right Click For Edit";
-
-
-            //     });
-            //     $('.blurCell').blur();
-            // }
-
-        });
-
-        $(document).ready(function() {
-            $('#SaveImportItem').click(function(e) {
-                e.preventDefault();
-
-
-                let table = document.getElementById('importitembody');
-                let rows = table.rows;
-                let dataarray = [];
-
-                for (let i = 0; i < rows.length; i++) {
-                    let cells = rows[i].cells;
-
-                    dataarray.push({
-                        ItemCode: cells[0] ? cells[0].innerHTML : '',
-                        ItemName: cells[1] ? cells[1].innerHTML : '',
-                        UOM: cells[2] ? cells[2].innerHTML : '',
-                        Price: cells[3] ? cells[3].innerHTML : '',
+                    data.forEach(function (item, index) {
+                        $('#myTable').append(`
+                            <tr>
+                                <td>${index + 1}</td>
+                                <td>${item.impa || ''}</td>
+                                <td>${item.itemcode}</td>
+                                <td>${item.itemname}</td>
+                                <td>${item.qty || 0}</td>
+                                <td>${item.uom || ''}</td>
+                                <td>${item.vpart || ''}</td>
+                                <td>${item.vendor_price || 0}</td>
+                                <td>${item.sell_price || 0}</td>
+                                <td>${item.total || 0}</td>
+                                <td>${item.vendorname || ''}</td>
+                                <td>${item.customer_notes || ''}</td>
+                                <td>${item.vendor_notes || ''}</td>
+                                <td>${item.internal_notes || ''}</td>
+                                <td hidden>${item.vessel_notes || ''}</td>
+                                <td hidden>${item.vendorcode || ''}</td>
+                            </tr>
+                        `);
                     });
                 }
-                ajaxSetup();
-
-                $.ajax({
-                    type: 'post',
-                    url: '{{ URL::to('bulkitemsave') }}',
-                    data: {
-                        dataarray
-                    },
-                    beforeSend: function() {
-                        $('.overlay').show();
-                    },
-                    success: function(response) {
-                        console.log(response);
-                        if (response.status == 'saved') {
-                            let table = document.getElementById('importitembody');
-                            var data = response.Allitemcode;
-                            data.forEach(function(item, index) {
-                                let row = table.rows[index];
-                                let ItemCodegetCell = row.cells[0];
-                                ItemCodegetCell.innerHTML = item.itemcode;
-                                ItemCodegetCell.contentEditable = 'true';
-                                let matchinCell = row.cells[4];
-                                matchinCell.innerHTML = 'Changed';
-                            });
-                            alert('ItemsSaved');
-
-                        }
-                    },
-                    complete: function() {
-                        $('.overlay').hide();
-                    }
-                });
-
-
-            });
-
-            $('#btnExport').click(function(e) {
-                e.preventDefault();
-                var quotenow = $('#quote_no').val();
-                var inv = $('#footer_inv_percent').val();
-                // window.location = '/ExportQuataion?quoteno=' + quotenow + "&inv=" + inv;
-                ajaxSetup();
-                $.ajax({
-        type: 'GET',
-        url: '/ExportQuataion', // Change the URL to match your route
-        data: {
-            quoteno: quotenow,
-            inv: inv
-        },
-        xhrFields: {
-            responseType: 'blob' // Set the response type to blob
-        },
-        success: function(response, status, xhr) {
-            // var filename = ''; // Extract the filename from the response headers
-            // var disposition = xhr.getResponseHeader('Content-Disposition');
-            // if (disposition && disposition.indexOf('attachment') !== -1) {
-            //     var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
-            //     var matches = filenameRegex.exec(disposition);
-            //     if (matches !== null && matches[1]) {
-            //         filename = matches[1].replace(/['"]/g, '');
-            //     }
-            // }
-
-            // // Create a blob URL and trigger a download link
-            // var blob = new Blob([response]);
-            // var blobUrl = window.URL.createObjectURL(blob);
-            // var a = document.createElement('a');
-            // a.href = blobUrl;
-            // a.download = filename || 'exported_file.xlsx';
-            // document.body.appendChild(a);
-            // a.click();
-            // window.URL.revokeObjectURL(blobUrl);
-            console.log(response);
-            console.log(xhr);
-
-            var filename = xhr.getResponseHeader('Content-Disposition');
-                if (filename) {
-                    var filefolder = filename.split('_')[2];
-                    var filePath = filename.split('_')[3];
-                    // console.log(filePath);
-                    // filePath = encodeURIComponent(filePath);
-                    console.log('filePath'+filePath);
-
-                    // Compose the mailto link with attachment
-                    filePath = filefolder+'/'+filePath;
-                var emailSubject = encodeURIComponent('Excel Export');
-                var ff =  appURL + filePath;
-                var emailBody = encodeURIComponent('Please find the attached Excel file.');
-                var appURL = 'http://127.0.0.1:8000/';
-                var mailtoLink = 'mailto:?subject=' + emailSubject + '&body=' + emailBody + '&attachment=file:'+ff;
-
-            // Open the user's default email client (Outlook)
-            window.location.href = mailtoLink;
-
-                    filename = filename.split('filename=')[1];
-                } else {
-                    filename = 'exported_file.xlsx'; // Default filename if not provided
-                }
-
-                // Create a blob URL and trigger a download link
-                var blob = new Blob([response]);
-                var blobUrl = window.URL.createObjectURL(blob);
-                var a = document.createElement('a');
-                a.href = blobUrl;
-                a.download = filename;
-                document.body.appendChild(a);
-                a.click();
-                window.URL.revokeObjectURL(blobUrl);
-                document.body.removeChild(a);
-
-        },
-        error: function(xhr, status, error) {
-            console.error('Error:', error);
-        }
-    });
-
-
-            });
+            },
+            complete: function () {
+                $('.overlay').hide();
+            }
         });
+    });
+});
+
+
+
+//       $(document).ready(function() {
+//     $('#SaveImportItem').click(function(e) {
+//         e.preventDefault();
+
+//         let table = document.getElementById('importitembody');
+//         let rows = table.rows;
+//         let dataarray = [];
+
+//         for (let i = 0; i < rows.length; i++) {
+//             let cells = rows[i].cells;
+
+//             dataarray.push({
+//                 ItemCode: cells[0]?.innerText.trim() || '',
+//                 ItemName: cells[1]?.innerText.trim() || '',
+//                 UOM: cells[2]?.innerText.trim() || '',
+//                 Qty: cells[3]?.innerText.trim() || '',
+//                 Price: cells[4]?.innerText.trim() || '',
+//                 Matching: cells[5]?.innerText.trim() || '',
+//                 VendorName: cells[6]?.innerText.trim() || '',
+//                 IMPA: cells[7]?.innerText.trim() || '',
+//                 VItemName: cells[8]?.innerText.trim() || '',
+//                 VUOM: cells[9]?.innerText.trim() || '',
+//                 VendorPrice: cells[10]?.innerText.trim() || '',
+//                 VPart: cells[11]?.innerText.trim() || '',
+//                 CustomerNotes: '',
+//                 VendorNotes: '',
+//                 InternalNotes: '',
+//                 VesselNotes: '',
+//                 VendorCode: ''
+//             });
+//         }
+
+//         ajaxSetup();
+
+//         $.ajax({
+//             type: 'post',
+//             url: '{{ URL::to('bulkitemsave') }}',
+//             data: {
+//                 dataarray
+//             },
+//             beforeSend: function() {
+//                 $('.overlay').show();
+//             },
+//             success: function(response) {
+//                 console.log(response);
+
+//                 if (response.status == 'saved') {
+//                     let data = response.Allitemcode;
+
+//                     // Add each saved item to the quotation table
+//                     data.forEach(function(item, index) {
+//                         $('#myTable').append(`
+//                             <tr>
+//                                 <td>${index + 1}</td>
+//                                 <td>${item.impa || ''}</td>
+//                                 <td>${item.itemcode}</td>
+//                                 <td>${item.itemname}</td>
+//                                 <td>${item.qty || 0}</td>
+//                                 <td>${item.uom || ''}</td>
+//                                 <td>${item.vpart || ''}</td>
+//                                 <td>${item.vendor_price || 0}</td>
+//                                 <td>${item.sell_price || 0}</td>
+//                                 <td>${item.total || 0}</td>
+//                                 <td>${item.vendorname || ''}</td>
+//                                 <td>${item.customer_notes || ''}</td>
+//                                 <td>${item.vendor_notes || ''}</td>
+//                                 <td>${item.internal_notes || ''}</td>
+//                                 <td hidden>${item.vessel_notes || ''}</td>
+//                                 <td hidden>${item.vendorcode || ''}</td>
+//                             </tr>
+//                         `);
+//                     });
+//                 }
+//             },
+//             complete: function() {
+//                 $('.overlay').hide();
+//             }
+//         });
+//     });
+// });
+
+  
+
+//         $(document).ready(function() {
+//             $('#SaveImportItem').click(function(e) {
+//                 e.preventDefault();
+
+
+//                 let table = document.getElementById('importitembody');
+//                 let rows = table.rows;
+//                 let dataarray = [];
+
+//                 for (let i = 0; i < rows.length; i++) {
+//                     let cells = rows[i].cells;
+
+//                     dataarray.push({
+//                         ItemCode: cells[0] ? cells[0].innerHTML : '',
+//                         ItemName: cells[1] ? cells[1].innerHTML : '',
+//                         UOM: cells[2] ? cells[2].innerHTML : '',
+//                         Price: cells[3] ? cells[3].innerHTML : '',
+//                     });
+//                 }
+//                 ajaxSetup();
+
+//                 $.ajax({
+//                     type: 'post',
+//                     url: '{{ URL::to('bulkitemsave') }}',
+//                     data: {
+//                         dataarray
+//                     },
+//                     beforeSend: function() {
+//                         $('.overlay').show();
+//                     },
+//                     success: function(response) {
+//                         console.log(response);
+//                         if (response.status == 'saved') {
+//     let table = document.getElementById('importitembody');
+//     var data = response.Allitemcode;
+//     dataarray.push({
+//     ItemCode: cells[0]?.innerText.trim() || '',
+//     ItemName: cells[1]?.innerText.trim() || '',
+//     UOM: cells[2]?.innerText.trim() || '',
+//     Qty: cells[3]?.innerText.trim() || '',
+//     Price: cells[4]?.innerText.trim() || '',
+//     Matching: cells[5]?.innerText.trim() || '',
+//     VendorName: cells[6]?.innerText.trim() || '',
+//     IMPACode: cells[7]?.innerText.trim() || '',
+//     VItemName: cells[8]?.innerText.trim() || '',
+//     VUOM: cells[9]?.innerText.trim() || '',
+//     VendorPrice: cells[10]?.innerText.trim() || '',
+//     VPart: cells[11]?.innerText.trim() || '', // Optional if available
+//     CustomerNotes: '', // You can map these if needed
+//     VendorNotes: '',
+//     InternalNotes: '',
+//     VesselNotes: '',
+//     VendorCode: '' // Optional
+// });
+
+//     // data.forEach(function(item, index) {
+//     //     let row = table.rows[index];
+//     //     let ItemCodegetCell = row.cells[0];
+//     //     ItemCodegetCell.innerHTML = item.itemcode;
+//     //     ItemCodegetCell.contentEditable = 'true';
+//     //     let matchinCell = row.cells[4];
+//     //     matchinCell.innerHTML = 'Changed';
+
+//     //     // Ã°Å¸â€˜â€¡ Add to Quotation table (main grid)
+//     //     $('#myTable').append(`
+//     //         <tr>
+//     //             <td>${index + 1}</td>
+//     //             <td>${item.impa || ''}</td>
+//     //             <td>${item.itemcode}</td>
+//     //             <td>${item.itemname}</td>
+//     //             <td>${item.qty || 0}</td>
+//     //             <td>${item.uom || ''}</td>
+//     //             <td>${item.vpart || ''}</td>
+//     //             <td>${item.vendor_price || 0}</td>
+//     //             <td>${item.sell_price || 0}</td>
+//     //             <td>${item.total || 0}</td>
+//     //             <td>${item.vendorname || ''}</td>
+//     //             <td>${item.customer_notes || ''}</td>
+//     //             <td>${item.vendor_notes || ''}</td>
+//     //             <td>${item.internal_notes || ''}</td>
+//     //             <td hidden>${item.vessel_notes || ''}</td>
+//     //             <td hidden>${item.vendorcode || ''}</td>
+//     //         </tr>
+//     //     `);
+//     // });
+// }
+
+//                         // if (response.status == 'saved') {
+//                         //     let table = document.getElementById('importitembody');
+//                         //     var data = response.Allitemcode;
+//                         //     data.forEach(function(item, index) {
+//                         //         let row = table.rows[index];
+//                         //         let ItemCodegetCell = row.cells[0];
+//                         //         ItemCodegetCell.innerHTML = item.itemcode;
+//                         //         ItemCodegetCell.contentEditable = 'true';
+//                         //         let matchinCell = row.cells[4];
+//                         //         matchinCell.innerHTML = 'Changed';
+//                         //     });
+//                         //     // alert('ItemsSaved');
+
+//                         // }
+//                     },
+//                     complete: function() {
+//                         $('.overlay').hide();
+//                     }
+                    
+//                 });
+
+
+//             });
+
+//             $('#btnExport').click(function(e) {
+//                 e.preventDefault();
+//                 var quotenow = $('#quote_no').val();
+//                 var inv = $('#footer_inv_percent').val();
+//                 // window.location = '/ExportQuataion?quoteno=' + quotenow + "&inv=" + inv;
+//                 ajaxSetup();
+//                 $.ajax({
+//         type: 'GET',
+//         url: '/ExportQuataion', // Change the URL to match your route
+//         data: {
+//             quoteno: quotenow,
+//             inv: inv
+//         },
+//         xhrFields: {
+//             responseType: 'blob' // Set the response type to blob
+//         },
+//         success: function(response, status, xhr) {
+//             // var filename = ''; // Extract the filename from the response headers
+//             // var disposition = xhr.getResponseHeader('Content-Disposition');
+//             // if (disposition && disposition.indexOf('attachment') !== -1) {
+//             //     var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+//             //     var matches = filenameRegex.exec(disposition);
+//             //     if (matches !== null && matches[1]) {
+//             //         filename = matches[1].replace(/['"]/g, '');
+//             //     }
+//             // }
+
+//             // // Create a blob URL and trigger a download link
+//             // var blob = new Blob([response]);
+//             // var blobUrl = window.URL.createObjectURL(blob);
+//             // var a = document.createElement('a');
+//             // a.href = blobUrl;
+//             // a.download = filename || 'exported_file.xlsx';
+//             // document.body.appendChild(a);
+//             // a.click();
+//             // window.URL.revokeObjectURL(blobUrl);
+//             console.log(response);
+//             console.log(xhr);
+
+//             var filename = xhr.getResponseHeader('Content-Disposition');
+//                 if (filename) {
+//                     var filefolder = filename.split('_')[2];
+//                     var filePath = filename.split('_')[3];
+//                     // console.log(filePath);
+//                     // filePath = encodeURIComponent(filePath);
+//                     console.log('filePath'+filePath);
+
+//                     // Compose the mailto link with attachment
+//                     filePath = filefolder+'/'+filePath;
+//                 var emailSubject = encodeURIComponent('Excel Export');
+//                 var ff =  appURL + filePath;
+//                 var emailBody = encodeURIComponent('Please find the attached Excel file.');
+//                 var appURL = 'http://127.0.0.1:8000/';
+//                 var mailtoLink = 'mailto:?subject=' + emailSubject + '&body=' + emailBody + '&attachment=file:'+ff;
+
+//             // Open the user's default email client (Outlook)
+//             window.location.href = mailtoLink;
+
+//                     filename = filename.split('filename=')[1];
+//                 } else {
+//                     filename = 'exported_file.xlsx'; // Default filename if not provided
+//                 }
+
+//                 // Create a blob URL and trigger a download link
+//                 var blob = new Blob([response]);
+//                 var blobUrl = window.URL.createObjectURL(blob);
+//                 var a = document.createElement('a');
+//                 a.href = blobUrl;
+//                 a.download = filename;
+//                 document.body.appendChild(a);
+//                 a.click();
+//                 window.URL.revokeObjectURL(blobUrl);
+//                 document.body.removeChild(a);
+
+//         },
+//         error: function(xhr, status, error) {
+//             console.error('Error:', error);
+//         }
+//     });
+
+
+//             });
+//         });
 
         function ajaxSetup() {
             $.ajaxSetup({
@@ -2822,7 +2986,7 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
-        };
+        }
         function GetToken(){
             fetch('/get-token')
                 .then(response => response.json())
@@ -2908,32 +3072,7 @@
                 });
 
             }
-        // fetchOrderDocument = (quoteId, accessToken) => {
-        //     console.log(quoteId);
-        //         // const apiUrl = `/get-quote-shipserve/${quoteId}`;
-        //         const apiUrl = `https://api.shipserv.com/api/order-management/documents/${quoteId}`;
-
-        //         fetch(apiUrl, {
-        //             method: 'GET',
-        //             headers: {
-        //                 'Api-version': 'v2',
-        //                 'Authorization': accessToken
-        //             }
-        //         })
-        //         .then(response => {
-        //             if (!response.ok) {
-        //                 throw new Error(`HTTP error! Status: ${response.status}`);
-        //             }
-        //             return response.json();
-        //         })
-        //         .then(data => {
-        //             // Handle the data from the response
-        //             console.log('Response Data:', data);
-        //         })
-        //         .catch(error => {
-        //             console.error('Error:', error);
-        //         });
-        //     };
+      
 
         function confirmPassword(correctPassword) {
             Swal.fire({
@@ -3030,6 +3169,102 @@
 
 
         });
+        });
+        
+        
+      
+
+    let itemtable;
+
+    $(document).ready(function () {
+        itemtable = $('#itemsgrid').DataTable({
+            scrollY: 350,
+            deferRender: true,
+            scroller: true,
+            paging: false,
+            info: false,
+            ordering: false,
+            searching: false,
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                    text: 'Print',
+                    className: 'btn btn-primary',
+                    action: function () {
+                        var quotno = $('#quote_no').val();
+                        window.open("/print/quotation/" + quotno, "_blank");
+                    }
+                },
+                {
+                    text: 'Register Item',
+                    className: 'btn btn-primary',
+                    action: function () {
+                        RegisterItem();
+                    }
+                },
+                {
+                    text: 'Save All',
+                    className: 'btn btn-primary',
+                    action: function () {
+                        updateDataOrder();
+                    }
+                },
+                {
+                    text: 'Delete Row',
+                    className: 'btn btn-danger',
+                    action: function () {
+                        deleterow();
+                    }
+                }
+            ]
+        });
+
+            
+        // Load the data into the table
+        populateTable();
+    });
+
+    function populateTable() {
+    $.ajax({
+        url: "{{ route('getData') }}", // Ensure this route returns JSON
+        method: "GET",
+        success: function(response) {
+            console.log(response)
+            itemtable.clear();
+
+            let sno = 1;
+
+            response.forEach(item => {
+                itemtable.row.add([
+                    sno++,
+                    item.IMPAItemCode || '',
+                    item.ItemCode || '',
+                    item.ItemName || '',
+                    item.StockQty || '',
+                    item.UOM || '',
+                    item.VPartCode || '',
+                    item.VendorPrice || '',
+                    item.OurPrice || '',
+                    (item.OurPrice * item.StockQty).toFixed(2) || '',
+                    item.VenderName || '',
+                    item.CustomerNote || '',
+                    item.VendorNote || '',
+                    item.InternalBuyerNote || '',
+                    item.vessel_notes || '',
+                    item.VenderCode || ''
+                ]);
+            });
+
+            itemtable.draw();
+            
+        },
+        error: function(xhr, status, error) {
+            console.error("Error loading data: ", error);
+        }
+    });
+}
+
+    
 
     </script>
 

@@ -13,17 +13,21 @@ class Branch extends Controller
 {
    
 
-    public function branch_setup(){
+   public function branch_setup()
+{
+    $lastid = BranchSetup::orderBy('id', 'DESC')->first();
+    $branches  = BranchSetup::get();
 
-        $lastid = BranchSetup::orderBy('id', 'DESC')->first();
-        $branches  = BranchSetup::get();
+ 
+    $nextBranchCode = $lastid ? $lastid->id + 1 : 1;
 
+    return view('branch.branch_view', [
+        'lastid' => $lastid,
+        'branches' => $branches,
+        'nextBranchCode' => $nextBranchCode, 
+    ]);
+}
 
-        return view('branch.branch_view', [
-            'lastid'=>$lastid,
-            'branches'=>$branches,
-        ]);
-    }
 
     // private function _getGroceryCrudEnterprise() {
     //     $database = $this->_getDatabaseConnection();
@@ -74,24 +78,73 @@ class Branch extends Controller
     //get request
 
 
-    public function BranchDelete(Request $request){
-        $branch = BranchSetup::where('BranchCode',$request->input('branchcode'))->first();
-        $Message = '';
-        if($branch){
-        $BranchDelete = BranchSetup::where('BranchCode',$request->input('branchcode'))->delete();
-        if($BranchDelete){
-            $Message = 'Deleted';
-        }
+//   public function BranchDelete(Request $request)
+// {
+//     $branchCode = $request->input('branchcode');
+//     $Message = '';
 
+//     // Debug log (optional)
+//     \Log::info("Delete requested for BranchCode: " . $branchCode);
+
+//     // Find the branch first
+//     $branch = BranchSetup::where('BranchCode', $branchCode)->first();
+
+//     if ($branch) {
+//         // Delete the branch
+//         $BranchDelete = BranchSetup::where('BranchCode', $branchCode)->delete();
+
+//         if ($BranchDelete) {
+//             $Message = 'Deleted';
+//         } else {
+//             $Message = 'Failed to delete';
+//         }
+//     } else {
+//         $Message = 'Branch not found';
+//     }
+
+//     // Always return fresh branch list
+//     $branches = DB::table('BranchSetup')->get();
+
+//     return response()->json([
+//         'branches' => $branches,
+//         'Message' => $Message,
+//     ]);
+// }
+
+
+public function BranchDelete(Request $request)
+{
+    try {
+        $branchCode = $request->input('branchcode');
+        \Log::info("Delete requested for BranchCode: $branchCode");
+
+        $branch = BranchSetup::where('BranchCode', $branchCode)->first();
+
+        if ($branch) {
+            $deleted = $branch->delete();
+            if ($deleted) {
+                return response()->json([
+                    'branches' => BranchSetup::all(),
+                    'Message' => 'Deleted',
+                ]);
+            }
         }
-        $branches  = DB::table('BranchSetup')->get();
 
         return response()->json([
-            'branches'=>$branches,
-            'Message'=>$Message,
+            'branches' => BranchSetup::all(),
+            'Message' => 'Not Found',
         ]);
 
+    } catch (\Exception $e) {
+        \Log::error("Delete Error: " . $e->getMessage());
+        return response()->json([
+            'error' => true,
+            'message' => 'Exception occurred'
+        ], 500);
     }
+}
+
+
     public function branchstore(Request $request){
         // dd($request->all());
 
@@ -103,12 +156,14 @@ class Branch extends Controller
             $Inactive = 0;
 
         }
+         $isNew = false;
         // dd($Inactive);
         if(!$branch){
 
             $branch = new BranchSetup;
 
                 $branch->BranchCode = $request->branch_code;
+                 $isNew = true;
             }
 
                 $branch->Inactive= $Inactive;
@@ -125,15 +180,17 @@ class Branch extends Controller
 
 
             $branch->save();
-            $Message = '';
+             
 
             if($branch){
+                
                 $Message = 'Saved';
             }
-         //   return "Name: ".$request->name;
-        //    return view('branch.create');
-        return redirect('branch-setup')
-        ->with('Message',$Message);
+            $Message = $isNew ? 'Saved' : 'Updated';
+
+    return redirect('branch-setup')->with('Message', $Message);
+        // return redirect('branch-setup')
+        // ->with('Message',$Message);
 
     }
 

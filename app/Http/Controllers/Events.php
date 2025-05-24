@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\EventRequest;
 use App\Models\Quote;
 use App\Models\Vessel;
+use App\Models\Events;
 use App\Models\Customer;
 use App\Models\Typesetup;
 use App\Models\UserRights;
@@ -188,127 +189,262 @@ class Events extends Controller
 
 
 
-    public function event_store(EventRequest $request)
-    {
-        $BranchCode = config('app.MBranchCode');
-        $datestamp = date("Y-m-d");
-        $timestamps = date("Y-m-d G:i:s");
-        // dd($request->Phone);
-
-        $Eventr = $request->EventNo;
-        $vesselr = $request->VesselName;
-        $Customerr = $request->CustomerName;
-        $Event = modelevents::where('EventNo', $Eventr)->where('BranchCode', $BranchCode)->first();
-        if (!$Event) {
-            // $vessel_check_date = modelevents::whereRaw('BidDUeDate>= DATEADD(month, -1, GetDate())')->where('VesselName',$vesselr)->where('CustomerName',$Customerr)->first();
-            $vessel_check_date = modelevents::whereRaw('BidDueDate >= DATE_SUB(NOW(), INTERVAL 1 MONTH)')
-                ->where('VesselName', $vesselr)
-                ->where('CustomerName', $Customerr)
-                ->first();
-        }
-        # code...
-        if (!$Event) {
-            if (!$vessel_check_date) {
 
 
-                $Events = new modelevents([
+public function event_store(EventRequest $request)
+{
+    $BranchCode = config('app.MBranchCode');
+    $datestamp = date("Y-m-d");
+    $timestamps = date("Y-m-d G:i:s");
 
+    $vesselr = $request->VesselName;
+    $Customerr = $request->CustomerName;
 
-                    'EventNo' =>  $request->EventNo,
-                    'GeneralVesselNote' =>  $request->GeneralVesselNote,
-                    ' BranchCode' => $BranchCode,
-                    'BranchCode' => Auth::user()->BranchCode,
-                    'ETA' =>  $request->ETA,
-                    'Contact' =>  $request->Contact,
-                    'Phone' =>  $request->Phone,
-                    'Cell' =>  $request->Cell,
-                    'BidDUeDate' =>  $request->BidDUeDate,
-                    'DueTime' =>  $request->DueTime,
-                    'ShippingPort' =>  $request->ShippingPort,
-                    'Note' =>  $request->followup,
-                    'Name' =>  $request->Name,
-                    'Email' =>  $request->Email,
-                    'Fax' =>  $request->Fax,
-                    'Status' =>  $request->Status,
-                    'ReturnVia' =>  $request->ReturnVia,
-                    'Priority' =>  $request->Priority,
-                    'Competition' =>  null,
-                    'CustomerCode' => $request->Customercode,
-                    'IMONo' =>  $request->IMONo,
-                    'Department' =>  $request->Department,
-                    'CustomerRef' =>  $request->CustomerRef,
-                    'BidDUeDate2' =>  $request->BidDUeDate2,
-                    'ReturnVia2' =>  $request->ReturnVia2,
-                    'EstLineQuote' =>  $request->EstLineQuote,
-                    'DueTme2' =>  $request->DueTme2,
-                    'EventCreatedUser' => Auth::user()->UserName,
-                    'EventCreatedDate' => $datestamp,
-                    'EventCreatedTime' => $timestamps,
-                    'ContactID' =>  $request->ContactID,
-                    'SendProductListDate' =>  null,
-                    //    'PVID' =>  0,
-                    'CustomerName' =>  $request->CustomerName,
-                    'VesselName' => $request->VesselName,
-                    'GodownCode' => $request->GodownName,
-                    'GodownName' => $request->GodownCodeget,
-                    'CusCode' =>  $request->CusCode,
-                    'CustomerActCode' =>  $request->CustomerActCode,
-                ]);
-                // dd($Events);
-                $Events->save();
-                return redirect('events-setups/update?EventNo=' . $Eventr)->with('success', 'Your Event ' . $Eventr . 'With' . $request->CustomerName . 'and' . $request->VesselName . ' has been Created successfully! ');
-            } else {
-                return redirect('events-setup')->with('error', 'Event Is Already Created ! With ' . $request->CustomerName . ' Customer and Vessel IS : ' . $request->VesselName . ' <a href="/events-setups/update?EventNo=' . $vessel_check_date->EventNo . '"> Showme </a> ');
-            }
-        } else {
-            $datestamp = date("Y-m-d");
+    // 1. Get EventNo from request
+    $Eventr = $request->EventNo;
 
-            $timestamps = date("Y-m-d G:i:s");
-
-            $Event->EventNo = $request->EventNo;
-            $Event->GeneralVesselNote = $request->GeneralVesselNote;
-            $Event->BranchCode = $BranchCode;
-            $Event->ETA = $request->ETA;
-            $Event->Contact = $request->Contact;
-            $Event->Phone = $request->Phone;
-            $Event->Cell = $request->Cell;
-            $Event->BidDUeDate =  $request->BidDUeDate;
-            $Event->DueTime =  $request->DueTime;
-            $Event->ShippingPort =  $request->ShippingPort;
-            $Event->Note = $request->followup;
-            $Event->Name = $request->Name;
-            $Event->Email = $request->Email;
-            $Event->Fax = $request->Fax;
-            $Event->Status = $request->Status;
-            $Event->ReturnVia = $request->ReturnVia;
-            $Event->Priority = $request->Priority;
-            $Event->Competition =  null;
-            $Event->CustomerCode =  $request->CustomerCode;
-            $Event->IMONo =  $request->IMONo;
-            $Event->Department =  $request->Department;
-            $Event->CustomerRef =  $request->CustomerRef;
-            $Event->BidDUeDate2 =  $request->BidDUeDate2;
-            $Event->ReturnVia2 =  $request->ReturnVia2;
-            $Event->EstLineQuote =  $request->EstLineQuote;
-            $Event->DueTme2 =  $request->DueTme2;
-            $Event->EventCreatedUser = Auth::user()->UserName;
-            $Event->ContactID =  $request->ContactID;
-            $Event->SendProductListDate = null;
-            // $Event->PVID=0;
-            $Event->CustomerName =  $request->CustomerName;
-            $Event->VesselName =  $request->VesselName;
-            $Event->GodownCode =  $request->GodownCode;
-            $Event->GodownName =  $request->GodownName;
-            $Event->CusCode =  $request->CusCode;
-            $Event->CustomerActCode =  $request->CustomerActCode;
-            // dd($Event);
-
-            $Event->update();
-        }
-        // }
-
-        return redirect('events-setups/update?EventNo=' . $Eventr)->with('success', 'Your Event ' . $Eventr . 'With' . $request->CustomerName . 'and' . $request->VesselName . ' has been Updated successfully! ');
+    // 2. If EventNo is empty, auto-generate
+    if (empty($Eventr)) {
+        $latest = modelevents::where('BranchCode', $BranchCode)->max('EventNo');
+        $Eventr = $latest ? $latest + 1 : 1;
     }
+
+    // 3. Check existing Event
+    $Event = modelevents::where('EventNo', $Eventr)->where('BranchCode', $BranchCode)->first();
+
+    if (!$Event) {
+        $vessel_check_date = modelevents::whereRaw('BidDueDate >= DATE_SUB(NOW(), INTERVAL 1 MONTH)')
+            ->where('VesselName', $vesselr)
+            ->where('CustomerName', $Customerr)
+            ->first();
+    }
+
+    if (!$Event) {
+        if (!$vessel_check_date) {
+            $Events = new modelevents([
+                'EventNo' =>  $Eventr,
+                'GeneralVesselNote' =>  $request->GeneralVesselNote,
+                'BranchCode' => Auth::user()->BranchCode,
+                'ETA' =>  $request->ETA,
+                'Contact' =>  $request->Contact,
+                'Phone' =>  $request->Phone,
+                'Cell' =>  $request->Cell,
+                'BidDUeDate' =>  $request->BidDUeDate,
+                'DueTime' =>  $request->DueTime,
+                'ShippingPort' =>  $request->ShippingPort,
+                'Note' =>  $request->followup,
+                'Name' =>  $request->Name,
+                'Email' =>  $request->Email,
+                'Fax' =>  $request->Fax,
+                'Status' =>  $request->Status,
+                'ReturnVia' =>  $request->ReturnVia,
+                'Priority' =>  $request->Priority,
+                'Competition' =>  null,
+                'CustomerCode' => $request->Customercode,
+                'IMONo' =>  $request->IMONo,
+                'Department' =>  $request->Department,
+                'CustomerRef' =>  $request->CustomerRef,
+                'BidDUeDate2' =>  $request->BidDUeDate2,
+                'ReturnVia2' =>  $request->ReturnVia2,
+                'EstLineQuote' =>  $request->EstLineQuote,
+                'DueTme2' =>  $request->DueTme2,
+                'EventCreatedUser' => Auth::user()->UserName,
+                'EventCreatedDate' => $datestamp,
+                'EventCreatedTime' => $timestamps,
+                'ContactID' =>  $request->ContactID,
+                'SendProductListDate' =>  null,
+                'CustomerName' =>  $request->CustomerName,
+                'VesselName' => $request->VesselName,
+                'GodownCode' => $request->GodownName,
+                'GodownName' => $request->GodownCodeget,
+                'CusCode' =>  $request->CusCode,
+                'CustomerActCode' =>  $request->CustomerActCode,
+            ]);
+
+            $Events->save();
+
+            return redirect('events-setups/update?EventNo=' . $Eventr)
+                ->with('success', 'Your Event ' . $Eventr . ' With ' . $request->CustomerName . ' and ' . $request->VesselName . ' has been created successfully!');
+        } else {
+            return redirect('events-setup')->with('error',
+                'Event already created with ' . $request->CustomerName . ' and Vessel ' . $request->VesselName .
+                ' <a href="/events-setups/update?EventNo=' . $vessel_check_date->EventNo . '"> Show me </a> ');
+        }
+    } else {
+        $Event->EventNo = $Eventr;
+        $Event->GeneralVesselNote = $request->GeneralVesselNote;
+        $Event->BranchCode = $BranchCode;
+        $Event->ETA = $request->ETA;
+        $Event->Contact = $request->Contact;
+        $Event->Phone = $request->Phone;
+        $Event->Cell = $request->Cell;
+        $Event->BidDUeDate = $request->BidDUeDate;
+        $Event->DueTime = $request->DueTime;
+        $Event->ShippingPort = $request->ShippingPort;
+        $Event->Note = $request->followup;
+        $Event->Name = $request->Name;
+        $Event->Email = $request->Email;
+        $Event->Fax = $request->Fax;
+        $Event->Status = $request->Status;
+        $Event->ReturnVia = $request->ReturnVia;
+        $Event->Priority = $request->Priority;
+        $Event->Competition = null;
+        $Event->CustomerCode = $request->CustomerCode;
+        $Event->IMONo = $request->IMONo;
+        $Event->Department = $request->Department;
+        $Event->CustomerRef = $request->CustomerRef;
+        $Event->BidDUeDate2 = $request->BidDUeDate2;
+        $Event->ReturnVia2 = $request->ReturnVia2;
+        $Event->EstLineQuote = $request->EstLineQuote;
+        $Event->DueTme2 = $request->DueTme2;
+        $Event->EventCreatedUser = Auth::user()->UserName;
+        $Event->ContactID = $request->ContactID;
+        $Event->SendProductListDate = null;
+        $Event->CustomerName = $request->CustomerName;
+        $Event->VesselName = $request->VesselName;
+        $Event->GodownCode = $request->GodownCode;
+        $Event->GodownName = $request->GodownName;
+        $Event->CusCode = $request->CusCode;
+        $Event->CustomerActCode = $request->CustomerActCode;
+
+        $Event->update();
+    }
+
+    return redirect('events-setups/update?EventNo=' . $Eventr)
+        ->with('success', 'Your Event ' . $Eventr . ' With ' . $request->CustomerName . ' and ' . $request->VesselName . ' has been updated successfully!');
+}
+
+    // public function event_store(EventRequest $request)
+    // {
+    //     $BranchCode = config('app.MBranchCode');
+    //     $datestamp = date("Y-m-d");
+    //     $timestamps = date("Y-m-d G:i:s");
+    //     // dd($request->Phone);
+
+ 
+    //     $vesselr = $request->VesselName;
+    //     $Customerr = $request->CustomerName;
+        
+        
+    //     $Eventr = $request->EventNo;
+
+    //     if (empty($Eventr)) {
+    //       // Auto-generate new EventNo
+    //       $latest = modelevents::where('BranchCode', $BranchCode)->max('EventNo');
+    //       $Eventr = $latest ? $latest + 1 : 1;
+    //   }
+
+    //     $Event = modelevents::where('EventNo', $Eventr)->where('BranchCode', $BranchCode)->first();
+    //     if (!$Event) {
+    //         // $vessel_check_date = modelevents::whereRaw('BidDUeDate>= DATEADD(month, -1, GetDate())')->where('VesselName',$vesselr)->where('CustomerName',$Customerr)->first();
+    //         $vessel_check_date = modelevents::whereRaw('BidDueDate >= DATE_SUB(NOW(), INTERVAL 1 MONTH)')
+    //             ->where('VesselName', $vesselr)
+    //             ->where('CustomerName', $Customerr)
+    //             ->first();
+    //     }
+    //     # code...
+    //     if (!$Event) {
+    //         if (!$vessel_check_date) {
+
+
+    //             $Events = new modelevents([
+
+
+    //                 'EventNo' =>  $request->EventNo,
+    //                 'GeneralVesselNote' =>  $request->GeneralVesselNote,
+    //                 ' BranchCode' => $BranchCode,
+    //                 'BranchCode' => Auth::user()->BranchCode,
+    //                 'ETA' =>  $request->ETA,
+    //                 'Contact' =>  $request->Contact,
+    //                 'Phone' =>  $request->Phone,
+    //                 'Cell' =>  $request->Cell,
+    //                 'BidDUeDate' =>  $request->BidDUeDate,
+    //                 'DueTime' =>  $request->DueTime,
+    //                 'ShippingPort' =>  $request->ShippingPort,
+    //                 'Note' =>  $request->followup,
+    //                 'Name' =>  $request->Name,
+    //                 'Email' =>  $request->Email,
+    //                 'Fax' =>  $request->Fax,
+    //                 'Status' =>  $request->Status,
+    //                 'ReturnVia' =>  $request->ReturnVia,
+    //                 'Priority' =>  $request->Priority,
+    //                 'Competition' =>  null,
+    //                 'CustomerCode' => $request->Customercode,
+    //                 'IMONo' =>  $request->IMONo,
+    //                 'Department' =>  $request->Department,
+    //                 'CustomerRef' =>  $request->CustomerRef,
+    //                 'BidDUeDate2' =>  $request->BidDUeDate2,
+    //                 'ReturnVia2' =>  $request->ReturnVia2,
+    //                 'EstLineQuote' =>  $request->EstLineQuote,
+    //                 'DueTme2' =>  $request->DueTme2,
+    //                 'EventCreatedUser' => Auth::user()->UserName,
+    //                 'EventCreatedDate' => $datestamp,
+    //                 'EventCreatedTime' => $timestamps,
+    //                 'ContactID' =>  $request->ContactID,
+    //                 'SendProductListDate' =>  null,
+    //                 //    'PVID' =>  0,
+    //                 'CustomerName' =>  $request->CustomerName,
+    //                 'VesselName' => $request->VesselName,
+    //                 'GodownCode' => $request->GodownName,
+    //                 'GodownName' => $request->GodownCodeget,
+    //                 'CusCode' =>  $request->CusCode,
+    //                 'CustomerActCode' =>  $request->CustomerActCode,
+    //             ]);
+    //             // dd($Events);
+    //             $Events->save();
+    //             return redirect('events-setups/update?EventNo=' . $Eventr)->with('success', 'Your Event ' . $Eventr . 'With' . $request->CustomerName . 'and' . $request->VesselName . ' has been Created successfully! ');
+    //         } else {
+    //             return redirect('events-setup')->with('error', 'Event Is Already Created ! With ' . $request->CustomerName . ' Customer and Vessel IS : ' . $request->VesselName . ' <a href="/events-setups/update?EventNo=' . $vessel_check_date->EventNo . '"> Showme </a> ');
+    //         }
+    //     } else {
+    //         $datestamp = date("Y-m-d");
+
+    //         $timestamps = date("Y-m-d G:i:s");
+
+    //         $Event->EventNo = $request->EventNo;
+    //         $Event->GeneralVesselNote = $request->GeneralVesselNote;
+    //         $Event->BranchCode = $BranchCode;
+    //         $Event->ETA = $request->ETA;
+    //         $Event->Contact = $request->Contact;
+    //         $Event->Phone = $request->Phone;
+    //         $Event->Cell = $request->Cell;
+    //         $Event->BidDUeDate =  $request->BidDUeDate;
+    //         $Event->DueTime =  $request->DueTime;
+    //         $Event->ShippingPort =  $request->ShippingPort;
+    //         $Event->Note = $request->followup;
+    //         $Event->Name = $request->Name;
+    //         $Event->Email = $request->Email;
+    //         $Event->Fax = $request->Fax;
+    //         $Event->Status = $request->Status;
+    //         $Event->ReturnVia = $request->ReturnVia;
+    //         $Event->Priority = $request->Priority;
+    //         $Event->Competition =  null;
+    //         $Event->CustomerCode =  $request->CustomerCode;
+    //         $Event->IMONo =  $request->IMONo;
+    //         $Event->Department =  $request->Department;
+    //         $Event->CustomerRef =  $request->CustomerRef;
+    //         $Event->BidDUeDate2 =  $request->BidDUeDate2;
+    //         $Event->ReturnVia2 =  $request->ReturnVia2;
+    //         $Event->EstLineQuote =  $request->EstLineQuote;
+    //         $Event->DueTme2 =  $request->DueTme2;
+    //         $Event->EventCreatedUser = Auth::user()->UserName;
+    //         $Event->ContactID =  $request->ContactID;
+    //         $Event->SendProductListDate = null;
+    //         // $Event->PVID=0;
+    //         $Event->CustomerName =  $request->CustomerName;
+    //         $Event->VesselName =  $request->VesselName;
+    //         $Event->GodownCode =  $request->GodownCode;
+    //         $Event->GodownName =  $request->GodownName;
+    //         $Event->CusCode =  $request->CusCode;
+    //         $Event->CustomerActCode =  $request->CustomerActCode;
+    //         // dd($Event);
+
+    //         $Event->update();
+    //     }
+    //     // }
+
+    //     return redirect('events-setups/update?EventNo=' . $Eventr)->with('success', 'Your Event ' . $Eventr . 'With' . $request->CustomerName . 'and' . $request->VesselName . ' has been Updated successfully! ');
+    // }
 
     public function quote_store(Request $request)
     {
@@ -336,7 +472,9 @@ class Events extends Controller
         $quote->BidDueDate = $request->BidDUeDate2;
         $quote->ReturnVia = $request->ReturnVia;
         $quote->EstLineQuote = $request->EstLineQuote;
-        $quote->DueTime = $request->DueTme2;
+        $quote->DueTime = $request->DueTme2 ?? null;
+
+        // $quote->DueTime = $request->DueTme2;
         $quote->QuoteNo = $request->QuoteNo;
         $quote->WorkUser = $MWorkUser;
         $quote->AssignQuote = $request->WorkUser;
@@ -367,6 +505,42 @@ class Events extends Controller
 
         return redirect('quotation?quote_no=' . $request->QuoteNo);
     }
+    
+
+
+
+
+
+
+// public function getEventMasterData(Request $request)
+// {
+//     $event_no = $request->input('event_no');
+//     // $BranchCode = Auth::user()->BranchCode;
+
+//     $BranchCode = config('app.MBranchCode');
+
+//     try {
+//         $event = Events::where('EventNo', $event_no)
+//                       ->where('BranchCode', $BranchCode)
+//                       ->first();
+
+//         if (!$event) {
+//             return response()->json(['error' => 'Event not '], 404);
+//         }
+
+//         // 👇 Fetch related contacts using CustomerCode
+//         $contacts = \App\Models\CustomerContacts::where('CustomerCode', $event->CustomerCode)->get();
+
+//         // ✅ Return proper JSON structure
+//         return response()->json([
+//             'event' => $event,
+//             'contacts' => $contacts
+//         ]);
+//     } catch (\Exception $e) {
+//         return response()->json(['error' => $e->getMessage()], 500);
+//     }
+// }
+
 
     public function deleteevent(Request $request)
     {
@@ -395,12 +569,18 @@ class Events extends Controller
         }
     }
 
+
+
+
+// old update
     public function update(Request $request)
     {
         $EventNo = $request->EventNo;
 
         $branch = Auth::user()->BranchCode;
         $UserName = Auth::user()->UserName;
+        
+        
 
         $deptype = Typesetup::select('TypeCode', 'TypeName')->distinct()->where('BranchCode', $branch)->get();
         $userss = UserRights::select('UserName')->distinct()->get();
@@ -453,15 +633,11 @@ class Events extends Controller
 
     private function _eventno()
     {
-        $lastid = modelevents::orderBy('EventNo', 'DESC')->first();
+        $lastid = modelevents::orderBy('EventNo')->first();
     }
 
 
 
 
-    public function getEventMasterData(Request $request)
-    {
-        $event_no = $request->event_no;
-        return response()->json(modelevents::where('EventNo', $event_no)->orderBy('id', 'DESC')->get());
-    }
+
 }

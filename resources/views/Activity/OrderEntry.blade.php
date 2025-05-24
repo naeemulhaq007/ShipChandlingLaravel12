@@ -8,6 +8,10 @@
 @stop
 
 @section('content')
+@php
+use App\Helpers\Ship;
+@endphp
+
     <?php echo View::make('partials.impalist'); ?>
     <?php echo View::make('partials.fullitemsearch'); ?>
     <?php echo View::make('partials.ImportExcelModal'); ?>
@@ -1628,12 +1632,10 @@
 
 
 
-
-
-            function updateDataOrder() {
+           function updateDataOrder() {
                 let table = document.getElementById('myTable');
                 let rows = table.rows;
-                let Order_no = $('#Order_no').val();
+                let quote_no = $('#quote_no').val();
                 let event_no = $('#event_no').val();
 
                 let dataarray = [];
@@ -1652,7 +1654,7 @@
                         qtyCell: cells[4] ? cells[4].innerHTML : '',
                         uomCell: cells[5] ? cells[5].innerHTML : '',
                         vpart_noCell: cells[6] ? cells[6].innerHTML : '',
-                        vendorpriceCell: cells[7] ? cells[7].innerHTML : '',
+                        vendor_priceCell: cells[7] ? cells[7].innerHTML : '',
                         sell_priceCell: cells[8] ? cells[8].innerHTML : '',
                         totalCell: cells[9] ? cells[9].innerHTML : '',
                         vendorNameCell: cells[10] ? cells[10].innerHTML : '',
@@ -1693,35 +1695,135 @@
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     }
                 });
+     
                 $.ajax({
-                    type: 'post',
-                    url: '{{ route('OrderItemsave') }}',
-                    data: {
-                        dataarray,
-                        Order_no,
-                        event_no,
-                        allcom,
-                        port,
-                        portcode,
-                        DepartmentCode,
-                        departmentname,
-                        CustomerRefNo,
-                        sum,
-                    },
+    type: 'post',
+    url: '{{ route('QuotationItemsave') }}',
+    data: {
+        dataarray,
+        quote_no,
+        event_no,
+        allcom,
+        port,
+        portcode,
+        DepartmentCode,
+        departmentname,
+        CustomerRefNo,
+        sum,
+    },
+    success: function(response) {
+        // Popup removed as per your request
 
-                    success: function(response) {
-                        console.log(response);
-                        document.getElementById("myElement").style.right = "0";
+        // Optional: Console log or silent confirmation
+        console.log('Quotation saved successfully.');
+    },
+    error: function(xhr) {
+        console.error('Error saving quotation:', xhr.responseText);
+    }
+});
 
-                        // Set a timeout to hide the element after 10 seconds
-                        setTimeout(function() {
-                            // Set the right property of the element back to -300px to hide it
-                            document.getElementById("myElement").style.right = "-300px";
-                        }, 10000);
-
-                    }
-                });
             }
+            
+            $('#Order_no').keydown(function(event) {
+    if (event.keyCode === 13) {
+        event.preventDefault();
+        dataserchandget();
+    }
+});
+
+
+            // function updateDataOrder() {
+            //     let table = document.getElementById('myTable');
+            //     let rows = table.rows;
+            //     let Order_no = $('#Order_no').val();
+            //     let event_no = $('#event_no').val();
+
+            //     let dataarray = [];
+            //     for (let i = 0; i < rows.length; i++) {
+
+
+            //         let cells = rows[i].cells;
+            //         dataarray.push({
+
+
+            //             // actionCell: cells[0] ? cells[0].innerHTML : '',
+            //             snoCell: cells[0] ? cells[0].innerHTML : '',
+            //             impaCell: cells[1] ? cells[1].innerHTML : '',
+            //             itemCodeCell: cells[2] ? cells[2].innerHTML : '',
+            //             item_descCell: cells[3] ? cells[3].innerHTML : '',
+            //             qtyCell: cells[4] ? cells[4].innerHTML : '',
+            //             uomCell: cells[5] ? cells[5].innerHTML : '',
+            //             vpart_noCell: cells[6] ? cells[6].innerHTML : '',
+            //             vendorpriceCell: cells[7] ? cells[7].innerHTML : '',
+            //             sell_priceCell: cells[8] ? cells[8].innerHTML : '',
+            //             totalCell: cells[9] ? cells[9].innerHTML : '',
+            //             vendorNameCell: cells[10] ? cells[10].innerHTML : '',
+            //             customer_notesCell: cells[11] ? cells[11].innerHTML : '',
+            //             notesCell: cells[12] ? cells[12].innerHTML : '',
+            //             internal_notesCell: cells[13] ? cells[13].innerHTML : '',
+            //             vessel_notesCell: cells[14] ? cells[14].innerHTML : '',
+            //             vendor_codeCell: cells[15] ? cells[15].innerHTML : '',
+
+
+
+
+
+
+
+            //         });
+            //         // }
+            //     }
+            //     var slscomm = ($('#slscomm').text());
+            //     var volumedis = ($('#volumedis').text());
+            //     var avireb = ($('#avireb').text());
+            //     var crnote = ($('#crnote').text());
+            //     var invdsic = ($('#invdsic').text());
+            //     var port = ($('#Warehouse').val());
+            //     var portcode = ($("#Warehouse option:selected").text());
+            //     var DepartmentCode = $('#DepartmentCode').val();
+            //     var departmentname = $('#departmentname').text();
+            //     var CustomerRefNo = $('#customer_ref_no').val();
+            //     var allcom = parseFloat(parseFloat(slscomm) + parseFloat(volumedis) + parseFloat(avireb) +
+            //         parseFloat(crnote) + parseFloat(invdsic));
+            //     //  console.log(allcom);
+            //     // var allcom = (slscomm+volumedis+avireb+crnote+invdsic);
+
+            //     var sum = $('#salesum').text();
+
+            //     $.ajaxSetup({
+            //         headers: {
+            //             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            //         }
+            //     });
+            //     $.ajax({
+            //         type: 'post',
+            //         url: '{{ route('OrderItemsave') }}',
+            //         data: {
+            //             dataarray,
+            //             Order_no,
+            //             event_no,
+            //             allcom,
+            //             port,
+            //             portcode,
+            //             DepartmentCode,
+            //             departmentname,
+            //             CustomerRefNo,
+            //             sum,
+            //         },
+
+            //         success: function(response) {
+            //             console.log(response);
+            //             document.getElementById("myElement").style.right = "0";
+
+            //             // Set a timeout to hide the element after 10 seconds
+            //             setTimeout(function() {
+            //                 // Set the right property of the element back to -300px to hide it
+            //                 document.getElementById("myElement").style.right = "-300px";
+            //             }, 10000);
+
+            //         }
+            //     });
+            // }
             $(document).ready(function() {
                 $("#footer_inv_percent").on("keydown", function(event) {
                     if (event.which === 13) {
@@ -2069,251 +2171,391 @@
 
             });
 
-            function dataserchandget() {
-                var Orderno = $('#Order_no').val();
-                var eventno = $('.event_no').text();
+            // function dataserchandget() {
+            //     var Orderno = $('#Order_no').val();
+            //     var eventno = $('.event_no').text();
 
 
-                $.ajaxSetup({
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    }
-                });
-                $.ajax({
-                    type: 'post',
-                    url: '{{ URL::to('Orderget') }}',
-                    data: {
-                        Orderno,
-                        eventno,
-
-
-
-                    },
-                    beforeSend: function() {
-                        // Show the overlay and spinner before sending the request
-                        $('.overlay').show();
-                    },
-                    success: function(response) {
-                        console.log(response);
-                        if (response.DataQuotesMaster) {
-                            var Master = response.DataQuotesMaster;
-                            console.log(Master);
-
-                            var EventData = response.EventData;
-                            $('.event_no').text(Master.EventNo);
-                            $('#event_no').val(Master.EventNo);
-                            $('.customer').text(Master.CustomerName);
-                            $('.vessel').text(Master.VesselName);
-                            $('.customer_ref_no').text(Master.CustomerRefNo);
-                            $('#departmentname').text(Master.DepartmentName);
-                            $('#imo_no').text(EventData.IMONo);
-                            $('#port').text(EventData.ShippingPort);
-                            var qchekdate = new Date(Master.QDate);
-                            const QDate = qchekdate.toISOString().substring(0, 10);
-                            var mchekdate = new Date(Master.BidDueDate);
-                            const biddue = mchekdate.toISOString().substring(0, 10);
-                            var Echekdate = new Date(EventData.ETA);
-                            const eta = Echekdate.toISOString().substring(0, 10);
-
-
-                            $('#eta').val(eta);
-                            $('#qdate').val(QDate);
-                            $('#biddue').val(biddue);
-                            $('#assign').val(Master.AssignQuote);
-                            $('#code').val(Master.CustCode);
-                            $('#est_lines').val(Master.EstLineQuote);
-                            $('#contact').val(EventData.Name);
-                            $('#imo_no').val(EventData.IMONo);
-                            $('#port').val(EventData.ShippingPort);
-                            $('#remarks').val(EventData.Note);
-                            $('#created').val(Master.CreatedDate);
-                            $('#bid_due_datetime').val(EventData.BidDUeDate);
-                            $('#created_datetime').val(EventData.EventCreatedTime);
-                            $('#vsn').val(Master.VSNNo);
-                            $('#charg').val(Master.FlipOrderNo);
-                            $('#qtime').val(Master.QTime);
-                            $('#DepartmentCode').val(Master.DepartmentCode);
-                            $('#GodownCode').val(Master.GodownCode);
-                            // console.log('settigngodown' + Master.GodownCode);
-                            // console.log('DepartmentCode' + Master.DepartmentCode);
-                            var type = response.TypeSetup;
-                            $('#ChkDeckEngin').val(type.ChkDeckEngin);
-                            // console.log('ChkDeckEngin' + type.ChkDeckEngin);
-                            // console.log('ch'+ $('#ChkDeckEngin').val());
-                            if (Master.ChkSentToCust) {
-                                $('#ChkSentToCust').prop('checked', true).val(Master.ChkSentToCust);
-                                $("#LblWorkUserSentToCust1").text(Master.WorkUserSentToCust1);
-                            }
-                            if (Master.ChkRekey) {
-                                $('#ChkRekey').prop('checked', true).val(Master.ChkRekey);
-                                $("#LblWorkUserREKey").text(Master.WorkUserREKey);
-                            }
-                            if (Master.ChkSendToVendor) {
-                                $('#ChkSendToVendor').prop('checked', true).val(Master.ChkSendToVendor);
-                                $("#LblWorkUserSentToVendor").text(Master.WorkUserSentToVendor);
-                            }
-                            if (Master.ChkQuoteEntry) {
-                                $('#ChkQuoteEntry').prop('checked', true).val(Master.ChkQuoteEntry);
-                                $("#LblWorkUserQuoteEntry").text(Master.WorkUserQuoteEntry);
-                            }
-                            if (Master.ChkPricing) {
-                                $('#ChkPricing').prop('checked', true).val(Master.ChkPricing);
-                                $("#LblWorkSellPricied").text(Master.WorkSellPricied);
-                            }
-                            if (Master.ChkCosting) {
-                                $('#ChkCosting').prop('checked', true).val(Master.ChkCosting);
-                                $("#LblWorkUserCosted").text(Master.WorkUserCosted);
-                            }
-
-                        }
-                        if (response.Customerdicount) {
-                            var cusdis = response.Customerdicount;
-                            $('#aviper').text(cusdis.AVIRebatePer);
-                            $('#footer_inv_percent').val(cusdis.InvDiscPer);
-                            $('#footer_cr_note_percent').val(cusdis.CrNotePer);
-                            $('#volper').text(cusdis.AgentCommPer);
-                            $('#slsper').text(cusdis.SlsCommPer);
-
-                        }
-
-
-                        if (response.quotesdetails) {
-                            var data = response.quotesdetails;
-                            let table = document.getElementById('myTable');
-                            table.innerHTML = ""; // Clear the table
-                            data.forEach(function(item) {
-                                let row = table.insertRow();
-                                row.classList.add("Edititems");
-
-
-                                let SNoCell = row.insertCell(0);
-                                SNoCell.innerHTML = Math.round(item.SNo, 2);
-
-
-                                let IMPAItemCodeCell = row.insertCell(1);
-                                IMPAItemCodeCell.innerHTML = item.IMPAItemCode;
-
-                                let ItemCodeCell = row.insertCell(2);
-                                ItemCodeCell.innerHTML = item.ItemCode;
-
-                                let ItemNameCell = row.insertCell(3);
-                                ItemNameCell.innerHTML = item.ItemName;
-
-                                let QtyCell = row.insertCell(4);
-                                QtyCell.innerHTML = item.Qty;
-                                QtyCell.contentEditable = true;
-                                QtyCell.title = "Right Click For Edit";
-                                QtyCell.classList.add("blurCell");
-
-                                let PUOMCell = row.insertCell(5);
-                                PUOMCell.innerHTML = item.PUOM;
-
-                                let VPartCell = row.insertCell(6);
-                                VPartCell.innerHTML = item.VPart;
-
-                                let VendorPriceCell = row.insertCell(7);
-                                VendorPriceCell.innerHTML = parseFloat(item.VendorPrice ? item.VendorPrice : 0)
-                                    .toFixed(2);
-                                VendorPriceCell.contentEditable = true;
-                                VendorPriceCell.title = "Right Click For Edit";
-                                VendorPriceCell.classList.add("blurCell");
-
-                                let SuggestPriceCell = row.insertCell(8);
-                                SuggestPriceCell.innerHTML = parseFloat(item.Price ? item.Price : 0)
-                                    .toFixed(2);
-                                SuggestPriceCell.contentEditable = true;
-                                SuggestPriceCell.title = "Right Click For Edit";
-                                SuggestPriceCell.classList.add("blurCell");
-
-                                let TotalCell = row.insertCell(9);
-                                TotalCell.innerHTML = parseFloat(item.Total).toFixed(2);
-
-                                let VendorNameCell = row.insertCell(10);
-                                VendorNameCell.innerHTML = item.VendorName;
-
-                                let CustomerNotesCell = row.insertCell(11);
-                                CustomerNotesCell.innerHTML = item.CustomerNotes;
-                                CustomerNotesCell.contentEditable = true;
-                                CustomerNotesCell.title = "Right Click For Edit";
-
-                                let VendorNotesCell = row.insertCell(12);
-                                VendorNotesCell.innerHTML = item.VendorNotes;
-                                VendorNotesCell.contentEditable = true;
-                                VendorNotesCell.title = "Right Click For Edit";
-
-                                let InternalBuyerNotesCell = row.insertCell(13);
-                                InternalBuyerNotesCell.innerHTML = item.InternalBuyerNotes;
-                                InternalBuyerNotesCell.contentEditable = true;
-                                InternalBuyerNotesCell.title = "Right Click For Edit";
-
-                                let VesselNoteCell = row.insertCell(14);
-                                VesselNoteCell.innerHTML = item.VesselNote;
-                                VesselNoteCell.hidden = true;
-
-                                let VendorCodeCell = row.insertCell(15);
-                                VendorCodeCell.innerHTML = item.VendorCode;
-                                VendorCodeCell.hidden = true;
-                            });
-                        }
-
-                        if (response.vendors) {
-                            var vendor = response.vendors;
-                            let select = document.getElementById('Vendrorname');
-                            select.innerHTML = ""; // Clear the select element
-                            vendor.forEach(function(item) {
-                                select.innerHTML += "<option value=" + item.VenderCode + ">" +
-                                    item.VenderName + "</option>";
-                            });
-                            select.innerHTML += "<option value='756'>STOCK</option>";
-                        }
-                        if (response.warehouse) {
-                            var Warehouse = response.warehouse;
-                            let select = document.getElementById('Warehouse');
-                            select.innerHTML = ""; // Clear the select element
-                            Warehouse.forEach(function(item) {
-                                select.innerHTML += "<option value=" + item.GodownCode + ">" +
-                                    item.GodownName + "</option>";
-                            });
-                        }
-                        if (response.DataQuotesMaster) {
-                            $('#Warehouse').val(response.DataQuotesMaster.GodownCode);
-
-                        }
+            //     $.ajaxSetup({
+            //         headers: {
+            //             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            //         }
+            //     });
+            //     $.ajax({
+            //         type: 'post',
+            //         url: '{{ URL::to('Orderget') }}',
+            //         data: {
+            //             Orderno,
+            //             eventno,
 
 
 
+            //         },
+            //         beforeSend: function() {
+            //             // Show the overlay and spinner before sending the request
+            //             $('.overlay').show();
+            //         },
+            //         success: function(response) {
+            //             console.log(response);
+            //             if (response.DataQuotesMaster) {
+            //                 var Master = response.DataQuotesMaster;
+            //                 console.log(Master);
 
-                        ComposeTable();
+            //                 var EventData = response.EventData;
+            //                 $('.event_no').text(Master.EventNo);
+            //                 $('#event_no').val(Master.EventNo);
+            //                 $('.customer').text(Master.CustomerName);
+            //                 $('.vessel').text(Master.VesselName);
+            //                 $('.customer_ref_no').text(Master.CustomerRefNo);
+            //                 $('#departmentname').text(Master.DepartmentName);
+            //                 $('#imo_no').text(EventData.IMONo);
+            //                 $('#port').text(EventData.ShippingPort);
+            //                 var qchekdate = new Date(Master.QDate);
+            //                 const QDate = qchekdate.toISOString().substring(0, 10);
+            //                 var mchekdate = new Date(Master.BidDueDate);
+            //                 const biddue = mchekdate.toISOString().substring(0, 10);
+            //                 var Echekdate = new Date(EventData.ETA);
+            //                 const eta = Echekdate.toISOString().substring(0, 10);
 
 
-                        //   console.log($response.insert_update);
-                    },
-                    error : function(error){
+            //                 $('#eta').val(eta);
+            //                 $('#qdate').val(QDate);
+            //                 $('#biddue').val(biddue);
+            //                 $('#assign').val(Master.AssignQuote);
+            //                 $('#code').val(Master.CustCode);
+            //                 $('#est_lines').val(Master.EstLineQuote);
+            //                 $('#contact').val(EventData.Name);
+            //                 $('#imo_no').val(EventData.IMONo);
+            //                 $('#port').val(EventData.ShippingPort);
+            //                 $('#remarks').val(EventData.Note);
+            //                 $('#created').val(Master.CreatedDate);
+            //                 $('#bid_due_datetime').val(EventData.BidDUeDate);
+            //                 $('#created_datetime').val(EventData.EventCreatedTime);
+            //                 $('#vsn').val(Master.VSNNo);
+            //                 $('#charg').val(Master.FlipOrderNo);
+            //                 $('#qtime').val(Master.QTime);
+            //                 $('#DepartmentCode').val(Master.DepartmentCode);
+            //                 $('#GodownCode').val(Master.GodownCode);
+            //                 // console.log('settigngodown' + Master.GodownCode);
+            //                 // console.log('DepartmentCode' + Master.DepartmentCode);
+            //                 var type = response.TypeSetup;
+            //                 $('#ChkDeckEngin').val(type.ChkDeckEngin);
+            //                 // console.log('ChkDeckEngin' + type.ChkDeckEngin);
+            //                 // console.log('ch'+ $('#ChkDeckEngin').val());
+            //                 if (Master.ChkSentToCust) {
+            //                     $('#ChkSentToCust').prop('checked', true).val(Master.ChkSentToCust);
+            //                     $("#LblWorkUserSentToCust1").text(Master.WorkUserSentToCust1);
+            //                 }
+            //                 if (Master.ChkRekey) {
+            //                     $('#ChkRekey').prop('checked', true).val(Master.ChkRekey);
+            //                     $("#LblWorkUserREKey").text(Master.WorkUserREKey);
+            //                 }
+            //                 if (Master.ChkSendToVendor) {
+            //                     $('#ChkSendToVendor').prop('checked', true).val(Master.ChkSendToVendor);
+            //                     $("#LblWorkUserSentToVendor").text(Master.WorkUserSentToVendor);
+            //                 }
+            //                 if (Master.ChkQuoteEntry) {
+            //                     $('#ChkQuoteEntry').prop('checked', true).val(Master.ChkQuoteEntry);
+            //                     $("#LblWorkUserQuoteEntry").text(Master.WorkUserQuoteEntry);
+            //                 }
+            //                 if (Master.ChkPricing) {
+            //                     $('#ChkPricing').prop('checked', true).val(Master.ChkPricing);
+            //                     $("#LblWorkSellPricied").text(Master.WorkSellPricied);
+            //                 }
+            //                 if (Master.ChkCosting) {
+            //                     $('#ChkCosting').prop('checked', true).val(Master.ChkCosting);
+            //                     $("#LblWorkUserCosted").text(Master.WorkUserCosted);
+            //                 }
 
-                        console.log(error);
-                        if (error.responseJSON) {
-                            if(error.responseJSON.message == 'Attempt to read property "DepartmentCode" on null'){
-                                alert('Quote Does Not Exist');
+            //             }
+            //             if (response.Customerdicount) {
+            //                 var cusdis = response.Customerdicount;
+            //                 $('#aviper').text(cusdis.AVIRebatePer);
+            //                 $('#footer_inv_percent').val(cusdis.InvDiscPer);
+            //                 $('#footer_cr_note_percent').val(cusdis.CrNotePer);
+            //                 $('#volper').text(cusdis.AgentCommPer);
+            //                 $('#slsper').text(cusdis.SlsCommPer);
 
-                            }
-                        }
-
-                    },
-                    complete: function() {
-                        // Hide the overlay and spinner after the request is complete
-                        $('.overlay').hide();
-                    }
-                });
+            //             }
 
 
+            //             if (response.quotesdetails) {
+            //                 var data = response.quotesdetails;
+            //                 let table = document.getElementById('myTable');
+            //                 table.innerHTML = ""; // Clear the table
+            //                 data.forEach(function(item) {
+            //                     let row = table.insertRow();
+            //                     row.classList.add("Edititems");
+
+
+            //                     let SNoCell = row.insertCell(0);
+            //                     SNoCell.innerHTML = Math.round(item.SNo, 2);
+
+
+            //                     let IMPAItemCodeCell = row.insertCell(1);
+            //                     IMPAItemCodeCell.innerHTML = item.IMPAItemCode;
+
+            //                     let ItemCodeCell = row.insertCell(2);
+            //                     ItemCodeCell.innerHTML = item.ItemCode;
+
+            //                     let ItemNameCell = row.insertCell(3);
+            //                     ItemNameCell.innerHTML = item.ItemName;
+
+            //                     let QtyCell = row.insertCell(4);
+            //                     QtyCell.innerHTML = item.Qty;
+            //                     QtyCell.contentEditable = true;
+            //                     QtyCell.title = "Right Click For Edit";
+            //                     QtyCell.classList.add("blurCell");
+
+            //                     let PUOMCell = row.insertCell(5);
+            //                     PUOMCell.innerHTML = item.PUOM;
+
+            //                     let VPartCell = row.insertCell(6);
+            //                     VPartCell.innerHTML = item.VPart;
+
+            //                     let VendorPriceCell = row.insertCell(7);
+            //                     VendorPriceCell.innerHTML = parseFloat(item.VendorPrice ? item.VendorPrice : 0)
+            //                         .toFixed(2);
+            //                     VendorPriceCell.contentEditable = true;
+            //                     VendorPriceCell.title = "Right Click For Edit";
+            //                     VendorPriceCell.classList.add("blurCell");
+
+            //                     let SuggestPriceCell = row.insertCell(8);
+            //                     SuggestPriceCell.innerHTML = parseFloat(item.Price ? item.Price : 0)
+            //                         .toFixed(2);
+            //                     SuggestPriceCell.contentEditable = true;
+            //                     SuggestPriceCell.title = "Right Click For Edit";
+            //                     SuggestPriceCell.classList.add("blurCell");
+
+            //                     let TotalCell = row.insertCell(9);
+            //                     TotalCell.innerHTML = parseFloat(item.Total).toFixed(2);
+
+            //                     let VendorNameCell = row.insertCell(10);
+            //                     VendorNameCell.innerHTML = item.VendorName;
+
+            //                     let CustomerNotesCell = row.insertCell(11);
+            //                     CustomerNotesCell.innerHTML = item.CustomerNotes;
+            //                     CustomerNotesCell.contentEditable = true;
+            //                     CustomerNotesCell.title = "Right Click For Edit";
+
+            //                     let VendorNotesCell = row.insertCell(12);
+            //                     VendorNotesCell.innerHTML = item.VendorNotes;
+            //                     VendorNotesCell.contentEditable = true;
+            //                     VendorNotesCell.title = "Right Click For Edit";
+
+            //                     let InternalBuyerNotesCell = row.insertCell(13);
+            //                     InternalBuyerNotesCell.innerHTML = item.InternalBuyerNotes;
+            //                     InternalBuyerNotesCell.contentEditable = true;
+            //                     InternalBuyerNotesCell.title = "Right Click For Edit";
+
+            //                     let VesselNoteCell = row.insertCell(14);
+            //                     VesselNoteCell.innerHTML = item.VesselNote;
+            //                     VesselNoteCell.hidden = true;
+
+            //                     let VendorCodeCell = row.insertCell(15);
+            //                     VendorCodeCell.innerHTML = item.VendorCode;
+            //                     VendorCodeCell.hidden = true;
+            //                 });
+            //             }
+
+            //             if (response.vendors) {
+            //                 var vendor = response.vendors;
+            //                 let select = document.getElementById('Vendrorname');
+            //                 select.innerHTML = ""; // Clear the select element
+            //                 vendor.forEach(function(item) {
+            //                     select.innerHTML += "<option value=" + item.VenderCode + ">" +
+            //                         item.VenderName + "</option>";
+            //                 });
+            //                 select.innerHTML += "<option value='756'>STOCK</option>";
+            //             }
+            //             if (response.warehouse) {
+            //                 var Warehouse = response.warehouse;
+            //                 let select = document.getElementById('Warehouse');
+            //                 select.innerHTML = ""; // Clear the select element
+            //                 Warehouse.forEach(function(item) {
+            //                     select.innerHTML += "<option value=" + item.GodownCode + ">" +
+            //                         item.GodownName + "</option>";
+            //                 });
+            //             }
+            //             if (response.DataQuotesMaster) {
+            //                 $('#Warehouse').val(response.DataQuotesMaster.GodownCode);
+
+            //             }
+
+
+
+
+            //             ComposeTable();
+
+
+            //             //   console.log($response.insert_update);
+            //         },
+            //         error : function(error){
+
+            //             console.log(error);
+            //             if (error.responseJSON) {
+            //                 if(error.responseJSON.message == 'Attempt to read property "DepartmentCode" on null'){
+            //                     alert('Quote Does Not Exist');
+
+            //                 }
+            //             }
+
+            //         },
+            //         complete: function() {
+            //             // Hide the overlay and spinner after the request is complete
+            //             $('.overlay').hide();
+            //         }
+            //     });
+
+
+            // }
+            // $('#Order_no').keydown(function(event) {
+            //     if (event.keyCode === 13) {
+            //         event.preventDefault();
+            //         dataserchandget();
+            //     }
+
+            // });
+            
+                $('#Order_no').keydown(function (event) {
+    if (event.keyCode === 13) {
+        event.preventDefault();
+        dataserchandget();
+    }
+});
+
+function dataserchandget() {
+    var Orderno = $('#Order_no').val();
+    if (!Orderno) return alert('Please enter Quote No');
+
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
+    $.ajax({
+        type: 'POST',
+        url: '{{ URL::to("Orderget") }}',
+        data: { Orderno },
+        beforeSend: () => $('.overlay').show(),
+        success: function (response) {
+            if (!response.DataQuotesMaster) return alert('Quotation not found');
+
+            const Master = response.DataQuotesMaster;
+            const EventData = response.EventData || {};
+
+            $('#event_no').val(Master.EventNo);
+            $('.event_no').text(Master.EventNo);
+            $('.customer').text(Master.CustomerName || '');
+            $('.vessel').text(Master.VesselName || '');
+            $('.customer_ref_no').text(Master.CustomerRefNo || '');
+            $('#customer_ref_no').val(Master.CustomerRefNo);
+            $('#departmentname').text(Master.DepartmentName);
+            $('#DepartmentCode').val(Master.DepartmentCode);
+
+            $('#qdate').val(Master.QDate?.slice(0, 10) || '');
+            $('#eta').val(EventData.ETA?.slice(0, 10) || '');
+            $('#biddue').val(Master.BidDueDate?.slice(0, 10) || '');
+            $('#assign').val(Master.AssignQuote || '');
+            $('#code').val(Master.CustCode || '');
+            $('#est_lines').val(Master.EstLineQuote || '');
+            $('#contact').val(EventData.Name || '');
+            $('#remarks').val(EventData.Note || '');
+            $('#created').val(Master.CreatedDate || '');
+            $('#bid_due_datetime').val(EventData.BidDUeDate || '');
+            $('#created_datetime').val(EventData.EventCreatedTime || '');
+            $('#vsn').val(Master.VSNNo || '');
+            $('#charg').val(Master.FlipOrderNo || '');
+            $('#qtime').val(Master.QTime || '');
+            $('#imo_no').val(EventData.IMONo || '');
+            $('#port').val(EventData.ShippingPort || '');
+
+            $('#ChkDeckEngin').val(response.TypeSetup?.ChkDeckEngin || '');
+
+            $('#ChkSentToCust').prop('checked', Master.ChkSentToCust);
+            $('#ChkRekey').prop('checked', Master.ChkRekey);
+            $('#ChkSendToVendor').prop('checked', Master.ChkSendToVendor);
+            $('#ChkQuoteEntry').prop('checked', Master.ChkQuoteEntry);
+            $('#ChkPricing').prop('checked', Master.ChkPricing);
+            $('#ChkCosting').prop('checked', Master.ChkCosting);
+
+            $('#LblWorkUserSentToCust1').text(Master.WorkUserSentToCust1 || '');
+            $('#LblWorkUserREKey').text(Master.WorkUserREKey || '');
+            $('#LblWorkUserSentToVendor').text(Master.WorkUserSentToVendor || '');
+            $('#LblWorkUserQuoteEntry').text(Master.WorkUserQuoteEntry || '');
+            $('#LblWorkSellPricied').text(Master.WorkSellPricied || '');
+            $('#LblWorkUserCosted').text(Master.WorkUserCosted || '');
+
+            if (response.Customerdicount) {
+                const dis = response.Customerdicount;
+                $('#aviper').text(dis.AVIRebatePer || '');
+                $('#footer_inv_percent').val(dis.InvDiscPer || '');
+                $('#footer_cr_note_percent').val(dis.CrNotePer || '');
+                $('#volper').text(dis.AgentCommPer || '');
+                $('#slsper').text(dis.SlsCommPer || '');
             }
-            $('#Order_no').keydown(function(event) {
-                if (event.keyCode === 13) {
-                    event.preventDefault();
-                    dataserchandget();
-                }
 
+            // Table population
+            const data = response.quotesdetails || [];
+            const table = document.getElementById('myTable');
+            table.innerHTML = "";
+            data.forEach((item, i) => {
+                const row = table.insertRow();
+                row.classList.add('Edititems');
+                row.insertCell(0).innerHTML = i + 1;
+                row.insertCell(1).innerHTML = item.IMPAItemCode || '';
+                row.insertCell(2).innerHTML = item.ItemCode || '';
+                row.insertCell(3).innerHTML = item.ItemName || '';
+                row.insertCell(4).innerHTML = item.Qty || '';
+                row.insertCell(5).innerHTML = item.PUOM || '';
+                row.insertCell(6).innerHTML = item.VPart || '';
+                row.insertCell(7).innerHTML = parseFloat(item.VendorPrice || 0).toFixed(2);
+                row.insertCell(8).innerHTML = parseFloat(item.Price || 0).toFixed(2);
+                row.insertCell(9).innerHTML = parseFloat(item.Total || 0).toFixed(2);
+                row.insertCell(10).innerHTML = item.VendorName || '';
+                row.insertCell(11).innerHTML = item.CustomerNotes || '';
+                row.insertCell(12).innerHTML = item.VendorNotes || '';
+                row.insertCell(13).innerHTML = item.InternalBuyerNotes || '';
+                row.insertCell(14).innerHTML = item.VesselNote || '';
+                row.insertCell(14).hidden = true;
+                row.insertCell(15).innerHTML = item.VendorCode || '';
+                row.insertCell(15).hidden = true;
             });
+
+            // Vendors
+            let vendorSelect = $('#Vendrorname');
+            vendorSelect.html('');
+            (response.vendors || []).forEach(v =>
+                vendorSelect.append(`<option value="${v.VenderCode}">${v.VenderName}</option>`)
+            );
+            vendorSelect.append(`<option value="756">STOCK</option>`);
+
+            // Warehouses
+            let warehouseSelect = $('#Warehouse');
+            warehouseSelect.html('');
+            (response.warehouse || []).forEach(w =>
+                warehouseSelect.append(`<option value="${w.GodownCode}">${w.GodownName}</option>`)
+            );
+            $('#Warehouse').val(Master.GodownCode || '');
+
+            // Recalculate table totals etc.
+            if (typeof ComposeTable === 'function') {
+                ComposeTable();
+            }
+        },
+        error: function (error) {
+            console.error(error);
+            alert(error.responseJSON?.message || 'Error fetching quote data');
+        },
+        complete: function () {
+            $('.overlay').hide();
+        }
+    });
+}
+
+
+
 
             $('#btnrfq').click(function(e) {
                 e.preventDefault();
